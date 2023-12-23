@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Inventory_Management_System</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Inventory_Management_System.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- navbar goes here -->
+    <nav class="bg-[#262626]">
+        <div class=" mx-auto ">
+            <div class="flex ">
+                <!-- logo -->
+                <div class=" w-12 p-2">
+                    <img src="./img/rfid.png" />
+                </div>
+
+            </div>
+        </div>
+
+    </nav>
+
+
+    <div class="flex">
+        @* side bar *@
+        <div class="min-h-screen flex flex-row bg-[#7258DB] ">
+            <div class="flex flex-col w-[12rem] overflow-hidden">
+                <ul class="flex flex-col py-4">
+                    <li>
+                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-home"></i></span>
+                            <span class="text-sm font-medium">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Product" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white" data-te-dropdown-toggle-ref>
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bx-shopping-bag'></i></span>
+                            <span class="text-sm font-medium">Products</span>
+                        </a>
+
+                    </li>
+
+                    <li>
+                        <a asp-controller="Category" asp-action="Index"  class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white" data-te-dropdown-toggle-ref>
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bx-category'></i></span>
+                            <span class="text-sm font-medium">Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Brand" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white" data-te-dropdown-toggle-ref>
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bx-purchase-tag'></i></span>
+                            <span class="text-sm font-medium">Brands</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bxs-package'></i></span>
+                            <span class="text-sm font-medium">Inventory</span>
+                        </a>
+                    </li>
+          @*           <li>
+                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bxs-user-account'></i></span>
+                            <span class="text-sm font-medium">Accounts</span>
+                        </a>
+                    </li> *@
+       @*              <li>
+                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-user"></i></span>
+                            <span class="text-sm font-medium">Profile</span>
+                        </a>
+                    </li> *@
+                    <li>
+                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-bell"></i></span>
+                            <span class="text-sm font-medium">Notifications</span>
+                            <span class="ml-auto mr-6 text-sm bg-red-100 rounded-full px-2 py-px text-red-500">5</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-log-out"></i></span>
+                            <span class="text-sm font-medium">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container p-2  bg-[#F9FBFD]">
+            <main role="main" class="p-2 ">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,226 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- navbar goes here -->
+    <nav class="bg-zinc-900 flex items-center">
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between">
+          <!-- logo -->
+          <div>
+            <a href="#" class="flex items-center py-5 px-2 text-white">
+              <span class="font-bold">Inventory M.System</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="flex gap-[0rem]">
+      <div class="min-h-screen flex flex-row bg-[#7258DB]">
+        <div class="flex flex-col w-[12rem] overflow-hidden">
+          <ul class="flex flex-col py-4">
+            <li>
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="bx bx-home"></i
+                ></span>
+                <span class="text-sm font-medium">Dashboard</span>
+              </a>
+            </li>
+            <li class="relative" data-te-dropdown-ref>
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+                data-te-dropdown-toggle-ref
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="bx bx-shopping-bag"></i
+                ></span>
+                <span class="text-sm font-medium">Products</span>
+                <span class="ml-2 w-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="h-5 w-5"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+              </a>
+              <!-- Dropdown Content -->
+              <ul
+                class="absolute transform -translate-x-[-13%] top-full z-[1000] m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
+                data-te-dropdown-menu-ref
+              >
+                <li>
+                  <a
+                    class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
+                    href="#"
+                    data-te-dropdown-item-ref
+                  >
+                    Add Product
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
+                    href="#"
+                    data-te-dropdown-item-ref
+                  >
+                    Edit Product
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="relative">
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+                data-te-dropdown-toggle-ref
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="bx bx-category"></i
+                ></span>
+                <span class="text-sm font-medium">Categories</span>
+                <span class="ml-2 w-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="h-5 w-5"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="fa-solid fa-warehouse"></i
+                ></span>
+                <span class="text-sm font-medium">Inventory</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="bx bxs-user-account"></i
+                ></span>
+                <span class="text-sm font-medium">Accounts</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="bx bx-user"></i
+                ></span>
+                <span class="text-sm font-medium">Profile</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="bx bx-bell"></i
+                ></span>
+                <span class="text-sm font-medium">Notifications</span>
+                <span
+                  class="ml-auto mr-6 text-sm bg-red-100 rounded-full px-2 py-px text-red-500"
+                  >5</span
+                >
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+              >
+                <span
+                  class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"
+                  ><i class="bx bx-log-out"></i
+                ></span>
+                <span class="text-sm font-medium">Logout</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="container p-2">
+        <main role="main" class="p-2">
+          <div class="flex-col">
+            <div class="flex justify-between items-center">
+              <h1 class="text-2xl font-bold">Product List</h1>
+              <button
+                type="button"
+                class="focus:outline-none text-white bg-[#7258DB] hover:bg-[#624CBD] font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
+              >
+                Add
+              </button>
+            </div>
+            <hr class="h-px my-2 bg-gray-400 border-1" />
+            <div class="border-2 p-2 rounded-md">
+              <div class="box bg-white border-2">
+                <div class="box w-full">
+                  <img src="" alt="" />
+                  <span
+                    >Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Quo, iste.</span
+                  >
+                  <span>End</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+  </body>
+</html>
