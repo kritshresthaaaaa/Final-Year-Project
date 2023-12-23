@@ -21,7 +21,7 @@
             <div class="flex ">
                 <!-- logo -->
                 <div class=" w-12 p-2">
-                    <img src="./img/rfid.png" />
+                    <img src="../img/rfid.png" />
                 </div>
 
             </div>
@@ -41,19 +41,71 @@
                             <span class="text-sm font-medium">Dashboard</span>
                         </a>
                     </li>
-                    <li>
-                        <a asp-controller="Product" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white" data-te-dropdown-toggle-ref>
-                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bx-shopping-bag'></i></span>
+                    <li class="relative" data-te-dropdown-ref>
+                        <a href="#"
+                           class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+                           data-te-dropdown-toggle-ref
+                           data-dropdown-target="productDropdown">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
+                                <i class="bx bx-shopping-bag"></i>
+                            </span>
                             <span class="text-sm font-medium">Products</span>
+                            <span class="ml-2 w-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20"
+                                     fill="currentColor"
+                                     class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                          clip-rule="evenodd" />
+                                </svg>
+                            </span>
                         </a>
-
+                    </li>
+                    <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2] " id="productDropdown">
+                        <a asp-controller="Product" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Product List
+                        </a>
+                        <a asp-controller="Product" asp-action="Create" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Product Add
+                        </a>
+           
+                        <a class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Product Scan
+                        </a>
                     </li>
 
-                    <li>
-                        <a asp-controller="Category" asp-action="Index"  class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white" data-te-dropdown-toggle-ref>
-                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bx-category'></i></span>
+
+
+                    <li class="relative" data-te-dropdown-ref>
+                        <a href="#"
+                           class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white"
+                           data-te-dropdown-toggle-ref
+                           data-dropdown-target="categoryDropdown">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
+                                <i class="bx bx-category"></i>
+                            </span>
                             <span class="text-sm font-medium">Categories</span>
+                            <span class="ml-2 w-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20"
+                                     fill="currentColor"
+                                     class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                          clip-rule="evenodd" />
+                                </svg>
+                            </span>
                         </a>
+                    </li>
+                    <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2]" id="categoryDropdown">
+                        <a asp-controller="Category" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Category List
+                        </a>
+                        <a asp-controller="Category" asp-action="Create" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Category Add
+                        </a>
+              
                     </li>
                     <li>
                         <a asp-controller="Brand" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white" data-te-dropdown-toggle-ref>
@@ -67,18 +119,7 @@
                             <span class="text-sm font-medium">Inventory</span>
                         </a>
                     </li>
-          @*           <li>
-                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
-                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bxs-user-account'></i></span>
-                            <span class="text-sm font-medium">Accounts</span>
-                        </a>
-                    </li> *@
-       @*              <li>
-                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
-                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-user"></i></span>
-                            <span class="text-sm font-medium">Profile</span>
-                        </a>
-                    </li> *@
+
                     <li>
                         <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
                             <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-bell"></i></span>
@@ -87,7 +128,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                        <a asp-controller="Home" asp-action="LogOut" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
                             <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-log-out"></i></span>
                             <span class="text-sm font-medium">Logout</span>
                         </a>
@@ -102,7 +143,6 @@
             </main>
         </div>
     </div>
-
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

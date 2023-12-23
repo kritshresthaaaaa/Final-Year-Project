@@ -121,9 +121,18 @@ namespace Inventory_Management_System.Controllers
         // GET: Product/Create
         public IActionResult Create()
         {
-            return View();
-        }
+            var productDetail = new ProductDetail();
+            var categories = GetCategories(); // This should fetch categories from your data source
 
+            ViewBag.Categories = new SelectList(categories, "CategoryID", "CategoryName");
+            return View(productDetail);
+        }
+        private IEnumerable<CategoryDetail> GetCategories()
+        {
+            // Fetch categories from the database or your data source
+            // This is just a placeholder - replace it with your actual data access code
+            return new List<CategoryDetail>();
+        }
         // POST: Product/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

@@ -1,4 +1,16 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
 
-// Write your JavaScript code.
+    document.addEventListener("DOMContentLoaded", function() {
+    const dropdownLinks = document.querySelectorAll("[data-te-dropdown-toggle-ref]");
+
+    dropdownLinks.forEach(function(link) {
+        link.addEventListener("click", function (event) {
+            event.preventDefault();
+            const targetDropdownId = this.getAttribute("data-dropdown-target");
+            const targetDropdown = document.getElementById(targetDropdownId);
+            if (targetDropdown) {
+                targetDropdown.classList.toggle("hidden");
+            }
+        });
+    });
+  });
