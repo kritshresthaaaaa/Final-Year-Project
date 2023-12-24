@@ -14,7 +14,7 @@ namespace Inventory_Management_System.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private bool debug= false;
+        private bool debug = false;
         private Device device;
         private RESTUtil util;
         private HexUtil utilities;
@@ -95,7 +95,7 @@ namespace Inventory_Management_System.Controllers
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            return _context.Product!= null ?
+            return _context.Product != null ?
                         View(await _context.Product.ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.Product'  is null.");
         }
@@ -121,32 +121,38 @@ namespace Inventory_Management_System.Controllers
         // GET: Product/Create
         public IActionResult Create()
         {
-            var productDetail = new ProductDetail();
-            var categories = GetCategories(); // This should fetch categories from your data source
 
-            ViewBag.Categories = new SelectList(categories, "CategoryID", "CategoryName");
-            return View(productDetail);
+
+
+            ViewBag.getCategory = _context.Category.ToList();
+            ViewBag.getBrand = _context.Brand.ToList();
+            return View();
         }
-        private IEnumerable<CategoryDetail> GetCategories()
+        private bool IsEpcUnique(string epc)
         {
-            // Fetch categories from the database or your data source
-            // This is just a placeholder - replace it with your actual data access code
-            return new List<CategoryDetail>();
+            return !_context.Product.Any(p => p.RFIDTag == epc);
         }
         // POST: Product/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price")] ProductDetail productDetail)
+        public async Task<IActionResult> Create([Bind("ProductId,EPC,ProductName")] ProductDetail product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(productDetail);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (IsEpcUnique(product.RFIDTag))
+                {
+                    _context.Add(product);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("EPC", "This EPC is already assigned to another product.");
+                }
             }
-            return View(productDetail);
+            return View(product);
         }
 
         // GET: Product/Edit/5

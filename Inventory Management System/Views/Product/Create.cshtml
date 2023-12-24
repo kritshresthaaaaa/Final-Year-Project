@@ -47,7 +47,7 @@
                 <div class="box w-full">
                     <h3 class="text-xl font-bold">Product Information</h3>
                     <div class="mt-2">
-                        <div class="titleHolder w-full mb-2">       
+                        <div class="titleHolder w-full mb-2">
                             <h2 class="text-l font-semibold ">Product title</h2>
                             <input asp-for="Name" class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
                                    type="text" />
@@ -62,9 +62,7 @@
 
                         <div class="priceHolder w-full">
                             <h2 class="text-l font-semibold">Price</h2>
-                            <input placeholder="Rs" asp-for="Price" class=" w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
-                                   type="text"
-                                   name="price" />
+                            <input placeholder="Rs" asp-for="Price" class=" w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200" />
 
                             <span asp-validation-for="Price" class="text-red-600"></span>
                         </div>
@@ -86,6 +84,7 @@
                                     </label>
                                 }
                             </div>
+                            <span asp-validation-for="Sizes" class="text-red-600"></span>
                         </div>
                     </div>
                 </div>
@@ -100,12 +99,15 @@
                             <h2 class="text-l font-semibold">Select Categories</h2>
                         </div>
                         <div class="relative inline-block w-full">
-                            <select asp-for="CategoryID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none">
+                            <select asp-for="CategoryID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none required">
                                 <!-- Placeholder option -->
                                 <option value="" disabled selected>Select</option>
+                                @foreach (var category in ViewBag.getCategory)
+                                {
+                                    <option value="@category.CategoryID">@category.CategoryName</option>
+                                }
 
-                                <!-- Actual category options -->                  
-                                <!-- Add more options as needed -->
+
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                 <!-- Dropdown icon -->
@@ -116,6 +118,8 @@
                                 </svg>
                             </div>
                         </div>
+                        <span asp-validation-for="Category" class="text-red-600"></span>
+
                     </div>
                 </div>
             </div>
@@ -128,16 +132,16 @@
                             <h2 class="text-l font-semibold">Select Brand</h2>
                         </div>
                         <div class="relative inline-block w-full">
-                            <select asp-for="BrandID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+                            <select asp-for="BrandID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline required">
                                 <!-- Placeholder option -->
                                 <option value="" disabled selected>
                                     Select a brand
                                 </option>
-                                <!-- Actual brand options -->
-                                <option value="brand1">Brand 1</option>
-                                <option value="brand2">Brand 2</option>
-                                <option value="brand3">Brand 3</option>
-                                <!-- Add more options as needed -->
+                                @foreach (var brand in ViewBag.getBrand)
+                                {
+                                    <option value="@brand.BrandID">@brand.BrandName</option>
+                                }
+
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                 <!-- Dropdown icon -->

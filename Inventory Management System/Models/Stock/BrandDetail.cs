@@ -6,6 +6,8 @@ namespace Inventory_Management_System.Models.Stock
     {
         [Key]
         public int BrandID { get; set; }
+        [Required]
+        [StringLength(255)]
         public string BrandName { get; set; }
 
     }

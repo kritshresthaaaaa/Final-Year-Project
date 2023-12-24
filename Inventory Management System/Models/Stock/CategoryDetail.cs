@@ -6,6 +6,8 @@ namespace Inventory_Management_System.Models.Stock
     {
         [Key]
         public int CategoryID { get; set; }
+        [Required]
+        [StringLength(255)]
         public string CategoryName { get; set; }
    
 

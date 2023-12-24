@@ -16,6 +16,7 @@ namespace Inventory_Management_System.Models.Stock
         public string Description { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero")]
+        [Required]
         public double Price { get; set; }
 
   
