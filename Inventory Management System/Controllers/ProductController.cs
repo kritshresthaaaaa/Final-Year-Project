@@ -67,14 +67,8 @@ namespace Inventory_Management_System.Controllers
                 // Iterate through detected EPCs
                 foreach (string epc in detectedEPCs)
                 {
-                    // Generate a new EPC by changing the first bit
-                    string newEPC = changeFirstBit(epc);
-
-                    // Write the new EPC to the tag
-                    this.util.CommissionTagOp(this.device, epc, newEPC, "", "", "", 1, false);
-
-                    // Add the result to the list
-                    result.Add(new EpcScanResult { OriginalEPC = epc, NewEPC = newEPC });
+                    // Simply add the original EPC to the result
+                    result.Add(new EpcScanResult { OriginalEPC = epc, NewEPC = epc });
                 }
 
                 return new JsonResult(new ScanResponse { Results = result });
@@ -85,13 +79,14 @@ namespace Inventory_Management_System.Controllers
             }
         }
 
-        private string changeFirstBit(string epc)
+
+ /*       private string changeFirstBit(string epc)
         {
             // Change the first bit of the EPC
             string binEPC = this.utilities.HexStringToBinary(epc);
             string newBinEPC = binEPC[0] == '0' ? '1' + binEPC.Substring(1) : '0' + binEPC.Substring(1);
             return this.utilities.BinaryStringToHex(newBinEPC);
-        }
+        }*/
         // GET: Product
         public async Task<IActionResult> Index()
         {
@@ -122,8 +117,6 @@ namespace Inventory_Management_System.Controllers
         public IActionResult Create()
         {
 
-
-
             ViewBag.getCategory = _context.Category.ToList();
             ViewBag.getBrand = _context.Brand.ToList();
             return View();
@@ -137,21 +130,25 @@ namespace Inventory_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,EPC,ProductName")] ProductDetail product)
+        public IActionResult Create(ProductDetail product)
         {
             if (ModelState.IsValid)
             {
                 if (IsEpcUnique(product.RFIDTag))
                 {
                     _context.Add(product);
-                    await _context.SaveChangesAsync();
+                    _context.SaveChanges();
+                    TempData["success"] = "Product has been added successfully.";
                     return RedirectToAction(nameof(Index));
                 }
                 else
-                {
-                    ModelState.AddModelError("EPC", "This EPC is already assigned to another product.");
+                {   
+                    // Set the error message in ViewBag
+                    ViewBag.EpcError = "This EPC is already assigned to another product.";
                 }
             }
+            ViewBag.getCategory = _context.Category.ToList();
+            ViewBag.getBrand = _context.Brand.ToList();
             return View(product);
         }
 
@@ -201,6 +198,7 @@ namespace Inventory_Management_System.Controllers
                         throw;
                     }
                 }
+                TempData["success"] = "Product has been edited successfully.";
                 return RedirectToAction(nameof(Index));
             }
             return View(productDetail);
@@ -240,6 +238,7 @@ namespace Inventory_Management_System.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["success"] = "Product has been deleted successfully.";
             return RedirectToAction(nameof(Index));
         }
 

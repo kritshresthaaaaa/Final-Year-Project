@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory_Management_System.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231224082350_updated")]
+    [Migration("20231224131501_updated")]
     partial class updated
     {
         /// <inheritdoc />
