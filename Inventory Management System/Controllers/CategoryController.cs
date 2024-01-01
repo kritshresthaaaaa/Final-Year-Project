@@ -22,8 +22,19 @@ namespace Inventory_Management_System.Controllers
         // GET: Category
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Category.ToListAsync());
+            var categoriesWithProductCount = await _context.Category
+                .Select(c => new CategoryViewModel
+                {
+                    CategoryID = c.CategoryID,
+                    CategoryName = c.CategoryName,
+                    ProductCount = _context.Product.Count(p => p.CategoryID == c.CategoryID)
+                })
+                .ToListAsync();
+
+            return View(categoriesWithProductCount);
         }
+
+
 
         // GET: Category/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -148,14 +159,14 @@ namespace Inventory_Management_System.Controllers
             {
                 _context.Category.Remove(categoryDetail);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryDetailExists(int id)
         {
-          return _context.Category.Any(e => e.CategoryID == id);
+            return _context.Category.Any(e => e.CategoryID == id);
         }
     }
 }

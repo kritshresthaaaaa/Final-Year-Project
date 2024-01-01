@@ -4,30 +4,43 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
-<h4>CategoryDetail</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CategoryID" />
-            <div class="form-group">
-                <label asp-for="CategoryName" class="control-label"></label>
-                <input asp-for="CategoryName" class="form-control" />
-                <span asp-validation-for="CategoryName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="flex-col">
+    <div>
+        <h1 class="text-2xl font-bold">Add Categories</h1>
     </div>
+    <hr class="mt-2 bg-gray-400 border" />
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="CategoryID" />
+        <div class="content-holder flex-col space-y-4 mt-4">
+
+            <!--Info Box -->
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Category Information</h3>
+                    <div class="mt-2">
+                        <div class="titleHolder w-full mb-2">
+                            <h2 class="text-l font-semibold ">Category title</h2>
+                            <input asp-for="CategoryName" class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
+                                   type="text" />
+
+                            <span asp-validation-for="CategoryName" class="text-red-600"></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="float-right">
+            <button type="submit" class="border bg-[#7258DB] px-4 py-2 mt-2 rounded text-white ">Save</button>
+        </div>
+    </form>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

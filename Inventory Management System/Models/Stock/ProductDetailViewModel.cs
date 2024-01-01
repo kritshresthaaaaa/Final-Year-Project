@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Inventory_Management_System.Models.Stock
 {
-    public class ProductDetail
+    public class ProductDetailViewModel
     {
         [Key]
         public int Id { get; set; }
@@ -19,7 +19,7 @@ namespace Inventory_Management_System.Models.Stock
         [Required]
         public double Price { get; set; }
         [Required]
-        public String image { get; set; }
+        public IFormFile photo { get; set; }
         [Required]
         public int BrandID { get; set; }
 

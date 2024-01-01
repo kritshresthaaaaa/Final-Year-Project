@@ -13,6 +13,7 @@ namespace Inventory_Management_System.Controllers
 {
     public class ProductController : Controller
     {
+        IWebHostEnvironment hostEnvironment;
         private readonly ApplicationDbContext _context;
         private bool debug = false;
         private Device device;
@@ -20,12 +21,13 @@ namespace Inventory_Management_System.Controllers
         private HexUtil utilities;
         private String address = "192.168.1.1";
         private readonly ILogger<ProductController> _logger;
-        public ProductController(ApplicationDbContext context)
+        public ProductController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
             this.util = new RESTUtil(this.address, this.debug);
             this.device = this.util.parseDevice(false);
             this.utilities = new HexUtil();
+            this.hostEnvironment = hostEnvironment;
         }
         public class EpcScanResult
         {
@@ -80,13 +82,13 @@ namespace Inventory_Management_System.Controllers
         }
 
 
- /*       private string changeFirstBit(string epc)
-        {
-            // Change the first bit of the EPC
-            string binEPC = this.utilities.HexStringToBinary(epc);
-            string newBinEPC = binEPC[0] == '0' ? '1' + binEPC.Substring(1) : '0' + binEPC.Substring(1);
-            return this.utilities.BinaryStringToHex(newBinEPC);
-        }*/
+        /*       private string changeFirstBit(string epc)
+               {
+                   // Change the first bit of the EPC
+                   string binEPC = this.utilities.HexStringToBinary(epc);
+                   string newBinEPC = binEPC[0] == '0' ? '1' + binEPC.Substring(1) : '0' + binEPC.Substring(1);
+                   return this.utilities.BinaryStringToHex(newBinEPC);
+               }*/
         // GET: Product
         public async Task<IActionResult> Index()
         {
@@ -130,27 +132,52 @@ namespace Inventory_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductDetail product)
+        public IActionResult Create(ProductDetailViewModel product)
         {
             if (ModelState.IsValid)
             {
-                if (IsEpcUnique(product.RFIDTag))
+                if (!IsEpcUnique(product.RFIDTag))
                 {
-                    _context.Add(product);
-                    _context.SaveChanges();
-                    TempData["success"] = "Product has been added successfully.";
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {   
-                    // Set the error message in ViewBag
                     ViewBag.EpcError = "This EPC is already assigned to another product.";
+                    // Populate ViewBag for Category and Brand
+                    ViewBag.getCategory = _context.Category.ToList();
+                    ViewBag.getBrand = _context.Brand.ToList();
+                    return View(product);
                 }
+
+                String filename = "";
+                if (product.photo != null)
+                {
+                    String uploadFolder = Path.Combine(hostEnvironment.WebRootPath, "images");
+                    filename = Guid.NewGuid().ToString() + "_" + product.photo.FileName;
+                    String filepath = Path.Combine(uploadFolder, filename);
+                    product.photo.CopyTo(new FileStream(filepath, FileMode.Create));
+                }
+
+                ProductDetail productDetail = new ProductDetail
+                {
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    BrandID = product.BrandID,
+                    CategoryID = product.CategoryID,
+                    RFIDTag = product.RFIDTag,
+                    Sizes = product.Sizes,
+                    image = filename
+                };
+
+                _context.Add(productDetail);
+                _context.SaveChanges();
+                TempData["success"] = "Product has been added successfully.";
+                return RedirectToAction(nameof(Index));
             }
+
+            // Populate ViewBag for Category and Brand if ModelState is not valid
             ViewBag.getCategory = _context.Category.ToList();
             ViewBag.getBrand = _context.Brand.ToList();
             return View(product);
         }
+
 
         // GET: Product/Edit/5
         public async Task<IActionResult> Edit(int? id)
