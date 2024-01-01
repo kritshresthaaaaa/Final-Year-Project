@@ -1,4 +1,4 @@
-﻿@model Inventory_Management_System.Models.Stock.ProductDetailViewModel
+﻿@model Inventory_Management_System.Models.Stock.ProductDetail
 
 @{
     ViewData["Title"] = "Create";
@@ -10,7 +10,7 @@
         <h1 class="text-2xl font-bold">Product Add</h1>
     </div>
     <hr class="mt-2 bg-gray-400 border" />
-    <form asp-action="Create" enctype="multipart/form-data">
+    <form asp-action="Create" >
         <div class="content-holder flex-col space-y-4 mt-4">
             <!-- EPC -->
             <div class="border rounded-md p-2 bg-white">
@@ -162,20 +162,18 @@
                 </div>
             </div>
             <!-- File Upload -->
-            <div class="border rounded-md p-2 bg-white">
+           @*  <div class="border rounded-md p-2 bg-white">
                 <div class="box w-full">
                     <h3 class="text-xl font-bold">Image</h3>
                     <div class="mt-2">
                         <div>
-
-                            <input asp-for="photo" class="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal  transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit  file:px-3 file:py-[0.32rem] file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem]  focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none  dark:text-black dark:file:bg-[#624CBD] dark:file:text-white dark:focus:border-primary"
-                                   type="file"
-                                   id="formFileMultiple"
-                                   multiple />
+                            <label asp-for="photo"></label>
+                            <input asp-for="photo" class="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal  transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit  file:px-3 file:py-[0.32rem] file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem]  focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none  dark:text-black dark:file:bg-[#624CBD] dark:file:text-white dark:focus:border-primary" />
+                               
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
 
         </div>
         <div class="float-right">

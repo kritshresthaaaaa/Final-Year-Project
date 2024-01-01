@@ -132,51 +132,32 @@ namespace Inventory_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductDetailViewModel product)
+
+        public IActionResult Create(ProductDetail product)
         {
             if (ModelState.IsValid)
             {
-                if (!IsEpcUnique(product.RFIDTag))
+                if (IsEpcUnique(product.RFIDTag))
+                {
+                    _context.Add(product);
+                    _context.SaveChanges();
+                    TempData["success"] = "Product has been added successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
                 {
                     ViewBag.EpcError = "This EPC is already assigned to another product.";
-                    // Populate ViewBag for Category and Brand
-                    ViewBag.getCategory = _context.Category.ToList();
-                    ViewBag.getBrand = _context.Brand.ToList();
-                    return View(product);
+
                 }
-
-                String filename = "";
-                if (product.photo != null)
-                {
-                    String uploadFolder = Path.Combine(hostEnvironment.WebRootPath, "images");
-                    filename = Guid.NewGuid().ToString() + "_" + product.photo.FileName;
-                    String filepath = Path.Combine(uploadFolder, filename);
-                    product.photo.CopyTo(new FileStream(filepath, FileMode.Create));
-                }
-
-                ProductDetail productDetail = new ProductDetail
-                {
-                    Name = product.Name,
-                    Description = product.Description,
-                    Price = product.Price,
-                    BrandID = product.BrandID,
-                    CategoryID = product.CategoryID,
-                    RFIDTag = product.RFIDTag,
-                    Sizes = product.Sizes,
-                    image = filename
-                };
-
-                _context.Add(productDetail);
-                _context.SaveChanges();
-                TempData["success"] = "Product has been added successfully.";
-                return RedirectToAction(nameof(Index));
             }
 
-            // Populate ViewBag for Category and Brand if ModelState is not valid
             ViewBag.getCategory = _context.Category.ToList();
             ViewBag.getBrand = _context.Brand.ToList();
             return View(product);
         }
+
+        // Populate ViewBag for Category and Brand if ModelState is not valid
+
 
 
         // GET: Product/Edit/5
