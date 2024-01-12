@@ -24,7 +24,19 @@ namespace Inventory_Management_System.Controllers
         {
               return View(await _context.Brand.ToListAsync());
         }
+        public async Task<IActionResult> GetItemCountByCreationDate()
+        {
+            var itemCountByDate = await _context.Brand
+                                   .GroupBy(b => b.CreationDate.Date)
+                                   .Select(group => new
+                                   {
+                                       CreationDate = group.Key,
+                                       Count = group.Count()
+                                   })
+                                   .ToListAsync();
 
+            return Json(itemCountByDate);
+        }
         // GET: Brand/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -54,7 +66,9 @@ namespace Inventory_Management_System.Controllers
         {
             if (ModelState.IsValid)
             {
+                brandDetail.CreationDate = DateTime.Now;
                 _context.Add(brandDetail);
+                TempData["success"] = "Brand Added";
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

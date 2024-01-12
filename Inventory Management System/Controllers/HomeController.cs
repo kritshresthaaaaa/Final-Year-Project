@@ -22,6 +22,7 @@ namespace Inventory_Management_System.Controllers
         }
 
 
+
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

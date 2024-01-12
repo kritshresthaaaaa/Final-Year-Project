@@ -43,7 +43,7 @@
             <div class="flex flex-col w-[12rem] overflow-hidden">
                 <ul class="flex flex-col py-4">
                     <li>
-                        <a asp-controller="Dashboard" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                        <a asp-controller="Home" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
                             <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-home"></i></span>
                             <span class="text-sm font-medium">Dashboard</span>
                         </a>
@@ -76,7 +76,7 @@
                             Product Add
                         </a>
 
-                        <a class="flex justify-center hover:text-amber-300 cursor-pointer">
+                        <a asp-controller="Product" asp-action="Scan" class="flex justify-center hover:text-amber-300 cursor-pointer">
                             Product Scan
                         </a>
                     </li>
@@ -140,7 +140,34 @@
                             Add Brand
                         </a>
                     </li>
-
+                    <li class="relative" data-te-dropdown-ref>
+                        <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
+                           data-te-dropdown-toggle-ref
+                           data-dropdown-target="employeeDropdown">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg">
+                                <i class='bx bx-user' style='color:#ffffff'></i> <!-- You can change the icon to suit brands -->
+                            </span>
+                            <span class="text-sm font-medium">Employees</span>
+                            <span class="ml-2 w-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20"
+                                     fill="currentColor"
+                                     class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                          clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2]" id="employeeDropdown">
+                        <a asp-controller="Employee" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Employee List
+                        </a>
+                        <a asp-controller="Employee" asp-action="Details" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Assign Employee
+                        </a>
+                    </li>
                     <li>
                         <a href="#" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
                             <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class='bx bxs-package'></i></span>

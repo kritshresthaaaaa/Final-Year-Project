@@ -9,6 +9,9 @@ namespace Inventory_Management_System.Models.Stock
         [Required]
         [StringLength(255)]
         public string BrandName { get; set; }
+        [Display(Name = "Creation Date")]
+        [DataType(DataType.Date)]
+        public DateTime CreationDate { get; set; }
 
     }
 }

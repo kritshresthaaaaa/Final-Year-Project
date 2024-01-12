@@ -19,8 +19,7 @@ namespace Inventory_Management_System.Models.Stock
         [Required]
         public double Price { get; set; }
         [Required]
-        public String image { get; set; }
-        [Required]
+     
         public int BrandID { get; set; }
 
         [Required]

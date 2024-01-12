@@ -12,6 +12,7 @@ namespace Inventory_Management_System.Data
         public DbSet<ProductDetail> Product { get; set; }
         public DbSet<CategoryDetail> Category { get; set; }
         public DbSet<BrandDetail> Brand { get; set; }
+        public DbSet<EmployeeDetail> Employee { get; set; }
        
 
     }

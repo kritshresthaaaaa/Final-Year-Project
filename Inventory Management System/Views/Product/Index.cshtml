@@ -38,12 +38,12 @@
                     </th>
                     <th scope="col" class="px-4 py-3">Product</th>
                     <th scope="col" class="px-4 py-3">Category</th>
-                  
+
                     <th scope="col" class="px-4 py-3">Price</th>
-                   
+
 
                     <th scope="col" class="px-4 py-3">Sales</th>
-           
+
                     <th scope="col" class="px-4 py-3">Operations</th>
                 </tr>
             </thead>
@@ -54,28 +54,28 @@
                     <tr class="border-b border-gray-600  ">
                         <td class="w-4 px-4 py-3">
                         </td>
-                        <th scope="row" >
+                        <th scope="row">
                             <a asp-action="Details" asp-route-id="@item.Id" class="flex items-center px-4 py-2 font-medium  whitespace-nowrap ">
-                                <img src="../images/@Html.DisplayFor(modelItem => item.image)" alt="" class="w-auto h-8 mr-3">
+                                <img src="" alt="" class="w-auto h-8 mr-3">
                                 @Html.DisplayFor(modelItem => item.Name)
                             </a>
-                           
+
                         </th>
                         <td class="px-4 py-2">
                             <span class="bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">Desktop PC</span>
                         </td>
-           
-                        <td class="px-4 py-2 font-medium  whitespace-nowrap ">Rs. @Html.DisplayFor(modelItem => item.Price)</td>
-               
 
- 
+                        <td class="px-4 py-2 font-medium  whitespace-nowrap ">Rs. @Html.DisplayFor(modelItem => item.Price)</td>
+
+
+
                         <td class="px-4 py-2">$3.2M</td>
                         <td class="px-4 py-2 font-medium whitespace-nowrap ">
                             <a asp-action="Edit" asp-route-id="@item.Id">
                                 Edit
                             </a>
                             &nbsp;
-                            
+
                             <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                         </td>
                     </tr>

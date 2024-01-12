@@ -1,4 +1,4 @@
-﻿@model Inventory_Management_System.Models.Stock.ProductDetailViewModel
+﻿@model Inventory_Management_System.Models.Stock.ProductDetail
 
 @{
     ViewData["Title"] = "Create";
@@ -10,7 +10,7 @@
         <h1 class="text-2xl font-bold">Product Add</h1>
     </div>
     <hr class="mt-2 bg-gray-400 border" />
-    <form asp-action="Create" enctype="multipart/form-data">
+    <form asp-action="Create">
         <div class="content-holder flex-col space-y-4 mt-4">
             <!-- EPC -->
             <div class="border rounded-md p-2 bg-white">
@@ -162,7 +162,7 @@
                 </div>
             </div>
             <!-- File Upload -->
-            <div class="border rounded-md p-2 bg-white">
+           @*  <div class="border rounded-md p-2 bg-white">
                 <div class="box w-full">
                     <h3 class="text-xl font-bold">Image</h3>
                     <div class="mt-2">
@@ -175,7 +175,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
 
         </div>
         <div class="float-right">

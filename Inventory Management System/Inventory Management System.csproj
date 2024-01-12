@@ -8,6 +8,10 @@
     <PlatformTarget>x64</PlatformTarget>
     <StartupObject></StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\css\dashboard.css" />
+  </ItemGroup>
 	<ItemGroup>
 		<UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
 		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />

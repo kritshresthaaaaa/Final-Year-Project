@@ -80,7 +80,55 @@ namespace Inventory_Management_System.Controllers
                 return new JsonResult(new ScanResponse { ErrorMessage = ex.Message });
             }
         }
+        public JsonResult readTagFromDatabase()
+        {
+            try
+            {
+                this.util.connect(this.device, false);
 
+                string readMode = this.util.getReadMode(this.device, false);
+
+                if (readMode != "AUTONOMOUS")
+                {
+                    this.util.setDeviceMode(this.device, "Autonomous", false);
+                }
+
+                // Make an inventory and collect all the EPCs
+                this.util.startStopDevice(this.device, true, false);
+
+                Thread.Sleep(2000);
+                List<string> detectedEPCs = this.util.getSequentialInventory(this.device, true, false);
+                Thread.Sleep(2000);
+
+                this.util.startStopDevice(this.device, false, false);
+
+                var result = new List<EpcScanResult>();
+
+                var products = new List<ProductDetail>();
+                foreach (var epcResult in result)
+                {
+                    var product = _context.Product.FirstOrDefault(p => p.RFIDTag == epcResult.OriginalEPC);
+                    if (product != null)
+                    {
+                        products.Add(product);
+                    }
+                }
+
+                return Json(new { Products = products });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { ErrorMessage = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult refreshProductList()
+        {
+            var response = ReadAndWriteEPC();
+            // You may need to convert the response to a format suitable for your view
+            return response;
+        }
 
         /*       private string changeFirstBit(string epc)
                {
@@ -95,6 +143,10 @@ namespace Inventory_Management_System.Controllers
             return _context.Product != null ?
                         View(await _context.Product.ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.Product'  is null.");
+        }
+        public IActionResult Scan()
+        {
+            return View("Scan");
         }
 
         // GET: Product/Details/5
@@ -132,46 +184,23 @@ namespace Inventory_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductDetailViewModel product)
+        public IActionResult Create(ProductDetail product)
         {
             if (ModelState.IsValid)
             {
-                if (!IsEpcUnique(product.RFIDTag))
+                if (IsEpcUnique(product.RFIDTag))
                 {
+                    _context.Add(product);
+                    _context.SaveChanges();
+                    TempData["success"] = "Product has been added successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+
                     ViewBag.EpcError = "This EPC is already assigned to another product.";
-                    // Populate ViewBag for Category and Brand
-                    ViewBag.getCategory = _context.Category.ToList();
-                    ViewBag.getBrand = _context.Brand.ToList();
-                    return View(product);
                 }
-
-                String filename = "";
-                if (product.photo != null)
-                {
-                    String uploadFolder = Path.Combine(hostEnvironment.WebRootPath, "images");
-                    filename = Guid.NewGuid().ToString() + "_" + product.photo.FileName;
-                    String filepath = Path.Combine(uploadFolder, filename);
-                    product.photo.CopyTo(new FileStream(filepath, FileMode.Create));
-                }
-
-                ProductDetail productDetail = new ProductDetail
-                {
-                    Name = product.Name,
-                    Description = product.Description,
-                    Price = product.Price,
-                    BrandID = product.BrandID,
-                    CategoryID = product.CategoryID,
-                    RFIDTag = product.RFIDTag,
-                    Sizes = product.Sizes,
-                    image = filename
-                };
-
-                _context.Add(productDetail);
-                _context.SaveChanges();
-                TempData["success"] = "Product has been added successfully.";
-                return RedirectToAction(nameof(Index));
             }
-
             // Populate ViewBag for Category and Brand if ModelState is not valid
             ViewBag.getCategory = _context.Category.ToList();
             ViewBag.getBrand = _context.Brand.ToList();

@@ -70,6 +70,7 @@ namespace Inventory_Management_System.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(categoryDetail);
+                TempData["success"] = "Category Added";
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
