@@ -1,0 +1,234 @@
+﻿@model ProductDetail
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<div class="flex-col">
+    <div>
+        <h1 class="text-2xl font-bold">Product Add</h1>
+    </div>
+    <hr class="mt-2 bg-gray-400 border" />
+    <form asp-action="Create">
+        <div class="content-holder flex-col space-y-4 mt-4">
+            <!-- EPC -->
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Scan for Tags</h3>
+                    <div class="mt-2">
+                        @if (ViewBag.EpcError != null)
+                        {
+                            <div class="alert alert-danger">
+                                @ViewBag.EpcError
+                            </div>
+                        }
+                        <button type="button" id="scanTagsBtn" class="px-4 py-2 mb-2 rounded text-white bg-amber-400 hover:bg-amber-500 float-right">
+                            Scan
+                        </button>
+                        <div class="relative inline-block w-full">
+                            <select asp-for="RFIDTag" id="tagSelect" class="block appearance-none w-full border border-gray-300 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+                                <!-- Placeholder option -->
+                                <option value="" disabled selected>
+                                    Select a tag
+                                </option>
+                                <!-- Actual tag options will be dynamically added here -->
+                            </select>
+
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <!-- Dropdown icon -->
+                                <svg class="fill-current h-4 w-4"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20">
+                                    <path d="M10 12l-6-6 1.5-1.5L10 9l4.5-4.5L16 6z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Info Box -->
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Product Information</h3>
+                    <div class="mt-2">
+                        <div class="titleHolder w-full mb-2">
+                            <h2 class="text-l font-semibold ">Product title</h2>
+                            <input asp-for="Name" class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
+                                   type="text" />
+
+                            <span asp-validation-for="Name" class="text-red-600"></span>
+                        </div>
+                        <div class="descHolder w-full mb-2">
+                            <h2 class="text-l font-semibold">Product Description</h2>
+                            <textarea asp-for="Description" class=" w-full p-2 border rounded-md focus:outline-blue-200 h-40 resize-none"></textarea>
+                            <span asp-validation-for="Description" class="text-red-600"></span>
+                        </div>
+
+                        <div class="priceHolder w-full">
+                            <h2 class="text-l font-semibold">Price</h2>
+                            <input placeholder="Rs" asp-for="Price" class=" w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200" />
+
+                            <span asp-validation-for="Price" class="text-red-600"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sizes -->
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Sizes</h3>
+                    <div class="mt-2">
+                        <div class="sizeHolder w-full mb-2">
+                            <div class="flex gap-2">
+                                @foreach (var size in new[] { "XS", "S", "M", "L", "XL", "XXL" })
+                                {
+                                    <label class="flex p-3 block w-[5%] border rounded-md text-sm">
+                                        <input type="radio" asp-for="Sizes" value="@size" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500" />
+                                        <span class="text-sm ms-3 dark:text-gray-400">@size</span>
+                                    </label>
+                                }
+                            </div>
+                            <span asp-validation-for="Sizes" class="text-red-600"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Categories</h3>
+                    <div class="mt-2">
+                        <div class="titleHolder w-full ">
+                            <h2 class="text-l font-semibold">Select Categories</h2>
+                        </div>
+                        <div class="relative inline-block w-full">
+                            <select asp-for="CategoryID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none ">
+                                <!-- Placeholder option -->
+                                <option value="" disabled selected>Select</option>
+                                @foreach (var category in ViewBag.getCategory)
+                                {
+                                    <option value="@category.CategoryID">@category.CategoryName</option>
+                                }
+
+
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <!-- Dropdown icon -->
+                                <svg class="fill-current h-4 w-4"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20">
+                                    <path d="M10 12l-6-6 1.5-1.5L10 9l4.5-4.5L16 6z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <span asp-validation-for="Category" class="text-red-600"></span>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Brands -->
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Brands</h3>
+                    <div class="mt-2">
+                        <div class="titleHolder w-full ">
+                            <h2 class="text-l font-semibold">Select Brand</h2>
+                        </div>
+                        <div class="relative inline-block w-full">
+                            <select asp-for="BrandID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline required">
+                                <!-- Placeholder option -->
+                                <option value="" disabled selected>
+                                    Select a brand
+                                </option>
+                                @foreach (var brand in ViewBag.getBrand)
+                                {
+                                    <option value="@brand.BrandID">@brand.BrandName</option>
+                                }
+
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                <!-- Dropdown icon -->
+                                <svg class="fill-current h-4 w-4"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20">
+                                    <path d="M10 12l-6-6 1.5-1.5L10 9l4.5-4.5L16 6z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- File Upload -->
+           @*  <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Image</h3>
+                    <div class="mt-2">
+                        <div>
+
+                            <input asp-for="photo" class="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal  transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit  file:px-3 file:py-[0.32rem] file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem]  focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none  dark:text-black dark:file:bg-[#624CBD] dark:file:text-white dark:focus:border-primary"
+                                   type="file"
+                                   id="formFileMultiple"
+                                   multiple />
+                        </div>
+                    </div>
+                </div>
+            </div> *@
+
+        </div>
+        <div class="float-right">
+            <button type="submit" class="border bg-[#7258DB] px-4 py-2 mt-2 rounded text-white ">Save</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#scanTagsBtn").click(function () {
+                // AJAX call to the ReadAndWriteEPC method
+                $.ajax({
+                    url: '@Url.Action("ReadAndWriteEPC", "Product")',
+                    type: 'GET',
+                    success: function (result) {
+                        // Clear existing options, excluding the placeholder
+                        $("#tagSelect option:not(:first-child)").remove();
+
+                        // Check if there are results and no errors
+                        if (result && !result.errorMessage) {
+                            // Loop through the result array and add each tag as an option
+                            result.results.forEach(function (tag) {
+                                var originalEPC = tag.originalEPC;
+                                var newEPC = tag.newEPC;
+
+                                // Append a new option for each tag
+                                $("#tagSelect").append("<option value='" + newEPC + "'>" + newEPC + "</option>");
+                            });
+                        } else {
+                            console.error("Error:", result.errorMessage);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle any errors that occur during the AJAX request
+                        console.error("AJAX error:", error);
+                    }
+                });
+            });
+
+            // Update the hidden field when a tag is selected
+            $("#tagSelect").change(function () {
+                var selectedTag = $(this).val();
+                $("#selectedRFIDTag").val(selectedTag);
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
+

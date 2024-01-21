@@ -1,0 +1,108 @@
+﻿@model EmployeeDetail
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="flex-col">
+    <div>
+        <h1 class="text-2xl font-bold">Employee Details </h1>
+    </div>
+
+    <hr class="mt-2 bg-gray-400 border" />
+    <form asp-action="Create">
+        <div class="content-holder flex-col space-y-4 mt-4">
+
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <div class="mt-2 ">
+
+                        <div class="titleHolder flex-col space-y-4 mb-2">
+
+                            <div class=" w-full flex justify-around">
+                                <div class="  flex-col w-[45%] ">
+                                    <label>Full Name</label>
+
+                                    <input asp-for="FullName" type="text" required placeholder="Enter Name" class="h-8 border mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+                                </div>
+                                <div class="  flex-col w-[45%] ">
+                                    <label>Date of Birth</label>
+
+                                    <input asp-for="DOB" type="date" required class="h-8 border mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+                                </div>
+
+                            </div>
+
+                            <div class=" w-full flex justify-around">
+                                <div class="flex-col w-[45%]">
+                                    <label>Gender</label>
+                                    <select asp-for="Gender" class=" h-8 border mt-2 rounded  px-2 py-1 pr-8 w-full bg-gray-50 focus:outline-blue-200">
+                                        <option value="" disabled selected>Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+
+                                <div class="  flex-col w-[45%] ">
+                                    <label>Mobile Number</label>
+
+                                    <input asp-for="Phone" type="text" required placeholder="10-digit number" class="h-8 border mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+                                    <span asp-validation-for="Phone" class="text-red-600"></span>
+                                </div>
+                            </div>
+
+                            <div class=" w-full flex justify-around">
+                                <div class="  flex-col w-[45%] ">
+                                    <label>Email</label>
+
+                                    <input asp-for=Email type="email" required placeholder="Enter Email" class="h-8 border mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+                                    <span asp-validation-for="Email" class="text-red-600"></span>
+                                </div>
+                                <div class="  flex-col w-[45%] ">
+                                    <label>Password</label>
+
+                                    <input asp-for="Password" type="password" required placeholder="Enter Password" class="h-8 border mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+                                    <span asp-validation-for="Password" class="text-red-600"></span>
+                                </div>
+
+                            </div>
+
+                            <div class="w-full flex justify-around">
+                                <div class="  flex-col w-[45%] ">
+                                    <label>Address</label>
+                                    <input asp-for="Address" type="text" required placeholder="Enter Address" class="h-8 border mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+                                </div>
+                                <div class="flex-col w-[45%]">
+                                    <label>Registration Date</label>
+                                    <input id="registrationDate" type="date" disabled class="h-8 border text-gray-400 mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+                                </div>
+
+                            </div>
+                            <div class="flex flex-col items-center justify-center w-full   ">
+                                <p class="mb-2">Upload your photo</p>
+                                <label asp-for="ImageUrl" for="dropzone-file" class="flex flex-col w-[95%] items-center justify-center h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer">
+                     @*                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">PNG or JPG</p>
+                                    </div> *@
+                                    <input  type="file" name="file"  />
+                                    <span asp-validation-for="ImageUrl" class="text-red-600"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="float-right">
+                            <button type="submit" class="border bg-[#7258DB] px-4 py-2 mt-2 rounded text-white">Save</button>
+                        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script>
+        window.onload = function () {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('registrationDate').value = today;
+        };
+    </script>
+}
