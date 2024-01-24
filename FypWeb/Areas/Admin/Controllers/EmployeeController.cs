@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fyp.DataAccess.Data;
 using Fyp.Models;
+using Fyp.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +25,16 @@ namespace FypWeb.Areas.Admin.Controllers
         // GET: Employee
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employee.ToListAsync());
+            var employees = await _context.Employee.
+                Select(e => new EmployeeViewModel
+                {
+                    Employee = e
+                }).
+                
+                ToListAsync();
+            return View(employees);
         }
+
 
         // GET: Employee/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -56,45 +65,55 @@ namespace FypWeb.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(EmployeeDetail employeeDetail, IFormFile? file)
+        public async Task<IActionResult> Create(EmployeeViewModel employeeViewDetail, IFormFile? file)
         {
-            var isPhoneExist = _context.Employee.Any(e => e.Phone == employeeDetail.Phone);
-            var isEmailExist = _context.Employee.Any(e => e.Email == employeeDetail.Email);
-            var isPasswordExist = _context.Employee.Any(e => e.Password == employeeDetail.Password);
+            // Check for duplicate email, password, and phone entries
+            var isEmailExist = await _context.Employee.AnyAsync(e => e.Email == employeeViewDetail.Employee.Email);
+            var isPasswordExist = await _context.Employee.AnyAsync(e => e.Password == employeeViewDetail.Employee.Password);
+            var isPhoneExist = await _context.Employee.AnyAsync(e => e.Phone == employeeViewDetail.Employee.Phone);
+
             if (isEmailExist)
             {
-                ModelState.AddModelError("Email", "User with this email already exists");
+                ModelState.AddModelError("Email", "A user with this email already exists");
             }
             if (isPasswordExist)
             {
-                ModelState.AddModelError("Password", "User with this password already exists");
+                ModelState.AddModelError("Password", "A user with this password already exists");
             }
             if (isPhoneExist)
             {
-                ModelState.AddModelError("Phone", "User with this phone already exists");
+                ModelState.AddModelError("Phone", "A user with this phone already exists");
             }
 
             if (ModelState.IsValid)
             {
-                employeeDetail.RegistrationDate = DateTime.Now;
+                employeeViewDetail.Employee.RegistrationDate = DateTime.Now;
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
+
                 if (file != null)
                 {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string employeePath = Path.Combine(wwwRootPath + @"images\employee");
-                    using (var fileStream = new FileStream(Path.Combine(employeePath, fileName), FileMode.Create))
+                    string employeePath = Path.Combine(wwwRootPath, "images", "employee");
+                    Directory.CreateDirectory(employeePath);
+
+                    string filePath = Path.Combine(employeePath, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        file.CopyTo(fileStream);
+                        await file.CopyToAsync(fileStream);
                     }
-                    employeeDetail.ImageUrl = @"\images\employee\" + fileName;
+
+                    employeeViewDetail.Employee.ImageUrl = "/images/employee/" + fileName; // Use forward slashes for URLs
                 }
-                _context.Add(employeeDetail);
+
+                _context.Add(employeeViewDetail.Employee);
                 TempData["success"] = "Employee Added";
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(employeeDetail);
+
+            return View(employeeViewDetail);
         }
+
 
         // GET: Employee/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -37,8 +37,8 @@ namespace Fyp.Models
         [Display(Name = "Registration Date")]
         [DataType(DataType.Date)]
         public DateTime RegistrationDate { get; set; }
-        [Required]
-        [Display(Name = "Image Upload")]
-        public string ImageUrl { get; set; }
+   
+
+        public string? ImageUrl { get; set; }
     }
 }
