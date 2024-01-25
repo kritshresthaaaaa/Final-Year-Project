@@ -10,6 +10,8 @@ namespace Fyp.Models
         [Display(Name = "Full Name")]
         public string FullName { get; set; }
         [Required]
+        [StringLength(10, MinimumLength = 10, ErrorMessage = "The {0} must be exactly {1} digits.")]
+        [RegularExpression(@"^[0-9]*$", ErrorMessage = "The {0} must contain only numbers.")]
         [Display(Name = "Phone Number")]
         public string Phone { get; set; }
 

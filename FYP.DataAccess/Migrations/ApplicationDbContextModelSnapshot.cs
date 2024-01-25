@@ -97,7 +97,8 @@ namespace Fyp.DataAccess.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Fyp.DataAccess.Data;
@@ -67,11 +68,17 @@ namespace FypWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EmployeeViewModel employeeViewDetail, IFormFile? file)
         {
+            employeeViewDetail.Employee.FullName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(employeeViewDetail.Employee.FullName.ToLower());
             // Check for duplicate email, password, and phone entries
             var isEmailExist = await _context.Employee.AnyAsync(e => e.Email == employeeViewDetail.Employee.Email);
             var isPasswordExist = await _context.Employee.AnyAsync(e => e.Password == employeeViewDetail.Employee.Password);
             var isPhoneExist = await _context.Employee.AnyAsync(e => e.Phone == employeeViewDetail.Employee.Phone);
+            var isFullNameExist = await _context.Employee.AnyAsync(e => e.FullName == employeeViewDetail.Employee.FullName);
 
+            if (isFullNameExist)
+            {
+                ModelState.AddModelError("Name", "A user with this name already exists");
+            }
             if (isEmailExist)
             {
                 ModelState.AddModelError("Email", "A user with this email already exists");

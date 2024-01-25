@@ -68,6 +68,11 @@ namespace FypWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CategoryID,CategoryName")] CategoryDetail categoryDetail)
         {
+            var isCategoryExist = _context.Category.Any(c => c.CategoryName == categoryDetail.CategoryName);
+            if (isCategoryExist)
+            {
+                ModelState.AddModelError("CategoryName", "Category already exist");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(categoryDetail);

@@ -33,7 +33,11 @@
                     <th scope="col" class=" px-4 py-3   justify-center">Phone</th>
                     <th scope="col" class="px-4 py-3  justify-center"> Gender</th>
                     <th scope="col" class="px-4 py-3 flex  justify-center"> Email</th>
-                    <th scope="col" class="px-4 py-3    "> Password</th>
+                    <th scope="col" class="px-4 py-3    ">
+                        <p class=" flex justify-center">
+                            Password
+
+                    </p></th>
                     <th scope="col" class="px-4 py-3   ">Register Date</th>
                     <th scope="col" class="px-4 py-3  flex justify-center ">Operations</th>
 
@@ -42,7 +46,7 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr class="border-b border-gray-600">
+                    <tr class="border-b border-gray-600 cursor-pointer ">
                         <td class="px-2 py-2  ">
                             <span class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
                                 @Html.DisplayFor(modelItem => item.Employee.Id)
@@ -80,12 +84,15 @@
                         <td class="px-4 py-2 font-medium whitespace-nowrap  ">
                             <p>@Html.DisplayFor(modelItem => item.Employee.RegistrationDate)</p>
                         </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap flex items center gap-x-3 ">
-                            <a asp-action="Edit" asp-route-id="@item.Employee.Id" >
-                                Edit
-                            </a>
-                            &nbsp;
-                            <a asp-action="Delete" asp-route-id="@item.Employee.Id" class=" flex items-center">Delete</a>
+                        <td class="px-4 py-2 font-medium whitespace-nowrap flex justify-center  mt-2.5 ">
+                            <div class=" flex gap-x-2">
+                                <a asp-action="Edit" asp-route-id="@item.Employee.Id">
+                                    Edit
+                                </a>
+                                &nbsp;
+                                <a asp-action="Delete" asp-route-id="@item.Employee.Id" class=" flex items-center">Delete</a>
+                            </div>
+                            
                         </td>
                     </tr>
 

@@ -1,0 +1,107 @@
+﻿@* @model IEnumerable<EmployeeViewModel> *@
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="relative overflow-hidden bg-white border sm:rounded-lg">
+    <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
+        <div class="flex items-center flex-1 space-x-4">
+            <h5>
+                <span class="text-black">Stock Information List</span>
+                @* <span class="text-gray-500">@ViewBag.CategoryCount</span> *@
+            </h5>
+
+        </div>
+
+    </div>
+    <div class="overflow-x-auto ">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-black uppercase  border  ">
+                <tr class="border">
+                    <th scope="col" class=" py-3 px-6 border">
+                        <p class="flex justify-center">Id</p>
+                    </th>
+                    <th scope="col" class=" py-3 px-6 border ">
+
+                        <p class="flex justify-center">Products</p>
+                    </th>
+                    <th scope="col" class=" py-3 px-6 border ">
+                        <p class="flex justify-center">Category</p>
+                    </th>
+                    <th scope="col" class=" py-3 px-6 border">
+                        <p class="flex justify-center"> Date Added</p>
+                    </th>
+                    <th scope="col" class=" py-3 px-6 border ">
+                        <p class="flex justify-center">
+                            Stock
+                        </p>
+                    </th>
+                    <th scope="col" class=" py-3 px-6 border  ">
+                        <p class=" flex justify-center">
+                            Status
+
+                        </p>
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @*     @foreach (var item in Model)
+                { *@
+                <tr class="border-b border-gray-600 cursor-pointer ">
+                    <td class=" border ">
+                        <span class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+                            1
+                        </span>
+                    </td>
+                    <td class=" font-medium whitespace-nowrap border ">
+                        <div class="flex items-center">
+                            <!-- Wrap image and name in a flex container -->
+                            <img src="" class="w-7 h-auto mr-2 rounded-full border"> <!-- Adjust the width (e.g., w-16) as needed -->
+                            <p></p>
+                        </div>
+                    </td>
+                    <td class=" font-medium whitespace-nowrap border ">
+                        <p class="flex justify-center">Mens</p>
+                    </td>
+                    <td class=" font-medium whitespace-nowrap border ">
+                        <p class="flex justify-center">Date</p>
+                    </td>
+                    <td class=" font-medium  whitespace-nowrap border ">
+                        <p class="flex justify-center">1</p>
+                    </td>
+                    <td class="font-medium justify-center whitespace-nowrap">
+                        <p class="flex justify-center">1</p>
+
+                    </td>
+
+
+             
+  
+                </tr>
+
+                @*    } *@
+
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const togglePasswordButtons = document.querySelectorAll("[id^='togglePassword']");
+            const passwordFields = document.querySelectorAll("[id^='passwordField']");
+
+            togglePasswordButtons.forEach((toggleButton, index) => {
+                toggleButton.addEventListener("click", function () {
+                    if (passwordFields[index].type === "password") {
+                        passwordFields[index].type = "text";
+                    } else {
+                        passwordFields[index].type = "password";
+                    }
+                });
+            });
+        });
+    </script>
+}
