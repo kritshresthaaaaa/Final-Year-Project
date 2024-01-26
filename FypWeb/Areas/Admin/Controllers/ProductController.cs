@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Fyp.DataAccess.Data;
@@ -195,27 +196,43 @@ namespace FypWeb.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ProductDetail product)
+        public IActionResult Create(ProductDetailViewModel productViewModel, IFormFile? file)
         {
-            if (ModelState.IsValid)
-            {
-                if (IsEpcUnique(product.RFIDTag))
-                {
-                    _context.Add(product);
-                    _context.SaveChanges();
-                    TempData["success"] = "Product has been added successfully.";
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
 
-                    ViewBag.EpcError = "This EPC is already assigned to another product.";
+            productViewModel.Product.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(productViewModel.Product.Name.ToLower());
+            string wwwRootPath = hostEnvironment.WebRootPath;
+            if (IsEpcUnique(productViewModel.Product.RFIDTag))
+            {
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, "images", "product");
+                    Directory.CreateDirectory(productPath);
+                    string filePath = Path.Combine(productPath, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    productViewModel.Product.ImageUrl = "/images/product/" + fileName;
+
                 }
+
+                _context.Add(productViewModel.Product);
+                _context.SaveChanges();
+                TempData["success"] = "Product has been added successfully.";
+                return RedirectToAction(nameof(Index));
+
             }
+            else
+            {
+
+                ViewBag.EpcError = "This EPC is already assigned to another product.";
+            }
+
             // Populate ViewBag for Category and Brand if ModelState is not valid
             ViewBag.getCategory = _context.Category.ToList();
             ViewBag.getBrand = _context.Brand.ToList();
-            return View(product);
+            return View(productViewModel);
         }
 
 

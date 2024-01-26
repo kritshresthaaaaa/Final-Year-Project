@@ -1,5 +1,4 @@
-﻿@model ProductDetail
-
+﻿@model ProductDetailViewModel
 @{
     ViewData["Title"] = "Create";
 }
@@ -27,7 +26,7 @@
                             Scan
                         </button>
                         <div class="relative inline-block w-full">
-                            <select asp-for="RFIDTag" id="tagSelect" class="block appearance-none w-full border border-gray-300 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+                            <select asp-for="Product.RFIDTag" id="tagSelect" class="block appearance-none w-full border border-gray-300 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
                                 <!-- Placeholder option -->
                                 <option value="" disabled selected>
                                     Select a tag
@@ -55,22 +54,22 @@
                     <div class="mt-2">
                         <div class="titleHolder w-full mb-2">
                             <h2 class="text-l font-semibold ">Product title</h2>
-                            <input asp-for="Name" class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
+                            <input asp-for="Product.Name" class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
                                    type="text" />
 
-                            <span asp-validation-for="Name" class="text-red-600"></span>
+                            <span asp-validation-for="Product.Name" class="text-red-600"></span>
                         </div>
                         <div class="descHolder w-full mb-2">
                             <h2 class="text-l font-semibold">Product Description</h2>
-                            <textarea asp-for="Description" class=" w-full p-2 border rounded-md focus:outline-blue-200 h-40 resize-none"></textarea>
-                            <span asp-validation-for="Description" class="text-red-600"></span>
+                            <textarea asp-for="Product.Description" class=" w-full p-2 border rounded-md focus:outline-blue-200 h-40 resize-none"></textarea>
+                            <span asp-validation-for="Product.Description" class="text-red-600"></span>
                         </div>
 
                         <div class="priceHolder w-full">
                             <h2 class="text-l font-semibold">Price</h2>
-                            <input placeholder="Rs" asp-for="Price" class=" w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200" />
+                            <input placeholder="Rs" asp-for="Product.Price" class=" w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200" />
 
-                            <span asp-validation-for="Price" class="text-red-600"></span>
+                            <span asp-validation-for="Product.Price" class="text-red-600"></span>
                         </div>
                     </div>
                 </div>
@@ -85,12 +84,12 @@
                                 @foreach (var size in new[] { "XS", "S", "M", "L", "XL", "XXL" })
                                 {
                                     <label class="flex p-3 block w-[5%] border rounded-md text-sm">
-                                        <input type="radio" asp-for="Sizes" value="@size" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500" />
+                                        <input type="radio" asp-for="Product.Sizes" value="@size" class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500" />
                                         <span class="text-sm ms-3 dark:text-gray-400">@size</span>
                                     </label>
                                 }
                             </div>
-                            <span asp-validation-for="Sizes" class="text-red-600"></span>
+                            <span asp-validation-for="Product.Sizes" class="text-red-600"></span>
                         </div>
                     </div>
                 </div>
@@ -105,13 +104,14 @@
                             <h2 class="text-l font-semibold">Select Categories</h2>
                         </div>
                         <div class="relative inline-block w-full">
-                            <select asp-for="CategoryID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none ">
+                            <select asp-for="Product.CategoryID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none ">
                                 <!-- Placeholder option -->
                                 <option value="" disabled selected>Select</option>
                                 @foreach (var category in ViewBag.getCategory)
                                 {
                                     <option value="@category.CategoryID">@category.CategoryName</option>
                                 }
+
 
 
                             </select>
@@ -124,7 +124,7 @@
                                 </svg>
                             </div>
                         </div>
-                        <span asp-validation-for="Category" class="text-red-600"></span>
+                        <span asp-validation-for="Product.CategoryID" class="text-red-600"></span>
 
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                             <h2 class="text-l font-semibold">Select Brand</h2>
                         </div>
                         <div class="relative inline-block w-full">
-                            <select asp-for="BrandID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline required">
+                            <select asp-for="Product.BrandID" class="block appearance-none w-full border border-gray-200 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline required">
                                 <!-- Placeholder option -->
                                 <option value="" disabled selected>
                                     Select a brand

@@ -71,7 +71,8 @@ namespace Fyp.DataAccess.Migrations
                     BrandID = table.Column<int>(type: "int", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
                     RFIDTag = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Sizes = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Sizes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

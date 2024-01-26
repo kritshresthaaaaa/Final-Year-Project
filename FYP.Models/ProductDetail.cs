@@ -33,5 +33,8 @@ namespace Fyp.Models
         public string RFIDTag { get; set; } // RFID Tag     
 
         public string Sizes { get; set; }
+      
+
+        public string? ImageUrl { get; set; }
     }
 }
