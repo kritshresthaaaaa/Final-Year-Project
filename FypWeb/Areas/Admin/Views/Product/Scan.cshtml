@@ -35,9 +35,7 @@
                     <th scope="col" class="px-4 py-2 "><p class="flex justify-center items-center">Product</p></th>
                     <th scope="col" class="px-4 py-2"><p class="flex justify-center items-center">Category</p></th>
                     <th scope="col" class="px-4 py-2"><p class="flex justify-center items-center">Size</p></th>
-
                     <th scope="col" class="px-4 py-2"><p class="flex justify-center items-center">Price</p></th>
-
                     <th scope="col" class="px-4 py-2"><p class="flex justify-center items-center">Stock</p></th>
                 </tr>
             </thead>
@@ -78,15 +76,17 @@
                                 // Append rows to the table body
                                 $("table tbody").append(
                                     `  <tr class="border-b border-gray-600 cursor-pointer hover:bg-gray-100 ">
-                                                                    <td class="px-4 py-2 whitespace-nowrap"><div class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">${index + 1}</div></td>
-                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">${item.productName}</div></td>
-                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">${item.categoryName}</div></td>
-                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">${item.size}</div></td>
-                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">Rs. ${item.price}</div></td>
-                                                            <td class="px-4 py-2 font-medium whitespace-nowrap">
-                                                                        <div class="flex justify-center"> <a href="/Product/Details/${item.id}">Details</a></div>
-                                                            </td>
-                                                        </tr>`
+                                                                                    <td class="px-4 py-2 whitespace-nowrap"><div class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">${index + 1}</div></td>
+                                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">${item.productName}</div></td>
+                                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">${item.categoryName}</div></td>
+                                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">${item.size}</div></td>
+                                                                                    <td class="px-4 py-2 font-medium whitespace-nowrap"> <div class="flex justify-center">Rs. ${item.price}</div></td>
+                                                                            <td class="px-4 py-2 font-medium whitespace-nowrap">
+                                                                                                                <div class="flex justify-center">    <a href="/Admin/Product/Details/${item.id}" class="flex items-center">Details</a></div>
+
+
+                                                                            </td>
+                                                                        </tr>`
                                 );
                             });
                         } else {
