@@ -25,6 +25,7 @@ namespace FypWeb.Areas.Admin.Controllers
         private HexUtil utilities;
         private string address = "192.168.1.1";
         private readonly ILogger<ProductController> _logger;
+        private readonly Reader _reader;
         public ProductController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
@@ -45,31 +46,56 @@ namespace FypWeb.Areas.Admin.Controllers
             public string ErrorMessage { get; set; }
         }
 
-        public JsonResult ReadAndWriteEPC()
+        /*        public async Task<JsonResult> ReadAndWriteEPC()
+                {
+                    try
+                    {
+                        // Connect to the device
+                        util.connect(device, false);
+
+                        string readMode = util.getReadMode(device, false);
+
+                        if (readMode != "AUTONOMOUS")
+                        {
+                            util.setDeviceMode(device, "Autonomous", false);
+                        }
+
+                        // Make an inventory and collect all the EPCs
+                        util.startStopDevice(device, true, false);
+                        await Task.Delay(2000);
+                        List<string> detectedEPCs = util.getSequentialInventory(device, true, false);
+                        *//*Thread.Sleep(2000);*//*
+
+                        util.startStopDevice(device, false, false);
+
+                        var result = new List<EpcScanResult>();
+
+                        // Iterate through detected EPCs
+                        foreach (string epc in detectedEPCs)
+                        {
+                            // Simply add the original EPC to the result
+                            result.Add(new EpcScanResult { OriginalEPC = epc, NewEPC = epc });
+                        }
+
+                        return new JsonResult(new ScanResponse { Results = result });
+                    }
+                    catch (Exception ex)
+                    {
+                        return new JsonResult(new ScanResponse { ErrorMessage = ex.Message });
+                    }
+                }*/
+        public async Task<JsonResult> ReadAndWriteEPC()
         {
             try
             {
-                // Connect to the device
-                util.connect(device, false);
-
-                string readMode = util.getReadMode(device, false);
-
-                if (readMode != "AUTONOMOUS")
-                {
-                    util.setDeviceMode(device, "Autonomous", false);
-                }
-
-                // Make an inventory and collect all the EPCs
-                util.startStopDevice(device, true, false);
-
-                Thread.Sleep(2000);
-                List<string> detectedEPCs = util.getSequentialInventory(device, true, false);
-                Thread.Sleep(2000);
-
-                util.startStopDevice(device, false, false);
-
+                var reader = new Reader("192.168.1.1", false); // Configure your Reader
+                reader.ConnectToDevice();
+                reader.SetDeviceReadMode();
+                reader.StartDevice();
+                var detectedEPCs = reader.GetDetectedEPCs();
+                await Task.Delay(2000); // Consider using await Task.Delay(2000); for async
+                reader.StopDevice();
                 var result = new List<EpcScanResult>();
-
                 // Iterate through detected EPCs
                 foreach (string epc in detectedEPCs)
                 {
@@ -83,56 +109,53 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 return new JsonResult(new ScanResponse { ErrorMessage = ex.Message });
             }
+            
         }
-        public JsonResult readTagFromDatabase()
+
+        public async Task<JsonResult> ReadTagFromDatabase()
         {
-            try
+            var reader = new Reader("192.168.1.1", false); // Configure your Reader
+            reader.ConnectToDevice();
+            reader.SetDeviceReadMode();
+            reader.StartDevice();
+            var detectedEPCs = reader.GetDetectedEPCs();
+            await Task.Delay(2000); // Consider using await Task.Delay(2000); for async
+            reader.StopDevice();
+
+            var inventoryList = new List<FetchTagsDataViewModel>();
+            foreach (var epc in detectedEPCs)
             {
-                util.connect(device, false);
+                var productEntity = await _context.Product
+                    .Include(p => p.Category)
+                    .FirstOrDefaultAsync(p => p.RFIDTag == epc);
 
-                string readMode = util.getReadMode(device, false);
-
-                if (readMode != "AUTONOMOUS")
+                if (productEntity != null)
                 {
-                    util.setDeviceMode(device, "Autonomous", false);
-                }
-
-                // Make an inventory and collect all the EPCs
-                util.startStopDevice(device, true, false);
-
-                Thread.Sleep(2000);
-                List<string> detectedEPCs = util.getSequentialInventory(device, true, false);
-                Thread.Sleep(2000);
-
-                util.startStopDevice(device, false, false);
-
-                var result = new List<EpcScanResult>();
-
-                var products = new List<ProductDetail>();
-                foreach (var epcResult in result)
-                {
-                    var product = _context.Product.FirstOrDefault(p => p.RFIDTag == epcResult.OriginalEPC);
-                    if (product != null)
+                    var inventoryItem = new FetchTagsDataViewModel
                     {
-                        products.Add(product);
-                    }
+                        Id = productEntity.Id,
+                        ProductName = productEntity.Name,
+                        Size = productEntity.Sizes,
+                        Price = productEntity.Price,
+                        CategoryName = productEntity.Category.CategoryName
+                    };
+                    inventoryList.Add(inventoryItem);
                 }
+            }
 
-                return Json(new { Products = products });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { ErrorMessage = ex.Message });
-            }
+            return Json(inventoryList);
         }
 
-        [HttpGet]
-        public IActionResult refreshProductList()
-        {
-            var response = ReadAndWriteEPC();
-            // You may need to convert the response to a format suitable for your view
-            return response;
-        }
+
+
+        /*
+                [HttpGet]
+                public IActionResult refreshProductList()
+                {
+                    var response = ReadAndWriteEPC();
+                    // You may need to convert the response to a format suitable for your view
+                    return response;
+                }*/
 
         /*       private string changeFirstBit(string epc)
                {
@@ -144,17 +167,21 @@ namespace FypWeb.Areas.Admin.Controllers
         // GET: Product
         public async Task<IActionResult> Index()
         {
-            // Fetch the products from your database and map them to ProductDetailViewModel
+            // Fetch products with their categories
             var products = await _context.Product
-                .Select(p => new ProductDetailViewModel
-                {
-                    Product = p
-                    // Include other properties as needed
-                })
+                .Include(p => p.Category) // Eagerly load Category data
                 .ToListAsync();
 
-            return View(products);
+            // Map to ProductDetailViewModel
+            var productViewModels = products.Select(p => new ProductDetailViewModel
+            {
+                Product = p
+            }).ToList();
+            ViewBag.productCount = productViewModels.Count();
+
+            return View(productViewModels);
         }
+
 
         public IActionResult Scan()
         {
@@ -251,10 +278,7 @@ namespace FypWeb.Areas.Admin.Controllers
             }
             return View(productDetail);
         }
-
-        // POST: Product/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+   
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] ProductDetail productDetail)

@@ -3,8 +3,128 @@
 @{
     ViewData["Title"] = "Details";
 }
+<section class="overflow-hidden  border rounded-md bg-white">
+    <div class="max-w-6xl px-4 py-4 mx-auto lg:py-8 md:px-6">
+        <div class="flex flex-wrap -mx-4">
+            <div class="w-full px-4 md:w-1/2 ">
+                <div class="sticky top-0 z-50 overflow-hidden ">
+                    <div class="relative mb-6 h-2/4 ">
+                        <img src="https://i.postimg.cc/PqYpFTfy/pexels-melvin-buezo-2529148.jpg" alt=""
+                             class="object-cover w-full h-full rounded-md ">
+                    </div>
+                 @*    <div class="flex-wrap hidden md:flex ">
+                        <div class="w-1/2 p-2 sm:w-1/4">
+                            <a href="#"
+                               class="block border border-blue-300 dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
+                                <img src="https://i.postimg.cc/PqYpFTfy/pexels-melvin-buezo-2529148.jpg" alt=""
+                                     class="object-cover w-full lg:h-20">
+                            </a>
+                        </div>
+                        <div class="w-1/2 p-2 sm:w-1/4">
+                            <a href="#"
+                               class="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
+                                <img src="https://i.postimg.cc/PqYpFTfy/pexels-melvin-buezo-2529148.jpg" alt=""
+                                     class="object-cover w-full lg:h-20">
+                            </a>
+                        </div>
+                        <div class="w-1/2 p-2 sm:w-1/4">
+                            <a href="#"
+                               class="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
+                                <img src="https://i.postimg.cc/PqYpFTfy/pexels-melvin-buezo-2529148.jpg" alt=""
+                                     class="object-cover w-full lg:h-20">
+                            </a>
+                        </div>
+                        <div class="w-1/2 p-2 sm:w-1/4">
+                            <a href="#"
+                               class="block border border-transparent dark:border-transparent dark:hover:border-blue-300 hover:border-blue-300">
+                                <img src="https://i.postimg.cc/PqYpFTfy/pexels-melvin-buezo-2529148.jpg" alt=""
+                                     class="object-cover w-full lg:h-20">
+                            </a>
+                        </div>
+                    </div> *@
+                </div>
+            </div>
+            <div class="w-full px-4 md:w-1/2 ">
+                <div class="lg:pl-20">
+                    <div class="mb-8 ">
 
-<h1>Details</h1>
+                        <h2 class="max-w-xl mt-2 mb-6 text-2xl font-bold text-black md:text-4xl">
+                            @Html.DisplayFor(model => model.Name)
+                        </h2>
+                   
+                
+                        <p class="inline-block mb-8 text-4xl font-bold text-black ">
+                            <span>Rs.   @Html.DisplayFor(model => model.Price)</span>
+                            <span class="text-base font-normal text-gray-500 line-through dark:text-gray-400">$1500.99</span>
+                        </p>
+                        <p class="text-green-600 ">7 in stock</p>
+                    </div>
+                    <div class="flex items-center mb-8">
+                        <h2 class="w-16 mr-6 text-xl font-bold text-black">
+                            Colors:
+                        </h2>
+                        <div class="flex flex-wrap -mx-2 -mb-2">
+                            <button class="p-1 mb-2 mr-2 border border-transparent hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400 ">
+                                <div class="w-6 h-6 bg-cyan-300"></div>
+                            </button>
+                            <button class="p-1 mb-2 mr-2 border border-transparent hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400">
+                                <div class="w-6 h-6 bg-green-300 "></div>
+                            </button>
+                            <button class="p-1 mb-2 border border-transparent hover:border-blue-400 dark:border-gray-800 dark:hover:border-gray-400">
+                                <div class="w-6 h-6 bg-red-200 "></div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center mb-8">
+                        <h2 class="w-16 text-xl font-bold text-black">
+                            Size:
+                        </h2>
+                        <div class="flex flex-wrap -mx-2 -mb-2">
+                            <button class="py-1 mb-2 mr-1 border w-11 text-gray-400">
+                                @Html.DisplayFor(model => model.Sizes)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="max-w-md mb-6 text-black ">
+                        <h2 class="w-16 mr-6 text-xl font-bold text-black">
+                            @Html.DisplayFor(model => model.Description)
+                        </h2>
+
+                    </div>
+              @*       <div class="w-32 mb-8 ">
+                        <label for=""
+                               class="w-full text-xl font-semibold text-gray-700 dark:text-gray-400">Quantity</label>
+                        <div class="relative flex flex-row w-full h-10 mt-4 bg-transparent rounded-lg">
+                            <button class="w-20 h-full text-gray-600 bg-gray-300 rounded-l outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 hover:text-gray-700 dark:bg-gray-900 hover:bg-gray-400">
+                                <span class="m-auto text-2xl font-thin">-</span>
+                            </button>
+                            <input type="number"
+                                   class="flex items-center w-full font-semibold text-center text-gray-700 placeholder-gray-700 bg-gray-300 outline-none dark:text-gray-400 dark:placeholder-gray-400 dark:bg-gray-900 focus:outline-none text-md hover:text-black"
+                                   placeholder="1">
+                            <button class="w-20 h-full text-gray-600 bg-gray-300 rounded-r outline-none cursor-pointer dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-900 hover:text-gray-700 hover:bg-gray-400">
+                                <span class="m-auto text-2xl font-thin">+</span>
+                            </button>
+                        </div>
+                    </div> *@
+                @*     <div class="flex flex-wrap items-center -mx-4 ">
+                        <div class="w-full px-4 mb-4 lg:w-1/2 lg:mb-0">
+                            <button class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="w-full px-4 mb-4 lg:mb-0 lg:w-1/2">
+                            <button class="flex items-center justify-center w-full p-4 text-blue-500 border border-blue-500 rounded-md dark:text-gray-200 dark:border-blue-600 hover:bg-blue-600 hover:border-blue-600 hover:text-gray-100 dark:bg-blue-600 dark:hover:bg-blue-700 dark:hover:border-blue-700 dark:hover:text-gray-300">
+                                Add to wishlist
+                            </button>
+                        </div>
+                    </div> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* <h1>Details</h1>
 
 <div>
     <h4>ProductDetail</h4>
@@ -33,4 +153,4 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@

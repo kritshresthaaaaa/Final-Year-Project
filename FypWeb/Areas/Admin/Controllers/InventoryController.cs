@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Fyp.DataAccess.Data;
+using Fyp.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FypWeb.Areas.Admin.Controllers
@@ -6,10 +8,28 @@ namespace FypWeb.Areas.Admin.Controllers
     [Area("Admin")]
     public class InventoryController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        public InventoryController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         // GET: HomeController1
         public ActionResult Index()
         {
-            return View();
+            var inventoryList = _context.Product
+                .GroupBy(p => new { p.Name, p.Sizes, p.Price , p.Category.CategoryName})
+                .Select(group => new InventoryViewModel
+                {
+                    ProductName = group.Key.Name,
+                    Size = group.Key.Sizes,
+                    Price = group.Key.Price,
+                    Stock = group.Count(),
+                    CategoryName = group.Key.CategoryName
+                
+                })
+                .ToList();
+
+            return View(inventoryList);
         }
 
         // GET: HomeController1/Details/5

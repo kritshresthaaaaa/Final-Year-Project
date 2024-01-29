@@ -1,67 +1,60 @@
-﻿using Util;
-namespace Inventory_Management_System.Services
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using Fyp.DataAccess.Data; // If needed
+using Util; // Assuming this namespace contains RESTUtil and HexUtil
 
+namespace FypWeb.Areas.Admin
 {
     public class Reader
     {
-        private bool debug;
-        private Device device;
-        private RESTUtil util;
-        private HexUtil utilities;
-        private String address;
+        private readonly RESTUtil _util;
+        private readonly Device _device;
+        private readonly HexUtil _utilities;
+        private readonly bool _debug;
+        private readonly string _address;
 
-        public Reader(String address, bool debug)
+        public Reader(string address, bool debug)
         {
-            this.address = "192.168.1.1";
-            this.debug = false;
-            this.util = new RESTUtil(address, debug);
-            this.utilities = new HexUtil();
-    
+            _address = address;
+            _debug = debug;
+            _util = new RESTUtil(_address, _debug);
+            _device = _util.parseDevice(false);
+            _utilities = new HexUtil();
         }
-        public void readAndWriteEPC()
+
+        public void ConnectToDevice()
         {
-            // Connect to the device
-            this.util.connect(this.device, false);
+            _util.connect(_device, false);
+        }
 
-
-            string readMode = this.util.getReadMode(this.device, false);
-
+        public void SetDeviceReadMode()
+        {
+            string readMode = _util.getReadMode(_device, false);
             if (readMode != "AUTONOMOUS")
             {
-                this.util.setDeviceMode(this.device, "Autonomous", false);
-            }
-            // Make an inventory and collect all the EPCs
-            this.util.startStopDevice(this.device, true, false);
-
-            Thread.Sleep(2000);
-            List<string> detectedEPCs = this.util.getSequentialInventory(this.device, true, false);
-            Thread.Sleep(2000);
-
-
-            this.util.startStopDevice(this.device, false, false);
-
-
-            // Iterate through detected EPCs
-            foreach (string epc in detectedEPCs)
-            {
-                // Generate a new EPC by changing the first bit
-                string newEPC = changeFirstBit(epc);
-
-                // Write the new EPC to the tag
-                this.util.CommissionTagOp(this.device, epc, newEPC, "", "", "", 1, false);
-
-                // Print information about the tag and the new EPC
-                Console.WriteLine($"Tag: {epc}, New EPC: {newEPC}");
+                _util.setDeviceMode(_device, "Autonomous", false);
             }
         }
-        private string changeFirstBit(string epc)
+
+        public void StartDevice()
         {
-            // Change the first bit of the EPC
-            string binEPC = this.utilities.HexStringToBinary(epc);
-            string newBinEPC = binEPC[0] == '0' ? '1' + binEPC.Substring(1) : '0' + binEPC.Substring(1);
-            return this.utilities.BinaryStringToHex(newBinEPC);
+            _util.startStopDevice(_device, true, false);
+    
         }
 
+        public void StopDevice()
+        {
+            _util.startStopDevice(_device, false, false);
+        }
+
+        public List<string> GetDetectedEPCs()
+        {
+          
+            List<string> detectedEPCs = _util.getSequentialInventory(_device, true, false);
+          
+            return detectedEPCs;
+        }  
 
     }
 }
