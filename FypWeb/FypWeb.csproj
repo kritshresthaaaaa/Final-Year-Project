@@ -38,16 +38,14 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Areas\Employee\Controllers\" />
-	  <Folder Include="Areas\Employee\Data\" />
-	  <Folder Include="Areas\Employee\Models\" />
 	  <Folder Include="Areas\Employee\Views\" />
-	  <Folder Include="Controllers\" />
 	  <Folder Include="wwwroot\images\employee\" />
 	  <Folder Include="wwwroot\images\product\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\FYP.DataAccess\Fyp.DataAccess.csproj" />
 	  <ProjectReference Include="..\FYP.Models\Fyp.Models.csproj" />
+	  <ProjectReference Include="..\Fyp.Utility\Fyp.Utility.csproj" />
 	</ItemGroup>
 
 	<Target Name="Tailwind" BeforeTargets="Build">

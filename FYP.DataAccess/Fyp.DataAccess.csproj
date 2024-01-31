@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FYP.Models\Fyp.Models.csproj" />
-    <ProjectReference Include="..\FYP.Utilities\Fyp.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

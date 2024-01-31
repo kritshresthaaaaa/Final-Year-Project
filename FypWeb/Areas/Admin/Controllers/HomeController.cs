@@ -25,7 +25,7 @@ namespace FypWeb.Areas.Admin.Controllers
         }
 
 
-
+/*
         public async Task<IActionResult> LogOut()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -37,6 +37,6 @@ namespace FypWeb.Areas.Admin.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        }*/
     }
 }
