@@ -1,11 +1,14 @@
 ﻿using Fyp.DataAccess.Data;
 using Fyp.Models.ViewModels;
+using Fyp.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FypWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class InventoryController : Controller
     {
         private readonly ApplicationDbContext _context;

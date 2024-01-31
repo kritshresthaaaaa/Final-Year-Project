@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Fyp.DataAccess.Data;
 using Fyp.Models;
 using Fyp.Models.ViewModels;
+using Fyp.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FypWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;

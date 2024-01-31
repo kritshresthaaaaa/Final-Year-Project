@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Fyp.Models;
+using Fyp.Utility;
 
 namespace FypWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = SD.Role_Admin)]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
