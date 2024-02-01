@@ -1,43 +1,46 @@
 ﻿@{
     ViewBag.Title = "Index";
 }
-<div class=" outerlayer flex-col">
-    <div class=" grid grid-cols-3 gap-4 h-[3.5rem] flex items-center ">
-        <div class="border border-green-500 bg-[#D1E7DD] h-full flex items-center justify-between px-4 rounded-md ">
-            <div class="flex-col">
-                <div class="font-semibold ">
-                    Total Products
+<div class="p-4">
+    <div class=" outerlayer flex-col">
+        <div class=" grid grid-cols-3 gap-4 h-[3.5rem] flex items-center ">
+            <div class="border border-green-500 bg-[#D1E7DD] h-full flex items-center justify-between px-4 rounded-md ">
+                <div class="flex-col">
+                    <div class="font-semibold ">
+                        Total Products
+                    </div>
+                    <div>100</div>
                 </div>
-                <div>100</div>
+                <i class='bx bx-shopping-bag text-[#198754]' style=' font-size: 24px; '></i>
             </div>
-            <i class='bx bx-shopping-bag text-[#198754]' style=' font-size: 24px; '></i>
-       </div>
-        <div class="border border-red-500 bg-[#F8D7DA]  h-full flex items-center justify-between px-4 rounded-md ">
-            <div class="flex-col">
-                <div class="font-semibold">
-                    Total Catetgories
+            <div class="border border-red-500 bg-[#F8D7DA]  h-full flex items-center justify-between px-4 rounded-md ">
+                <div class="flex-col">
+                    <div class="font-semibold">
+                        Total Catetgories
+                    </div>
+                    <div>100</div>
                 </div>
-                <div>100</div>
+                <i class='bx bx-category text-[#DC3545]' style='font-size: 24px;'></i>
             </div>
-            <i class='bx bx-category text-[#DC3545]' style='font-size: 24px;'></i>
+            <div class="border border-yellow-500 bg-[#FFF3CD] h-full flex items-center justify-between px-4 rounded-md ">
+                <div class="flex-col">
+                    <div class="font-semibold">
+                        Total Brands
+                    </div>
+                    <div>100</div>
+                </div>
+                <i class='bx bx-purchase-tag text-[#FFC107]' style=' font-size: 24px;'></i>
+            </div>
         </div>
-        <div class="border border-yellow-500 bg-[#FFF3CD] h-full flex items-center justify-between px-4 rounded-md ">
-            <div class="flex-col">
-                <div class="font-semibold">
-                    Total Brands
-                </div>
-                <div>100</div>
-            </div>
-            <i class='bx bx-purchase-tag text-[#FFC107]' style=' font-size: 24px;'></i>
+        <div>
+            <canvas id="myChart" width="250" height="100"></canvas>
         </div>
-    </div>
-    <div>
-        <canvas id="myChart" width="250" height="100"></canvas>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    </div>
 </div>
+
 @section Scripts{
     <script>
         // Wait for the DOM to be fully loaded
