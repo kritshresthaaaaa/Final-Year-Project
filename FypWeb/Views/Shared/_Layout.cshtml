@@ -166,10 +166,12 @@
                             <a asp-area="Admin" asp-controller="Employee" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
                                 Employee List
                             </a>
-                            <a asp-area="Admin" asp-controller="Employee" asp-action="Details" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                Assign Employee
+                            <a asp-area="Identity" asp-page="/Account/Register"  class="flex justify-center hover:text-amber-300 cursor-pointer">
+                                Create Employee
                             </a>
-                        </li>
+                        </li> 
+
+             
                         <li class="relative" data-te-dropdown-ref>
                             <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
                                data-te-dropdown-toggle-ref
