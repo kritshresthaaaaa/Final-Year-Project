@@ -1,0 +1,69 @@
+﻿/* Style the table */
+table.dataTable {
+    width: 100%;
+    margin: 0 auto;
+    clear: both;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+#tblData_wrapper{
+    padding: 8px;
+}
+/* Style table header */
+table.dataTable thead th {
+    background-color: #f2f2f2;
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+    /* Style table body */
+    table.dataTable tbody td {
+        text-align: center;
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    /* Style table alternate rows */
+    table.dataTable tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    /* Style table hover effect on rows */
+    table.dataTable tbody tr:hover {
+        background-color: #e0e0e0;
+        cursor: pointer;
+    }
+
+/* Style table pagination */
+div.dataTables_paginate {
+    text-align: center;
+}
+
+/* Style table info text */
+div.dataTables_info {
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Style table search input */
+input[type="search"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Style table search label */
+#tblData_filter {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+    #tblData_filter > label > input {
+        margin-left: 5px;
+        outline-color: #93c5fd;
+    }

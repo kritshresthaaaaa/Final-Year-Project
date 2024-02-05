@@ -8,6 +8,7 @@ using Fyp.Models;
 using Fyp.Models.ViewModels;
 using Fyp.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,25 +19,24 @@ namespace FypWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class EmployeeController : Controller
     {
+        private UserManager<IdentityUser> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public EmployeeController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public EmployeeController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
-            _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
+
         }
 
         // GET: Employee
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var employees = await _context.Employee.
-                Select(e => new EmployeeViewModel
-                {
-                    Employee = e
-                }).
-                
-                ToListAsync();
-            return View(employees);
+            // Retrieve all users using UserManager
+            var users = _userManager.Users.ToList();
+
+            return View();
         }
 
 
@@ -217,5 +217,22 @@ namespace FypWeb.Areas.Admin.Controllers
         {
             return _context.Employee.Any(e => e.Id == id);
         }
+        #region API CALLS
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            List<ApplicationUser> usersList = await _context.ApplicationUser.ToListAsync();
+            var userRoles = _context.UserRoles.ToList();
+            var roles = _context
+                .Roles.ToList();
+            foreach (var user in usersList)
+            {
+                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
+                user.Role = roles.FirstOrDefault(u => u.Id == roleId).Name;
+            }
+            return Json(new { data = usersList }); ;
+        }
+        #endregion
     }
+
 }

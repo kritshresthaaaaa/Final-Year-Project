@@ -1,9 +1,4 @@
-﻿@model IEnumerable<EmployeeViewModel>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
+﻿
 <div class="relative overflow-hidden bg-white border sm:rounded-lg">
     <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
         <div class="flex items-center flex-1 space-x-4">
@@ -25,100 +20,26 @@
         </div>
     </div>
     <div class="overflow-x-auto ">
-        <table class="w-full text-sm text-left ">
-            <thead class="text-xs text-black uppercase  border  ">
-                <tr class="border">
-                    <th scope="col" class="px-4 py-3  flex justify-center">Id</th>
-                    <th scope="col" class="px-4 py-3  ">Employees Name</th>
-                    <th scope="col" class=" px-4 py-3   justify-center">Phone</th>
-                    <th scope="col" class="px-4 py-3  justify-center"> Gender</th>
-                    <th scope="col" class="px-4 py-3 flex  justify-center"> Email</th>
-                    <th scope="col" class="px-4 py-3    ">
-                        <p class=" flex justify-center">
-                            Password
-
-                    </p></th>
-                    <th scope="col" class="px-4 py-3   ">Register Date</th>
-                    <th scope="col" class="px-4 py-3  flex justify-center ">Operations</th>
+        <table id="tblData" class="w-full text-sm text-left rounded-md " style="width:100%; background-color: #ffffff; border: 1px solid #ccc; margin-top:2px;" >
+            <thead class="text-xs text-black uppercase mt-2 ">
+                <tr class="">
+                    <th><p class="flex justify-center">Id</p></th>
+                    <th><p class="flex justify-center">Name</p></th>
+                    <th><p class="flex justify-center">Phone</p></th>
+                    <th> <p class="flex justify-center">Email</p></th>
+                    <th> <p class="flex justify-center"Gender</p></th>
+                    <th>
+                        <p class="flex justify-center">Role</p>
+                    </th>
+                    <th><p class="flex justify-center">Registration Date</p></th>
+                    <th><p class="flex justify-center">Operation</p></th>
 
                 </tr>
             </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr class="border-b border-gray-600 cursor-pointer text-gray-500">
-                        <td class="px-2 py-2  ">
-                            <span class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-                                @Html.DisplayFor(modelItem => item.Employee.Id)
-                            </span>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <div class="flex items-center">
-                                <!-- Wrap image and name in a flex container -->
-                                <img src="@Html.DisplayFor(modelItem => item.Employee.ImageUrl)" class="w-7 h-auto mr-2 rounded-full border"> <!-- Adjust the width (e.g., w-16) as needed -->
-                                <p>@Html.DisplayFor(modelItem => item.Employee.FullName)</p>
-                            </div>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <p>@Html.DisplayFor(modelItem => item.Employee.Phone)</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <p>@Html.DisplayFor(modelItem => item.Employee.Gender)</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
-                            <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Employee.Email)</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium justify-center whitespace-nowrap">
-                            <div class="relative">
-                                <input id="passwordField@(item.Employee.Id)" type="password" value="@Html.DisplayFor(modelItem => item.Employee.Password)" class="cursor-pointer h-8 border mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" readonly/>
-                                <span id="togglePassword@(item.Employee.Id)" class="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 hover:text-primary-500" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M9.293 12.293a1 1 0 011.414 0l5 5a1 1 0 01-1.414 1.414l-5-5a1 1 0 010-1.414z" />
-                                        <path d="M10 4.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm0 1a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </td>
-
-
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <p>@Html.DisplayFor(modelItem => item.Employee.RegistrationDate)</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap flex justify-center mt-2.5">
-                            <div class="flex gap-x-2">
-                                <a asp-action="Details" asp-route-id="@item.Employee.Id" class="flex items-center">Details</a>
-                                &nbsp;
-                                <a asp-action="Edit" asp-route-id="@item.Employee.Id">
-                                    Edit
-                                </a>
-                                &nbsp;
-                                <a asp-action="Delete" asp-route-id="@item.Employee.Id" class="flex items-center">Delete</a>
-                            </div>
-                        </td>
-
-                    </tr>
-
-                }
-
-            </tbody>
+       
         </table>
     </div>
 </div>
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const togglePasswordButtons = document.querySelectorAll("[id^='togglePassword']");
-            const passwordFields = document.querySelectorAll("[id^='passwordField']");
-
-            togglePasswordButtons.forEach((toggleButton, index) => {
-                toggleButton.addEventListener("click", function () {
-                    if (passwordFields[index].type === "password") {
-                        passwordFields[index].type = "text";
-                    } else {
-                        passwordFields[index].type = "password";
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="~/js/employee.js"></script>
 }
