@@ -37,6 +37,10 @@
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Areas\CustomerHandlerEmployee\Controllers\" />
+	  <Folder Include="Areas\CustomerHandlerEmployee\Data\" />
+	  <Folder Include="Areas\CustomerHandlerEmployee\Models\" />
+	  <Folder Include="Areas\CustomerHandlerEmployee\Views\" />
 	  <Folder Include="wwwroot\images\employee\" />
 	  <Folder Include="wwwroot\images\product\" />
 	</ItemGroup>

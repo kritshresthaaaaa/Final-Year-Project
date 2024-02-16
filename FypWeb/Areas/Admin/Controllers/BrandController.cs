@@ -26,7 +26,8 @@ namespace FypWeb.Areas.Admin.Controllers
         // GET: Brand
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Brand.ToListAsync());
+            ViewBag.BrandCount = _context.Brand.Count();
+            return View();
         }
         public async Task<IActionResult> GetItemCountByCreationDate()
         {
@@ -68,6 +69,11 @@ namespace FypWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BrandID,BrandName")] BrandDetail brandDetail)
         {
+            var isBrandExist = _context.Brand.Any(c => c.BrandName == brandDetail.BrandName);
+            if (isBrandExist)
+            {
+                ModelState.AddModelError("BrandName", "Brand already exist");
+            }
             if (ModelState.IsValid)
             {
                 brandDetail.CreationDate = DateTime.Now;
@@ -106,6 +112,7 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
 
             if (ModelState.IsValid)
             {
@@ -166,7 +173,34 @@ namespace FypWeb.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+         #region API CALLS
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var brandsWithProductCount = await _context.Brand
+                .Select(brand => new
+                {
+                    brand.BrandID,
+                    brand.BrandName,
+                    ProductCount = _context.Product.Count(p => p.BrandID == brand.BrandID)
+                })
+                .ToListAsync();
 
+            return Json(new { data = brandsWithProductCount });
+        }
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var brandDetail = await _context.Brand.FindAsync(id);
+            if (brandDetail != null)
+            {
+                _context.Brand.Remove(brandDetail);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Delete successful" });
+            }
+            return Json(new { success = false, message = "Delete failed" });
+        }
+        #endregion
         private bool BrandDetailExists(int id)
         {
             return _context.Brand.Any(e => e.BrandID == id);

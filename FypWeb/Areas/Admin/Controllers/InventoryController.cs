@@ -1,9 +1,11 @@
 ﻿using Fyp.DataAccess.Data;
+using Fyp.Models;
 using Fyp.Models.ViewModels;
 using Fyp.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FypWeb.Areas.Admin.Controllers
 {
@@ -19,8 +21,8 @@ namespace FypWeb.Areas.Admin.Controllers
         // GET: HomeController1
         public ActionResult Index()
         {
-            var inventoryList = _context.Product
-                .GroupBy(p => new { p.Name, p.Sizes, p.Price , p.Category.CategoryName})
+  /*          var inventoryList = _context.Product
+                .GroupBy(p => new { p.Name, p.Sizes, p.Price, p.Category.CategoryName })
                 .Select(group => new InventoryViewModel
                 {
                     ProductName = group.Key.Name,
@@ -28,11 +30,11 @@ namespace FypWeb.Areas.Admin.Controllers
                     Price = group.Key.Price,
                     Stock = group.Count(),
                     CategoryName = group.Key.CategoryName
-                
-                })
-                .ToList();
 
-            return View(inventoryList);
+                })
+                .ToList();*/
+
+            return View();
         }
 
         // GET: HomeController1/Details/5
@@ -88,6 +90,26 @@ namespace FypWeb.Areas.Admin.Controllers
         {
             return View();
         }
+        #region API CALLS
+        public async Task<IActionResult> GetAll()
+        {
+            var inventoryList = await _context.Product
+               .GroupBy(p => new { p.Name, p.Sizes, p.Price, p.Category.CategoryName })
+               .Select(group => new InventoryViewModel
+               {
+                   ProductName = group.Key.Name,
+                   Size = group.Key.Sizes,
+                   Price = group.Key.Price,
+                   Stock = group.Count(),
+                   CategoryName = group.Key.CategoryName
+               })
+               .ToListAsync(); // Corrected to use await with ToListAsync
+
+            return Json(new { data = inventoryList });
+        }
+        #endregion
+
+
 
         // POST: HomeController1/Delete/5
         [HttpPost]

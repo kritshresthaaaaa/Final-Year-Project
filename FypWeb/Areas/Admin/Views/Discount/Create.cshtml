@@ -1,0 +1,37 @@
+﻿<section class="p-2 border">
+    <div class="flex justify-center">
+        <h1 class="text-2xl font-semibold">Create New Discount</h1>
+    </div>
+    <form method="post" asp-action="Create" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+            <label for="DiscountName">Discount Name</label>
+            <input type="text" name="DiscountName" id="DiscountName" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200 " />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="DiscountPercentage">Discount Percentage</label>
+            <input type="number" name="DiscountPercentage" id="DiscountPercentage" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="DiscountPercentage">Minimunm Purchase </label>
+            <input type="number" name="DiscountPercentage" id="DiscountPercentage" placeholder="if any" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="DiscountStartDate">Discount Start Date</label>
+            <input type="date" name="DiscountStartDate" id="DiscountStartDate" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="DiscountEndDate">Discount End Date</label>
+            <input type="date" name="DiscountEndDate" id="DiscountEndDate" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="DiscountStatus">Discount Status</label>
+            <select name="DiscountStatus" id="DiscountStatus" class="border   px-2 h-8 rounded-md focus:outline-blue-200  rounded-md">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+        <div class="flex justify-center">
+            <button type="submit" class="bg-[#7258DB] text-white px-4 py-2 rounded-md">Create Discount</button>
+        </div>
+    </form>
+</section>

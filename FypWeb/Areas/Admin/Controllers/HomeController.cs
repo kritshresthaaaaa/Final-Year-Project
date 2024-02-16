@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Fyp.Models;
 using Fyp.Utility;
+using Fyp.DataAccess.Data;
 
 namespace FypWeb.Areas.Admin.Controllers
 {
@@ -13,31 +14,23 @@ namespace FypWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _db;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Index()
         {
+            ViewBag.ProductsCount = _db.Product.Count();
+            ViewBag.CategoriesCount = _db.Category.Count();
+            ViewBag.BrandsCount = _db.Brand.Count();
             return View();
         }
 
 
-/*
-        public async Task<IActionResult> LogOut()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            return RedirectToAction("Login", "Access");
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }*/
     }
 }

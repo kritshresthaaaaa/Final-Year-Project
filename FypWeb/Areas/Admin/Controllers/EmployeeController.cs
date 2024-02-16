@@ -39,6 +39,46 @@ namespace FypWeb.Areas.Admin.Controllers
             return View();
         }
 
+        public IActionResult RoleManagement(string userId)
+        {
+            string RoleID = _context.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
+            RoleManagementVM roleManagementVM = new RoleManagementVM()
+            {
+                ApplicationUser = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId),
+                RoleList = _context.Roles.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id
+                }),
+                UserList = _context.ApplicationUser.Select(i => new SelectListItem
+                {
+                    Text = i.FullName,
+                    Value = i.Id
+                }),
+            };
+            roleManagementVM.ApplicationUser.Role = _context.Roles.FirstOrDefault(u => u.Id == RoleID).Name;
+          
+          
+            return View(roleManagementVM);
+        }
+        [HttpPost]
+        public  IActionResult RoleManagement(RoleManagementVM roleManagementVM)
+        {
+            string RoleID = _context.UserRoles.FirstOrDefault(u => u.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
+            string oldRole = _context.Roles.FirstOrDefault(u => u.Id == RoleID).Name;
+            string check = roleManagementVM.ApplicationUser.Role;
+            if (!(roleManagementVM.ApplicationUser.Role == oldRole))
+            {
+                ApplicationUser applicationUser = _context.ApplicationUser.FirstOrDefault(u => u.Id == roleManagementVM.ApplicationUser.Id);
+                _context.SaveChanges();
+                _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
+            }
+
+
+            return RedirectToAction("Index");
+        }
+
 
         // GET: Employee/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -221,16 +261,57 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            List<ApplicationUser> usersList = await _context.ApplicationUser.ToListAsync();
-            var userRoles = _context.UserRoles.ToList();
-            var roles = _context
-                .Roles.ToList();
+            // Fetch all users
+            var usersList = await _context.ApplicationUser.ToListAsync();
+
+            // Fetch all user roles and roles as a list for performance
+            var userRoles = await _context.UserRoles.ToListAsync();
+            var roles = await _context.Roles.ToListAsync();
+
+            // Filter out users with the admin role
+            var adminRoleId = roles.FirstOrDefault(r => r.Name == "Admin")?.Id;
+            var nonAdminUsers = new List<ApplicationUser>();
+
             foreach (var user in usersList)
             {
-                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
-                user.Role = roles.FirstOrDefault(u => u.Id == roleId).Name;
+                var userRoleIds = userRoles.Where(ur => ur.UserId == user.Id).Select(ur => ur.RoleId).ToList();
+                if (!userRoleIds.Contains(adminRoleId))
+                {
+                    // Assuming you want to set the Role property of non-admin users,
+                    // you need to handle users with multiple roles or no roles.
+                    var firstRoleId = userRoleIds.FirstOrDefault();
+                    var roleName = roles.FirstOrDefault(r => r.Id == firstRoleId)?.Name;
+
+                    // Set the role name if you have a Role property in your ApplicationUser
+                    // This is just an example, adjust according to your actual user model
+                    user.Role = roleName;
+
+                    nonAdminUsers.Add(user);
+                }
             }
-            return Json(new { data = usersList }); ;
+
+            return Json(new { data = nonAdminUsers });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LockUnlock([FromBody]string id)
+        {
+          var objFromDb = _context.ApplicationUser.FirstOrDefault(u => u.Id == id);
+            if (objFromDb == null)
+            {
+                return Json(new { success = false, message = "Error while Locking/Unlocking" });
+            }
+            if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
+            {
+                // user is currently locked, we will unlock them
+                objFromDb.LockoutEnd = DateTime.Now;
+            }
+            else
+            {
+                objFromDb.LockoutEnd = DateTime.Now.AddYears(100);
+            }
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Operation Successful" });
         }
         #endregion
     }

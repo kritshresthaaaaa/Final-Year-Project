@@ -1,0 +1,44 @@
+﻿@model RoleManagementVM
+
+<div class="flex-col">
+    <div>
+        <h1 class="text-2xl font-bold">Manage User Roles</h1>
+    </div>
+    <hr class="mt-2 bg-gray-400 border" />
+    <form method="post">
+        <input asp-for="ApplicationUser.Id" hidden/>
+        <div class="content-holder flex-col space-y-4 mt-4">
+
+            <!--Info Box -->
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">Role Information</h3>
+                    <div class="mt-2">
+                        <div class="titleHolder w-full mb-2">
+                            <Label asp-for="ApplicationUser.FullName" class="text-l font-semibold "> </Label>
+                            <input asp-for="ApplicationUser.FullName" readonly class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
+                                 />
+
+                    
+                        </div>
+                        <div class="titleHolder w-full mb-2">
+                            <select asp-for="ApplicationUser.Role" asp-items="@Model.RoleList"></select>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="float-right">
+            <button type="submit" class="border bg-[#7258DB] px-4 py-2 mt-2 rounded text-white ">Update Role</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -16,13 +16,15 @@ table.dataTable thead th {
     border: 1px solid #ddd;
     padding: 10px;
 }
-
-    /* Style table body */
-    table.dataTable tbody td {
-        text-align: center;
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
+#tblData_paginate{
+    margin-top: 8px;
+}
+/* Style table body */
+table.dataTable tbody td {
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 8px;
+}
 
     /* Style table alternate rows */
     table.dataTable tbody tr:nth-child(even) {

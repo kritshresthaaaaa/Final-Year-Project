@@ -3,24 +3,24 @@
     <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
         <div class="flex items-center flex-1 space-x-4">
             <h5>
-                <span class="text-black">Employee Information</span>
+                <span class="text-black">All Discounts</span>
                 @* <span class="text-gray-500">@ViewBag.CategoryCount</span> *@
             </h5>
 
         </div>
         <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-            <a asp-area="Identity" asp-page="/Account/Register" type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-[#7258DB]  focus:ring-primary-300 ">
+            <a asp-area="Admin" asp-controller="Discount" asp-action="Create" type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-[#7258DB]  focus:ring-primary-300 ">
                 <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                 </svg>
-                Add an Employee
+                All New Discount
             </a>
 
 
         </div>
     </div>
-    <div class="overflow-x-auto ">
-        <table id="tblData" class="w-full text-sm text-left rounded-md " style="width:100%; background-color: #ffffff; border: 1px solid #ccc; margin-top:2px;" >
+ @*    <div class="overflow-x-auto ">
+        <table id="tblData" class="w-full text-sm text-left rounded-md " style="width:100%; background-color: #ffffff; border: 1px solid #ccc; margin-top:2px;">
             <thead class="text-xs text-black uppercase mt-2 ">
                 <tr class="">
                     <th><p class="flex justify-center">Id</p></th>
@@ -36,10 +36,10 @@
 
                 </tr>
             </thead>
-       
+
         </table>
-    </div>
+    </div> *@
 </div>
 @section Scripts {
-    <script src="~/js/employee.js"></script>
+    
 }

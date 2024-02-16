@@ -1,41 +1,49 @@
 ﻿
 <div class="p-4">
-@*     <div class="flex justify-center space-x-4 mb-4">
-        <button id="today" class="px-4 py-2 bg-blue-500 text-white rounded-md">Today</button>
-        <button id="week" class="px-4 py-2 bg-blue-500 text-white rounded-md">Week</button>
-        <button id="month" class="px-4 py-2 bg-blue-500 text-white rounded-md">Month</button>
-        <button id="year" class="px-4 py-2 bg-blue-500 text-white rounded-md">Year</button>
+    @*     <div class="flex justify-center space-x-4 mb-4">
+    <button id="today" class="px-4 py-2 bg-blue-500 text-white rounded-md">Today</button>
+    <button id="week" class="px-4 py-2 bg-blue-500 text-white rounded-md">Week</button>
+    <button id="month" class="px-4 py-2 bg-blue-500 text-white rounded-md">Month</button>
+    <button id="year" class="px-4 py-2 bg-blue-500 text-white rounded-md">Year</button>
     </div> *@
 
     <div class=" outerlayer flex-col">
         <div class=" grid grid-cols-3 gap-4 h-[3.5rem] flex items-center ">
-            <div class="border border-green-500 bg-[#D1E7DD] h-full flex items-center justify-between px-4 rounded-md ">
+            <div class="border border-purple-500 bg-[#C0B8DD] h-full flex items-center justify-between px-4 rounded-md ">
                 <div class="flex-col">
                     <div class="font-semibold ">
-                        Total Products
+                        Items Sold
                     </div>
-                    <div>@ViewBag.ProductsCount</div>
+                    <div>99</div>
                 </div>
-                <i class='bx bx-shopping-bag text-[#198754]' style=' font-size: 24px; '></i>
+                <i class='bx bx-shopping-bag text-purple-500' style=' font-size: 24px; '></i>
             </div>
             <div class="border border-red-500 bg-[#F8D7DA]  h-full flex items-center justify-between px-4 rounded-md ">
                 <div class="flex-col">
                     <div class="font-semibold">
-                        Total Catetgories
+                       Revenue
                     </div>
-                    <div>@ViewBag.CategoriesCount</div>
+                    <div>99</div>
                 </div>
                 <i class='bx bx-category text-[#DC3545]' style='font-size: 24px;'></i>
             </div>
             <div class="border border-yellow-500 bg-[#FFF3CD] h-full flex items-center justify-between px-4 rounded-md ">
                 <div class="flex-col">
                     <div class="font-semibold">
-                        Total Brands
+                        Customers
                     </div>
-                    <div>@ViewBag.BrandsCount</div>
+                    <div>99</div>
                 </div>
                 <i class='bx bx-purchase-tag text-[#FFC107]' style=' font-size: 24px;'></i>
             </div>
+  
+
+        </div>
+        <div class="flex flex-wrap justify-center bg-white p-1  border rounded-md mt-2 ">
+            <button id="today" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Today</button>
+            <button id="week" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Week</button>
+            <button id="month" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Month</button>
+            <button id="year" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Year</button>
         </div>
         <div>
             <canvas id="myChart" width="250" height="100"></canvas>
@@ -63,9 +71,11 @@
         });
 
         function loadChart(timeFrame) {
+            
             // Placeholder for fetching or calculating data based on the time frame
             // This will likely involve fetching data from your server based on the selected time frame
             var data = generateChartData(timeFrame);
+
 
             const config = {
                 type: 'line',
@@ -99,10 +109,22 @@
                         labels: ['Today'],
                         datasets: [
                             {
-                                label: 'Products',
-                                backgroundColor: '#D1E7DD',
-                                borderColor: '#198754',
-                                data: [20], // Example data
+                                label: 'Items Sold',
+                                backgroundColor: '#C0B8DD',
+                                borderColor: '#7258DB',
+                                data: [99], // Adjust this value to your actual data
+                            },
+                            {
+                                label: 'Revenue',
+                                backgroundColor: '#F8D7DA',
+                                borderColor: '#EF4444',
+                                data: [1200], // Adjust this value to your actual data
+                            },
+                            {
+                                label: 'Customers',
+                                backgroundColor: '#FFF3CD',
+                                borderColor: '#FFC107',
+                                data: [75], // Adjust this value to your actual data
                             },
                         ]
                     };
@@ -112,11 +134,24 @@
                         labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
                         datasets: [
                             {
-                                label: 'Products',
-                                backgroundColor: '#D1E7DD',
-                                borderColor: '#198754',
-                                data: [0, 10, 5, 2, 20, 30, 45], // Example data
+                                label: 'Items Sold',
+                                backgroundColor: '#C0B8DD',
+                                borderColor: '#7258DB',
+                                data: [5, 12, 8, 15, 22, 18, 10], // Adjusted values
                             },
+                            {
+                                label: 'Revenue',
+                                backgroundColor: '#F8D7DA',
+                                borderColor: '#EF4444',
+                                data: [150, 200, 250, 300, 350, 400, 450], // Adjusted values
+                            },
+                            {
+                                label: 'Customers',
+                                backgroundColor: '#FFF3CD',
+                                borderColor: '#FFC107',
+                                data: [30, 25, 40, 35, 50, 45, 30], // Adjusted values
+                            },
+
                         ]
                     };
                 case 'month':
@@ -128,7 +163,7 @@
                                 label: 'Products',
                                 backgroundColor: '#D1E7DD',
                                 borderColor: '#198754',
-                                data: [50, 60, 70, 80], // Example data
+                                data: [75, 88, 65, 95], // Adjusted values
                             },
                         ]
                     };
@@ -141,7 +176,7 @@
                                 label: 'Products',
                                 backgroundColor: '#D1E7DD',
                                 borderColor: '#198754',
-                                data: [120, 150, 180, 200, 250, 300, 350, 400, 450, 500, 550, 600], // Example data
+                                data: [150, 120, 180, 160, 200, 180, 220, 210, 230, 240, 210, 220], // Adjusted values
                             },
                         ]
                     };

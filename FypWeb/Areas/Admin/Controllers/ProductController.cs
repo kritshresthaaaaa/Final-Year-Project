@@ -22,19 +22,14 @@ namespace FypWeb.Areas.Admin.Controllers
     {
         IWebHostEnvironment hostEnvironment;
         private readonly ApplicationDbContext _context;
-        private bool debug = false;
-        private Device device;
-        private RESTUtil util;
-        private HexUtil utilities;
-        private string address = "192.168.1.1";
+    
+      
         private readonly ILogger<ProductController> _logger;
         private readonly Reader _reader;
         public ProductController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
-            util = new RESTUtil(address, debug);
-            device = util.parseDevice(false);
-            utilities = new HexUtil();
+       
             this.hostEnvironment = hostEnvironment;
         }
         public class EpcScanResult

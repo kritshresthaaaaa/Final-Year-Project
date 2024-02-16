@@ -27,16 +27,12 @@ namespace FypWeb.Areas.Admin.Controllers
         // GET: Category
         public async Task<IActionResult> Index()
         {
-            var categoriesWithProductCount = await _context.Category
-                .Select(c => new CategoryViewModel
-                {
-                   Category = c,
-                    ProductCount = _context.Product.Count(p => p.CategoryID == c.CategoryID)
-                })
-                .ToListAsync();
+            ViewBag.CategoryCount = _context.Category.Count();
+         
 
-            return View(categoriesWithProductCount);
+            return View();
         }
+
 
 
 
@@ -109,6 +105,11 @@ namespace FypWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CategoryID,CategoryName")] CategoryDetail categoryDetail)
         {
+            var isCategoryExist = _context.Category.Any(c => c.CategoryName == categoryDetail.CategoryName);
+            if (isCategoryExist)
+            {
+                ModelState.AddModelError("CategoryName", "Category already exist");
+            }
             if (id != categoryDetail.CategoryID)
             {
                 return NotFound();
@@ -119,6 +120,7 @@ namespace FypWeb.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(categoryDetail);
+                    TempData["success"] = "Category Edited";
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -156,23 +158,50 @@ namespace FypWeb.Areas.Admin.Controllers
         }
 
         // POST: Category/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+      
+
+        #region API CALLS
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            if (_context.Category == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
-            }
+            var categoriesWithProductCount = await _context.Category
+                .Select(category => new
+                {
+                    category.CategoryID,
+                    category.CategoryName,
+                    ProductCount = _context.Product.Count(p => p.CategoryID == category.CategoryID)
+                })
+                .ToListAsync();
+
+            return Json(new { data = categoriesWithProductCount });
+        }
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
             var categoryDetail = await _context.Category.FindAsync(id);
             if (categoryDetail != null)
             {
                 _context.Category.Remove(categoryDetail);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Delete successful" });
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = false, message = "Error while deleting" });
         }
+
+        /*     public async Task<IActionResult> GetAll()
+             {
+                 List<ApplicationUser> usersList = await _context.ApplicationUser.ToListAsync();
+                 var userRoles = _context.UserRoles.ToList();
+                 var roles = _context
+                     .Roles.ToList();
+                 foreach (var user in usersList)
+                 {
+                     var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
+                     user.Role = roles.FirstOrDefault(u => u.Id == roleId).Name;
+                 }
+                 return Json(new { data = usersList }); ;
+             }*/
+        #endregion
 
         private bool CategoryDetailExists(int id)
         {

@@ -141,24 +141,43 @@ namespace FypWeb.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(SD.Role_Employee).GetAwaiter().GetResult())
+            // List of roles to check and create if they don't exist
+            var roles = new List<string>
+    {
+        SD.Role_Admin,
+        SD.Role_Sub_Admin,
+        SD.Role_Sales_Employee,
+        SD.Role_Fitting_Employee,
+        
+    };
+
+            foreach (var role in roles)
             {
-                _roleManager.CreateAsync(new IdentityRole(SD.Role_Employee)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
-            }
-            Input = new()
-            {
-                RoleList = _roleManager.Roles.Select(u => u.Name).Select(i => new SelectListItem
+                if (!await _roleManager.RoleExistsAsync(role))
                 {
-                    Text = i,
-                    Value = i
-                })
+                    await _roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            // Initialize the RoleList for the page
+            Input = new InputModel
+            {
+                RoleList = _roleManager.Roles.Where(r => roles.Contains(r.Name))
+                                              .Select(u => new SelectListItem
+                                              {
+                                                  Text = u.Name,
+                                                  Value = u.Name
+                                              }).ToList()
             };
+
             ReturnUrl = returnUrl;
+
+            // Get external logins list asynchronously
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(IFormFile ImageFile,string returnUrl = null )
+
+        public async Task<IActionResult> OnPostAsync(IFormFile ImageFile, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();

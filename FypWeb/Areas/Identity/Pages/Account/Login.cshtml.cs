@@ -127,6 +127,14 @@ namespace FypWeb.Areas.Identity.Pages.Account
                         {
                             returnUrl = "/Employee/Home/Index"; // Update this as needed
                         }
+                        else if (roles.Contains("Sales Employee"))
+                        {
+                            returnUrl = "/SalesEmployee/Home/Index"; // Update this as needed
+                        }
+                        else if (roles.Contains("Fitting Room Employee"))
+                        {
+                            returnUrl = "/CustomerHandlerEmployee/Home/Index"; // Update this as needed
+                        }
                     }
 
                     _logger.LogInformation("User logged in.");
