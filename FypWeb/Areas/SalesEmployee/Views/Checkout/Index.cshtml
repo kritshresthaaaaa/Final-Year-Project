@@ -1,0 +1,52 @@
+﻿
+<section class="p-2 flex-col space-y-4 h-screen">
+    <div class=" w-full rounded-md flex justify-end gap-x-3">
+        <button type="button" class="flex items-center justify-center w-[15%] flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#7258DB] ">
+         
+            Try Manually
+        </button>
+        <button type="button" class="flex w-[15%] items-center justify-center  flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#4ADE80] ">
+            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Refresh
+        </button>
+    </div>
+    <div class="flex flex-row  bg-white rounded-md h-[80%] border ">
+        <div class="w-[65%]  rounded-md pt-12">
+            <div class="flex justify-center items-center  ">
+               
+                    <img src="~/img/cart-download-solid-228.png" class=" text-8xl  text-gray-600" />
+                   @*  <i class='bx bxs-cart-download border' style='color:#b3b2b2'></i> *@  
+            </div>
+            <div class="">
+                  <p class="text-center text-2xl text-gray-400  ml-8">No items in cart</p>
+            </div>
+        </div>
+
+        <div class="w-[35%] border flex flex-col p-4 bg-white rounded-lg">
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-2">Customer Details</h3>
+                <!-- Form or display for customer details -->
+                <form class="flex gap-2">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" class="mt-1 p-2 w-full border border-gray-300 rounded-md  focus:outline-blue-200">
+                    </div>
+                    <div>
+                        <label  class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input type="number" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-blue-200">
+                    </div>
+                    <!-- Add more fields as needed -->
+                </form>
+            </div>
+            <div class="mt-auto">
+                <h4 class="text-lg font-semibold">Total Amount</h4>
+                <!-- Subtotal value here -->
+                <p class="text-xl font-bold">$0.00</p> <!-- Example subtotal value, replace with dynamic content -->
+            </div>
+        </div>
+
+    </div>
+
+</section>

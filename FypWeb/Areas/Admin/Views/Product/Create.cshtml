@@ -4,7 +4,7 @@
 }
 
 
-<div class="flex-col">
+<div class="flex-col p-2">
     <div>
         <h1 class="text-2xl font-bold">Product Add</h1>
     </div>
@@ -185,7 +185,23 @@
                     </div>
                 </div>
             </div> *@
+            <div class="border rounded-md p-2 bg-white">
+                <div class="box w-full">
+                    <h3 class="text-xl font-bold">SKU</h3>
+                    <div class="mt-2">
 
+                        <div class="relative inline-block w-full">
+                            <div class="titleHolder w-full mb-2">
+                                <input id="Product_SKU" class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
+                                       type="text" placeholder="For eg: Brand-Category-Product-Size"  />
+                                <span class="text-red-600"></span>
+                            </div>
+                            <!-- Removing the dropdown icon if it's not functional -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="float-right">
             <button type="submit" class="border bg-[#7258DB] px-4 py-2 mt-2 rounded text-white ">Save</button>
@@ -195,6 +211,38 @@
 
 @section Scripts {
     <script>
+        function generateSKU() {
+            var brand = $('#Product_BrandID option:selected').text().trim();
+            var category = $('#Product_CategoryID option:selected').text().trim();
+            var title = $('#Product_Name').val().trim();
+            var size = $('input[name="Product.Sizes"]:checked').val();
+
+            // Check if all fields have values before generating the SKU
+            if (brand && category && title && size) {
+                var skuParts = [brand, category, title, size];
+                var sku = skuParts.map(part => formatForSKU(part)).join("-");
+                $('#Product_SKU').val(sku); // Display the generated SKU
+            } else {
+                // Optional: Clear the SKU field or display a placeholder/message if not all details are filled
+                $('#Product_SKU').val(''); // Clear the SKU field or set a placeholder
+            }
+        }
+
+        function formatForSKU(text) {
+            // Format each part of the SKU. This can be customized as needed.
+            return text
+                .replace(/\s+/g, '') // Remove spaces
+                .substring(0, 3) // Use only the first three characters for simplicity
+                .toUpperCase(); // Convert to uppercase
+        }
+
+        // Attach change event listeners to the inputs
+        $('#Product_BrandID, #Product_CategoryID, #Product_Name, input[name="Product.Sizes"]').change(generateSKU);
+
+        // Example of how to handle radio buttons for size
+        $('input[name="Product.Sizes"]').on('change', function () {
+            generateSKU(); // Call SKU generation when a size is selected
+        });
         $(document).ready(function () {
             $("#scanTagsBtn").click(function () {
                 // AJAX call to the ReadAndWriteEPC method

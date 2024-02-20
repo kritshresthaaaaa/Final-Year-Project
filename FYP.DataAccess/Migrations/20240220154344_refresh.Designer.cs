@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240202063935_refreshed")]
-    partial class refreshed
+    [Migration("20240220154344_refresh")]
+    partial class refresh
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,50 @@ namespace Fyp.DataAccess.Migrations
                     b.HasKey("CategoryID");
 
                     b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("Fyp.Models.DiscountDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BrandID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("MinimumPurchase")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<decimal>("Percentage")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.ToTable("Discount");
                 });
 
             modelBuilder.Entity("Fyp.Models.EmployeeDetail", b =>
@@ -145,6 +189,9 @@ namespace Fyp.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SKUID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Sizes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -155,7 +202,27 @@ namespace Fyp.DataAccess.Migrations
 
                     b.HasIndex("CategoryID");
 
+                    b.HasIndex("SKUID");
+
                     b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("Fyp.Models.SKUDetail", b =>
+                {
+                    b.Property<int>("SKUID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SKUID"));
+
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("SKUID");
+
+                    b.ToTable("SKU");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -400,6 +467,21 @@ namespace Fyp.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Fyp.Models.DiscountDetail", b =>
+                {
+                    b.HasOne("Fyp.Models.BrandDetail", "Brand")
+                        .WithMany("Discounts")
+                        .HasForeignKey("BrandID");
+
+                    b.HasOne("Fyp.Models.CategoryDetail", "Category")
+                        .WithMany("Discounts")
+                        .HasForeignKey("CategoryID");
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
                 {
                     b.HasOne("Fyp.Models.BrandDetail", "Brand")
@@ -414,9 +496,17 @@ namespace Fyp.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Fyp.Models.SKUDetail", "SKU")
+                        .WithMany()
+                        .HasForeignKey("SKUID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+
+                    b.Navigation("SKU");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -468,6 +558,16 @@ namespace Fyp.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Fyp.Models.BrandDetail", b =>
+                {
+                    b.Navigation("Discounts");
+                });
+
+            modelBuilder.Entity("Fyp.Models.CategoryDetail", b =>
+                {
+                    b.Navigation("Discounts");
                 });
 #pragma warning restore 612, 618
         }

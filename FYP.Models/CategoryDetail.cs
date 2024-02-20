@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Fyp.Models
 {
@@ -9,6 +10,8 @@ namespace Fyp.Models
         [Required]
         [StringLength(255)]
         public string CategoryName { get; set; }
+        [ValidateNever]
+        public ICollection<DiscountDetail>? Discounts { get; set; }
 
 
     }

@@ -32,6 +32,9 @@ namespace FypWeb.Areas.Admin.Controllers
        
             this.hostEnvironment = hostEnvironment;
         }
+    
+
+
         public class EpcScanResult
         {
             public string OriginalEPC { get; set; }
@@ -219,13 +222,55 @@ namespace FypWeb.Areas.Admin.Controllers
         // POST: Product/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /*   [HttpPost]
+           [ValidateAntiForgeryToken]
+           public IActionResult Create(ProductDetailViewModel productViewModel, IFormFile? file)
+           {
+
+               productViewModel.Product.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(productViewModel.Product.Name.ToLower());
+               string wwwRootPath = hostEnvironment.WebRootPath;
+               if (IsEpcUnique(productViewModel.Product.RFIDTag))
+               {
+                   if (file != null)
+                   {
+                       string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                       string productPath = Path.Combine(wwwRootPath, "images", "product");
+                       Directory.CreateDirectory(productPath);
+                       string filePath = Path.Combine(productPath, fileName);
+                       using (var fileStream = new FileStream(filePath, FileMode.Create))
+                       {
+                           file.CopyTo(fileStream);
+                       }
+                       productViewModel.Product.ImageUrl = "/images/product/" + fileName;
+
+                   }
+
+                   _context.Add(productViewModel.Product);
+                   _context.SaveChanges();
+                   TempData["success"] = "Product has been added successfully.";
+                   return RedirectToAction(nameof(Index));
+
+               }
+               else
+               {
+
+                   ViewBag.EpcError = "This EPC is already assigned to another product.";
+               }
+
+               // Populate ViewBag for Category and Brand if ModelState is not valid
+               ViewBag.getCategory = _context.Category.ToList();
+               ViewBag.getBrand = _context.Brand.ToList();
+               return View(productViewModel);
+           }
+
+   */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(ProductDetailViewModel productViewModel, IFormFile? file)
         {
-
             productViewModel.Product.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(productViewModel.Product.Name.ToLower());
             string wwwRootPath = hostEnvironment.WebRootPath;
+
             if (IsEpcUnique(productViewModel.Product.RFIDTag))
             {
                 if (file != null)
@@ -239,18 +284,27 @@ namespace FypWeb.Areas.Admin.Controllers
                         file.CopyTo(fileStream);
                     }
                     productViewModel.Product.ImageUrl = "/images/product/" + fileName;
-
                 }
+
+                // Check if an SKU exists with the provided SKU code
+                var existingSku = _context.SKU.FirstOrDefault(sku => sku.SKU == productViewModel.SKU);
+                if (existingSku == null)
+                {
+                    // If not, create a new SKUDetail entry
+                    existingSku = new SKUDetail { SKU = productViewModel.SKU };
+                    _context.SKU.Add(existingSku);
+                    _context.SaveChanges(); // Save changes to obtain the SKUID
+                }
+                // Assign the SKUID to the ProductDetail
+                productViewModel.Product.SKUID = existingSku.SKUID;
 
                 _context.Add(productViewModel.Product);
                 _context.SaveChanges();
                 TempData["success"] = "Product has been added successfully.";
                 return RedirectToAction(nameof(Index));
-
             }
             else
             {
-
                 ViewBag.EpcError = "This EPC is already assigned to another product.";
             }
 
@@ -259,7 +313,6 @@ namespace FypWeb.Areas.Admin.Controllers
             ViewBag.getBrand = _context.Brand.ToList();
             return View(productViewModel);
         }
-
 
         // GET: Product/Edit/5
         public async Task<IActionResult> Edit(int? id)

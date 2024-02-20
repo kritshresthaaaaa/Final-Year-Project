@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Fyp.Models
 {
@@ -12,6 +13,8 @@ namespace Fyp.Models
         [Display(Name = "Creation Date")]
         [DataType(DataType.Date)]
         public DateTime CreationDate { get; set; }
+        [ValidateNever]
+        public ICollection<DiscountDetail>? Discounts { get; set; }
 
     }
 }

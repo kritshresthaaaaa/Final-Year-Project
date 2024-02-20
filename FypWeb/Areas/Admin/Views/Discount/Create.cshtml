@@ -1,37 +1,93 @@
-﻿<section class="p-2 border">
+﻿@model DiscountVM
+
+<section class="p-2 border">
     <div class="flex justify-center">
         <h1 class="text-2xl font-semibold">Create New Discount</h1>
     </div>
     <form method="post" asp-action="Create" class="flex flex-col gap-4">
         <div class="flex flex-col gap-2">
+            <label for="DiscountStatus">Discount For</label>
+            <select asp-for=DiscountFor  id="DiscountFor" class="border px-2 h-8 rounded-md focus:outline-blue-200 rounded-md">
+                <option value="">Select Option</option> <!-- Added for validation -->
+                <option value="Products">Products</option>
+                <option value="Brands">Brands</option>
+                <option value="Categories">Categories</option>
+            </select>
+            <span asp-validation-for="DiscountFor"></span>
+        </div>
+
+
+        <!-- Container for Dynamic Select Field -->
+        <div id="categorySelectContainer" class=" flex-col gap-2" style="display:none; ">
+            <label asp-for="SelectedCategoryId">Available Categories</label>
+            <select asp-for="SelectedCategoryId" asp-items="@Model.CategoryList" class="border px-2 h-8 rounded-md focus:outline-blue-200 rounded-md">
+                <option disabled selected>--Select Category--</option>
+            </select>
+        </div>
+        <div id="brandSelectContainer" class="flex flex-col gap-2" style="display:none;">
+            <label asp-for="SelectedBrandId">Available Brands</label>
+            <select asp-for="SelectedBrandId" asp-items="@Model.BrandList" class="border px-2 h-8 rounded-md focus:outline-blue-200 rounded-md">
+                <option disabled selected>--Select Brand--</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-2">
             <label for="DiscountName">Discount Name</label>
-            <input type="text" name="DiscountName" id="DiscountName" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200 " />
+            <input asp-for=Discount.Name type="text"  id="DiscountName" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200 " />
+            <span class="text-red-600" asp-validation-for="Discount.Name"></span>
         </div>
         <div class="flex flex-col gap-2">
             <label for="DiscountPercentage">Discount Percentage</label>
-            <input type="number" name="DiscountPercentage" id="DiscountPercentage" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+            <input asp-for="Discount.Percentage" type="number"  id="DiscountPercentage" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+            <span class="text-red-600" asp-validation-for="Discount.Percentage"></span>
         </div>
-        <div class="flex flex-col gap-2">
-            <label for="DiscountPercentage">Minimunm Purchase </label>
-            <input type="number" name="DiscountPercentage" id="DiscountPercentage" placeholder="if any" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
-        </div>
+ 
         <div class="flex flex-col gap-2">
             <label for="DiscountStartDate">Discount Start Date</label>
-            <input type="date" name="DiscountStartDate" id="DiscountStartDate" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+            <input asp-for="Discount.StartDate" type="date"  id="DiscountStartDate" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+            <span class="text-red-600" asp-validation-for="Discount.StartDate"></span>
         </div>
         <div class="flex flex-col gap-2">
             <label for="DiscountEndDate">Discount End Date</label>
-            <input type="date" name="DiscountEndDate" id="DiscountEndDate" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+            <input asp-for="Discount.EndDate" type="date" id="DiscountEndDate" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+            <span class="text-red-600" asp-validation-for="Discount.EndDate"></span>
         </div>
+
         <div class="flex flex-col gap-2">
             <label for="DiscountStatus">Discount Status</label>
-            <select name="DiscountStatus" id="DiscountStatus" class="border   px-2 h-8 rounded-md focus:outline-blue-200  rounded-md">
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+            <select asp-for="Discount.IsActive"  id="DiscountStatus" class="border   px-2 h-8 rounded-md focus:outline-blue-200  rounded-md">
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
             </select>
+            <span class="text-red-600" asp-validation-for="Discount.IsActive"></span>
         </div>
         <div class="flex justify-center">
             <button type="submit" class="bg-[#7258DB] text-white px-4 py-2 rounded-md">Create Discount</button>
         </div>
     </form>
 </section>
+@section Scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var discountForSelect = document.getElementById('DiscountFor');
+            var categorySelectContainer = document.getElementById('categorySelectContainer');
+            var brandSelectContainer = document.getElementById('brandSelectContainer');
+
+            discountForSelect.addEventListener('change', function () {
+                // Hide both containers initially
+                categorySelectContainer.style.display = 'none';
+                brandSelectContainer.style.display = 'none';
+
+                var selectedOption = this.value;
+
+                // Show the relevant container based on the selected option
+                if (selectedOption === 'Brands') {
+                    brandSelectContainer.style.display = 'block';
+                }
+                else if (selectedOption === 'Categories') {
+                    categorySelectContainer.style.display = 'block';
+                }
+                // You can add an else if condition for Products if necessary
+            });
+        });
+    </script>
+}

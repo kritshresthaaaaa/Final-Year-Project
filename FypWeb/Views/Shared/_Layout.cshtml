@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/css/table.css     " />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
@@ -275,13 +276,10 @@
                             </a>
                         </li>
                         <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2] " id="productDropdown">
-                            <a asp-area="Admin" asp-controller="Product" asp-action="Index" class="flex justify-center items-start hover:text-amber-300 cursor-pointer">
-                               Manual Checkout
+                            <a asp-area="SalesEmployee" asp-controller="Checkout" asp-action="Index" class="flex justify-center items-start hover:text-amber-300 cursor-pointer">
+                              Cart Checkout
                             </a>
-                            <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="flex justify-center items-start hover:text-amber-300 cursor-pointer">
-                                Automatic Checkout
-                            </a>
-
+                          
                             <a asp-area="Admin" asp-controller="Product" asp-action="Scan" class="flex justify-center hover:text-amber-300 cursor-pointer">
                                 Scan a Product
                             </a>

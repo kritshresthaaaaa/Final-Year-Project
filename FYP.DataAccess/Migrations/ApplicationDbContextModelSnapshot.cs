@@ -61,6 +61,47 @@ namespace Fyp.DataAccess.Migrations
                     b.ToTable("Category");
                 });
 
+            modelBuilder.Entity("Fyp.Models.DiscountDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BrandID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<decimal>("Percentage")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandID");
+
+                    b.HasIndex("CategoryID");
+
+                    b.ToTable("Discount");
+                });
+
             modelBuilder.Entity("Fyp.Models.EmployeeDetail", b =>
                 {
                     b.Property<int>("Id")
@@ -135,12 +176,18 @@ namespace Fyp.DataAccess.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<double>("OriginalPrice")
+                        .HasColumnType("float");
+
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("RFIDTag")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SKUID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Sizes")
                         .IsRequired()
@@ -152,32 +199,68 @@ namespace Fyp.DataAccess.Migrations
 
                     b.HasIndex("CategoryID");
 
+                    b.HasIndex("SKUID");
+
                     b.ToTable("Product");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            BrandID = 2,
-                            CategoryID = 6,
+                            BrandID = 1,
+                            CategoryID = 1,
                             Description = "Product 1 Description",
                             ImageUrl = "",
-                            Name = "Product 1",
+                            Name = "Black Tshirt",
+                            OriginalPrice = 0.0,
                             Price = 100.0,
                             RFIDTag = "123456",
+                            SKUID = 1,
                             Sizes = "S"
                         },
                         new
                         {
                             Id = 2,
                             BrandID = 2,
-                            CategoryID = 6,
+                            CategoryID = 2,
                             Description = "Product 2 Description",
                             ImageUrl = "",
-                            Name = "Product 2",
+                            Name = "Florence Tshirt",
+                            OriginalPrice = 0.0,
                             Price = 200.0,
                             RFIDTag = "123457",
+                            SKUID = 2,
                             Sizes = "M"
+                        });
+                });
+
+            modelBuilder.Entity("Fyp.Models.SKUDetail", b =>
+                {
+                    b.Property<int>("SKUID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SKUID"));
+
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("SKUID");
+
+                    b.ToTable("SKU");
+
+                    b.HasData(
+                        new
+                        {
+                            SKUID = 1,
+                            SKU = "GUC-MC-BLA-S"
+                        },
+                        new
+                        {
+                            SKUID = 2,
+                            SKU = "NIK-WC-FLO-M"
                         });
                 });
 
@@ -423,6 +506,21 @@ namespace Fyp.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Fyp.Models.DiscountDetail", b =>
+                {
+                    b.HasOne("Fyp.Models.BrandDetail", "Brand")
+                        .WithMany("Discounts")
+                        .HasForeignKey("BrandID");
+
+                    b.HasOne("Fyp.Models.CategoryDetail", "Category")
+                        .WithMany("Discounts")
+                        .HasForeignKey("CategoryID");
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
                 {
                     b.HasOne("Fyp.Models.BrandDetail", "Brand")
@@ -437,9 +535,17 @@ namespace Fyp.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Fyp.Models.SKUDetail", "SKU")
+                        .WithMany()
+                        .HasForeignKey("SKUID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+
+                    b.Navigation("SKU");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -491,6 +597,16 @@ namespace Fyp.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Fyp.Models.BrandDetail", b =>
+                {
+                    b.Navigation("Discounts");
+                });
+
+            modelBuilder.Entity("Fyp.Models.CategoryDetail", b =>
+                {
+                    b.Navigation("Discounts");
                 });
 #pragma warning restore 612, 618
         }

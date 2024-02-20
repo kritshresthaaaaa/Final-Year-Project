@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fyp.Models
@@ -18,15 +19,23 @@ namespace Fyp.Models
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero")]
         [Required]
         public double Price { get; set; }
+  
+        public double OriginalPrice { get; set; }
+
         [Required]
 
         public int BrandID { get; set; }
 
         [Required]
         public int CategoryID { get; set; }
+        [Required]
+        public int SKUID { get; set; }
 
-
+        [ValidateNever]
+        public virtual SKUDetail SKU { get; set; }
+        [ValidateNever]
         public virtual BrandDetail Brand { get; set; }
+        [ValidateNever]
         public virtual CategoryDetail Category { get; set; }
 
 
@@ -36,5 +45,8 @@ namespace Fyp.Models
       
 
         public string? ImageUrl { get; set; }
+     
+
+
     }
 }

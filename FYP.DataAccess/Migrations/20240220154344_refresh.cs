@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Fyp.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class refreshed : Migration
+    public partial class refresh : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -106,6 +106,19 @@ namespace Fyp.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Employee", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SKU",
+                columns: table => new
+                {
+                    SKUID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SKU = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SKU", x => x.SKUID);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,6 +228,36 @@ namespace Fyp.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Discount",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Percentage = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    MinimumPurchase = table.Column<double>(type: "float", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    BrandID = table.Column<int>(type: "int", nullable: true),
+                    CategoryID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Discount", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Discount_Brand_BrandID",
+                        column: x => x.BrandID,
+                        principalTable: "Brand",
+                        principalColumn: "BrandID");
+                    table.ForeignKey(
+                        name: "FK_Discount_Category_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Category",
+                        principalColumn: "CategoryID");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Product",
                 columns: table => new
                 {
@@ -225,6 +268,7 @@ namespace Fyp.DataAccess.Migrations
                     Price = table.Column<double>(type: "float", nullable: false),
                     BrandID = table.Column<int>(type: "int", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
+                    SKUID = table.Column<int>(type: "int", nullable: false),
                     RFIDTag = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Sizes = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -243,6 +287,12 @@ namespace Fyp.DataAccess.Migrations
                         column: x => x.CategoryID,
                         principalTable: "Category",
                         principalColumn: "CategoryID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Product_SKU_SKUID",
+                        column: x => x.SKUID,
+                        principalTable: "SKU",
+                        principalColumn: "SKUID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -286,6 +336,16 @@ namespace Fyp.DataAccess.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Discount_BrandID",
+                table: "Discount",
+                column: "BrandID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Discount_CategoryID",
+                table: "Discount",
+                column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Product_BrandID",
                 table: "Product",
                 column: "BrandID");
@@ -294,6 +354,11 @@ namespace Fyp.DataAccess.Migrations
                 name: "IX_Product_CategoryID",
                 table: "Product",
                 column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_SKUID",
+                table: "Product",
+                column: "SKUID");
         }
 
         /// <inheritdoc />
@@ -315,6 +380,9 @@ namespace Fyp.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Discount");
+
+            migrationBuilder.DropTable(
                 name: "Employee");
 
             migrationBuilder.DropTable(
@@ -331,6 +399,9 @@ namespace Fyp.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Category");
+
+            migrationBuilder.DropTable(
+                name: "SKU");
         }
     }
 }
