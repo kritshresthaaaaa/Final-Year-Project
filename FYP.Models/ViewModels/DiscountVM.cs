@@ -20,6 +20,10 @@ namespace Fyp.Models.ViewModels
         public IEnumerable<SelectListItem> CategoryList { get; set; }
         [ValidateNever]
         public IEnumerable<SelectListItem> BrandList { get; set; }
+        // Add this for SKU
+        [ValidateNever]
+        public IEnumerable<SelectListItem> SKUList { get; set; }
+        public int? SelectedSKUID { get; set; }
 
     }
 }

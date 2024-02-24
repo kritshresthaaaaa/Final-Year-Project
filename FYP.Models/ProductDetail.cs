@@ -20,7 +20,7 @@ namespace Fyp.Models
         [Required]
         public double Price { get; set; }
   
-        public double OriginalPrice { get; set; }
+        public double DiscountedPrice { get; set; }
 
         [Required]
 

@@ -114,7 +114,7 @@ namespace Fyp.DataAccess.Migrations
                 {
                     SKUID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SKU = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                    Code = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -235,12 +235,12 @@ namespace Fyp.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Percentage = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    MinimumPurchase = table.Column<double>(type: "float", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     BrandID = table.Column<int>(type: "int", nullable: true),
-                    CategoryID = table.Column<int>(type: "int", nullable: true)
+                    CategoryID = table.Column<int>(type: "int", nullable: true),
+                    SKUID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -255,6 +255,11 @@ namespace Fyp.DataAccess.Migrations
                         column: x => x.CategoryID,
                         principalTable: "Category",
                         principalColumn: "CategoryID");
+                    table.ForeignKey(
+                        name: "FK_Discount_SKU_SKUID",
+                        column: x => x.SKUID,
+                        principalTable: "SKU",
+                        principalColumn: "SKUID");
                 });
 
             migrationBuilder.CreateTable(
@@ -266,6 +271,7 @@ namespace Fyp.DataAccess.Migrations
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
+                    OriginalPrice = table.Column<double>(type: "float", nullable: false),
                     BrandID = table.Column<int>(type: "int", nullable: false),
                     CategoryID = table.Column<int>(type: "int", nullable: false),
                     SKUID = table.Column<int>(type: "int", nullable: false),
@@ -344,6 +350,11 @@ namespace Fyp.DataAccess.Migrations
                 name: "IX_Discount_CategoryID",
                 table: "Discount",
                 column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Discount_SKUID",
+                table: "Discount",
+                column: "SKUID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_BrandID",

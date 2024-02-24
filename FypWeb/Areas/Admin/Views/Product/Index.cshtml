@@ -1,109 +1,120 @@
 ﻿@model IEnumerable<ProductDetailViewModel>
 
 <section class="p-2">
-<div class="relative overflow-hidden bg-white border sm:rounded-lg">
-    <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
-        <div class="flex items-center flex-1 space-x-4">
-            <h5>
-                <span class="text-black">All Products:</span>
-                <span class="text-gray-500">@ViewBag.productCount</span>
-            </h5>
-            <h5>
-                <span class="text-black">Total sales:</span>
-                <span class="text-gray-500">$88.4k</span>
-            </h5>
+    <div class="relative overflow-hidden bg-white border sm:rounded-lg">
+        <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
+            <div class="flex items-center flex-1 space-x-4">
+                <h5>
+                    <span class="text-black">All Products:</span>
+                    <span class="text-gray-500">@ViewBag.productCount</span>
+                </h5>
+                <h5>
+                    <span class="text-black">Total sales:</span>
+                    <span class="text-gray-500">$88.4k</span>
+                </h5>
+            </div>
+            <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
+                <a asp-action="Create" type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-[#7258DB]  focus:ring-primary-300 ">
+                    <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    </svg>
+                    Add new product
+                </a>
+                <button type="button" class="flex items-center justify-center  flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#4ADE80] ">
+                    <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Update stocks 1/250
+                </button>
+
+            </div>
         </div>
-        <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-            <a asp-action="Create" type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-[#7258DB]  focus:ring-primary-300 ">
-                <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                </svg>
-                Add new product
-            </a>
-            <button type="button" class="flex items-center justify-center  flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#4ADE80] ">
-                <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="none" viewbox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                </svg>
-                Update stocks 1/250
-            </button>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 ">
+                <thead class="text-xs text-black uppercase border rounded ">
+                    <tr class="">
+                        <th scope="col" class="p-4">
+                            <p class="flex justify-center items-center">ID</p>
+                        </th>
+                        <th scope="col" class="px-4 py-3 "><p class="flex justify-center items-center">Product</p></th>
+                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Category</p></th>
+                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Size</p></th>
 
-        </div>
-    </div>
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left text-gray-500 ">
-            <thead class="text-xs text-black uppercase border rounded ">
-                <tr class="">
-                    <th scope="col" class="p-4">
-                        <p class="flex justify-center items-center">ID</p>
-                    </th>
-                    <th scope="col" class="px-4 py-3 "><p class="flex justify-center items-center">Product</p></th>
-                    <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Category</p></th>
-                    <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Size</p></th>
-
-                    <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Price</p></th>
+                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Price</p></th>
 
 
-                    <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Units Sold</p></th>
-                    <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Total Sales</p></th>
+                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Units Sold</p></th>
+                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Total Sales</p></th>
 
 
-                    <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Operations</p></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-
-                    <tr class="border-b border-gray-600 cursor-pointer hover:bg-gray-100 ">
-                        <td class="px-2 py-2  ">
-                            <span class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-                                @Html.DisplayFor(modelItem => item.Product.Id)
-                            </span>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <div class="flex justify-center">
-                                <!-- Wrap image and name in a flex container -->
-                                @* <img src="@Html.DisplayFor(modelItem => item.Product.)" class="w-7 h-auto mr-2 rounded-full border"> <!-- Adjust the width (e.g., w-16) as needed --> *@
-                                @Html.DisplayFor(modelItem => item.Product.Name)
-                            </div>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Category.CategoryName)</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Sizes)</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <p class="flex justify-center">Rs. @Html.DisplayFor(modelItem => item.Product.Price)</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
-                            <p class="flex justify-center">132 units@* @Html.DisplayFor(modelItem => item.Product.S) *@</p>
-                        </td>
-                        <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
-                            <p class="flex justify-center">Rs. 0@* @Html.DisplayFor(modelItem => item.Product.S) *@</p>
-                        </td>
-         
-
-
-                  @*       <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                            <p>@Html.DisplayFor(modelItem => item.Employee.RegistrationDate)</p>
-                        </td> *@
-                        <td class="px-4 py-2 font-medium whitespace-nowrap flex justify-center mt-2.5">
-                            <div class="flex gap-x-2">
-                                <a asp-action="Details" asp-route-id="@item.Product.Id" class="flex items-center">Details</a>
-                                &nbsp;
-                                <a asp-action="Edit" asp-route-id="@item.Product.Id">
-                                    Edit
-                                </a>
-                                &nbsp;
-                                <a asp-action="Delete" asp-route-id="@item.Product.Id" class="flex items-center">Delete</a>
-                            </div>
-                        </td>
+                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Operations</p></th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
 
-            </tbody>
-        </table>
+                        <tr class="border-b border-gray-600 cursor-pointer hover:bg-gray-100 ">
+                            <td class="px-2 py-2  ">
+                                <span class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+                                    @Html.DisplayFor(modelItem => item.Product.Id)
+                                </span>
+                            </td>
+                            <td class="px-4 py-2 font-medium whitespace-nowrap  ">
+                                <div class="flex justify-center">
+                                    <!-- Wrap image and name in a flex container -->
+                                    @* <img src="@Html.DisplayFor(modelItem => item.Product.)" class="w-7 h-auto mr-2 rounded-full border"> <!-- Adjust the width (e.g., w-16) as needed --> *@
+                                    @Html.DisplayFor(modelItem => item.Product.Name)
+                                </div>
+                            </td>
+                            <td class="px-4 py-2 font-medium whitespace-nowrap  ">
+                                <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Category.CategoryName)</p>
+                            </td>
+                            <td class="px-4 py-2 font-medium whitespace-nowrap  ">
+                                <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Sizes)</p>
+                            </td>
+                            <td class="px-4 py-2 font-medium whitespace-nowrap">
+                                @{
+                                    // Assuming today's date for comparison
+                                    var today = DateTime.Today;
+
+                                    // Check if the discount period is valid and if today's date falls within this period
+                                    var isDiscountActive = item.DiscountStartDate <= today && today <= item.DiscountEndDate;
+
+                                    // Display discounted price if the discount is active, otherwise display the original price
+                                    var priceToDisplay = isDiscountActive ? item.Product.DiscountedPrice : item.Product.Price;
+                                }
+                                <p class="flex justify-center">Rs. @priceToDisplay</p>
+                            </td>
+
+                            <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
+                                <p class="flex justify-center">132 units@* @Html.DisplayFor(modelItem => item.Product.S) *@</p>
+                            </td>
+                            <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
+                                <p class="flex justify-center">Rs. 0@* @Html.DisplayFor(modelItem => item.Product.S) *@</p>
+                            </td>
+
+
+
+                            @*       <td class="px-4 py-2 font-medium whitespace-nowrap  ">
+                        <p>@Html.DisplayFor(modelItem => item.Employee.RegistrationDate)</p>
+                        </td> *@
+                            <td class="px-4 py-2 font-medium whitespace-nowrap flex justify-center mt-2.5">
+                                <div class="flex gap-x-2">
+                                    <a asp-action="Details" asp-route-id="@item.Product.Id" class="flex items-center">Details</a>
+                                    &nbsp;
+                                    <a asp-action="Edit" asp-route-id="@item.Product.Id">
+                                        Edit
+                                    </a>
+                                    &nbsp;
+                                    <a asp-action="Delete" asp-route-id="@item.Product.Id" class="flex items-center">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 </section>

@@ -11,6 +11,10 @@ namespace Fyp.Models.ViewModels
         [StringLength(30, ErrorMessage = "SKU cannot be longer than 30 characters.")]
         [RegularExpression("^[A-Z0-9-]+$", ErrorMessage = "SKU must consist of uppercase letters, numbers, and dashes only.")]
         public string SKU { get; set; }
+        public double DiscountPercentage { get; set; } // Nullable to indicate when no discount applies  
+        public DateTime? DiscountStartDate { get; set; }
+        public DateTime? DiscountEndDate { get; set; }
+        public DiscountDetail? Discount { get; set; }
 
     }
 }

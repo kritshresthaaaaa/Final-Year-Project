@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css     " />
+    <link rel="stylesheet" href="~/css/scroll.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/table.css     " />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
@@ -39,9 +40,9 @@
 
     </nav>
 
-  
-    
-        <div class="flex">
+
+
+    <div class="flex">
         @if (User.IsInRole(SD.Role_Admin))
         {
             <div class="min-h-screen flex flex-row bg-[#7258DB] ">
@@ -169,7 +170,7 @@
                             <a asp-area="Admin" asp-controller="Employee" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
                                 Employee List
                             </a>
-                            <a asp-area="Identity" asp-page="/Account/Register"  class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            <a asp-area="Identity" asp-page="/Account/Register" class="flex justify-center hover:text-amber-300 cursor-pointer">
                                 Create Employee
                             </a>
                         </li>
@@ -234,12 +235,12 @@
 
 
 
-                 @*        <li>
-                            <a asp-area="Admin" asp-controller="Home" asp-action="LogOut" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
-                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-log-out"></i></span>
-                                <span class="text-sm font-medium">Logout</span>
-                            </a>
-                        </li> *@
+                        @*        <li>
+                    <a asp-area="Admin" asp-controller="Home" asp-action="LogOut" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                    <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-log-out"></i></span>
+                    <span class="text-sm font-medium">Logout</span>
+                    </a>
+                    </li> *@
                     </ul>
                 </div>
             </div>
@@ -277,9 +278,9 @@
                         </li>
                         <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2] " id="productDropdown">
                             <a asp-area="SalesEmployee" asp-controller="Checkout" asp-action="Index" class="flex justify-center items-start hover:text-amber-300 cursor-pointer">
-                              Cart Checkout
+                                Cart Checkout
                             </a>
-                          
+
                             <a asp-area="Admin" asp-controller="Product" asp-action="Scan" class="flex justify-center hover:text-amber-300 cursor-pointer">
                                 Scan a Product
                             </a>
@@ -295,27 +296,27 @@
                                     <i class='bx bxs-report'></i>
                                 </span>
                                 <span class="text-sm font-medium">Transactions</span>
-                      @*           <span class="ml-2 w-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 20 20"
-                                         fill="currentColor"
-                                         class="h-5 w-5">
-                                        <path fill-rule="evenodd"
-                                              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                                              clip-rule="evenodd" />
-                                    </svg>
-                                </span> *@
+                                @*           <span class="ml-2 w-2">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            class="h-5 w-5">
+                            <path fill-rule="evenodd"
+                            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                            clip-rule="evenodd" />
+                            </svg>
+                            </span> *@
                             </a>
                         </li>
-               @*          <li class="dropdown commonDropdown hidden flex-col justify-center  text-sm space-y-2 text-[#f2f2f2]" id="categoryDropdown">
-                            <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                
-                            </a>
-                            <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                Category Add
-                            </a>
+                        @*          <li class="dropdown commonDropdown hidden flex-col justify-center  text-sm space-y-2 text-[#f2f2f2]" id="categoryDropdown">
+                    <a asp-area="Admin" asp-controller="Category" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
 
-                        </li> *@
+                    </a>
+                    <a asp-area="Admin" asp-controller="Category" asp-action="Create" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                    Category Add
+                    </a>
+
+                    </li> *@
                         <li class="relative" data-te-dropdown-ref>
                             <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
                                data-te-dropdown-toggle-ref
@@ -344,7 +345,7 @@
                                 Add Brand
                             </a>
                         </li>
-                     
+
 
 
                         @*        <li>
@@ -358,16 +359,16 @@
             </div>
         }
         @* side bar *@
-           
 
-            <div class="container  bg-[#F9FBFD]">
-                <main role="main" class=" ">
-                    <partial name="_Notification" />
-                    @RenderBody()
-                </main>
-            </div>
+
+        <div class="container  bg-[#F9FBFD]">
+            <main role="main" class=" ">
+                <partial name="_Notification" />
+                @RenderBody()
+            </main>
         </div>
-   
+    </div>
+
 
 
     @*     else

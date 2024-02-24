@@ -30,6 +30,12 @@
                 <option disabled selected>--Select Brand--</option>
             </select>
         </div>
+        <div id="skuSelectContainer" class="flex flex-col gap-2" style="display:none;">
+            <label asp-for="SelectedSKUID">Available SKU</label>
+            <select asp-for="SelectedSKUID" asp-items="@Model.SKUList" class="border px-2 h-8 rounded-md focus:outline-blue-200 rounded-md">
+                <option disabled selected>--Select SKU--</option>
+            </select>
+        </div>
         <div class="flex flex-col gap-2">
             <label for="DiscountName">Discount Name</label>
             <input asp-for=Discount.Name type="text"  id="DiscountName" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200 " />
@@ -43,8 +49,9 @@
  
         <div class="flex flex-col gap-2">
             <label for="DiscountStartDate">Discount Start Date</label>
-            <input asp-for="Discount.StartDate" type="date"  id="DiscountStartDate" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
-            <span class="text-red-600" asp-validation-for="Discount.StartDate"></span>
+            <input id="discountStartDate" type="date" disabled class="h-8 border text-gray-400 mt-2 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+           
+            
         </div>
         <div class="flex flex-col gap-2">
             <label for="DiscountEndDate">Discount End Date</label>
@@ -60,13 +67,25 @@
             </select>
             <span class="text-red-600" asp-validation-for="Discount.IsActive"></span>
         </div>
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <span class="text-red-600">@ViewBag.ErrorMessage</span>
+      
+
+        }
         <div class="flex justify-center">
             <button type="submit" class="bg-[#7258DB] text-white px-4 py-2 rounded-md">Create Discount</button>
         </div>
     </form>
+  
+
 </section>
 @section Scripts{
     <script>
+        window.onload = function () {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('discountStartDate').value = today;
+        };
         document.addEventListener('DOMContentLoaded', function () {
             var discountForSelect = document.getElementById('DiscountFor');
             var categorySelectContainer = document.getElementById('categorySelectContainer');
@@ -85,6 +104,10 @@
                 }
                 else if (selectedOption === 'Categories') {
                     categorySelectContainer.style.display = 'block';
+                }
+                else  if (selectedOption === 'Products') {
+                    skuSelectContainer.style.display = 'block';
+                    // You can add an else if condition for Products if necessary
                 }
                 // You can add an else if condition for Products if necessary
             });

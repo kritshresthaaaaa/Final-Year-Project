@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240220180354_removedMinimumPurchase")]
-    partial class removedMinimumPurchase
+    [Migration("20240221134853_discountWSKUProduct")]
+    partial class discountWSKUProduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,6 +93,9 @@ namespace Fyp.DataAccess.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("SKUID")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -101,6 +104,8 @@ namespace Fyp.DataAccess.Migrations
                     b.HasIndex("BrandID");
 
                     b.HasIndex("CategoryID");
+
+                    b.HasIndex("SKUID");
 
                     b.ToTable("Discount");
                 });
@@ -245,7 +250,7 @@ namespace Fyp.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SKUID"));
 
-                    b.Property<string>("SKU")
+                    b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
@@ -258,12 +263,12 @@ namespace Fyp.DataAccess.Migrations
                         new
                         {
                             SKUID = 1,
-                            SKU = "GUC-MC-BLA-S"
+                            Code = "GUC-MC-BLA-S"
                         },
                         new
                         {
                             SKUID = 2,
-                            SKU = "NIK-WC-FLO-M"
+                            Code = "NIK-WC-FLO-M"
                         });
                 });
 
@@ -519,9 +524,15 @@ namespace Fyp.DataAccess.Migrations
                         .WithMany("Discounts")
                         .HasForeignKey("CategoryID");
 
+                    b.HasOne("Fyp.Models.SKUDetail", "SKU")
+                        .WithMany()
+                        .HasForeignKey("SKUID");
+
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
+
+                    b.Navigation("SKU");
                 });
 
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>

@@ -36,12 +36,20 @@ namespace Fyp.Models
         [ForeignKey("Category")]
         public int? CategoryID { get; set; }
 
+        
         // Navigation properties
         [ValidateNever]
         public virtual BrandDetail? Brand { get; set; }
         [ValidateNever]
         public virtual CategoryDetail? Category { get; set; }
 
+        [ForeignKey("SKU")]
+        public int? SKUID { get; set; }
+
+        [ValidateNever]
+        public virtual SKUDetail? SKU { get; set; }
      
+
+
     }
 }

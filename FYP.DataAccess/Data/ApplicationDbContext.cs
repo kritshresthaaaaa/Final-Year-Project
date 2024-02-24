@@ -17,8 +17,12 @@ namespace Fyp.DataAccess.Data
         public DbSet<CategoryDetail> Category { get; set; }
         public DbSet<BrandDetail> Brand { get; set; }
         public DbSet<EmployeeDetail> Employee { get; set; }
+        public DbSet<Bill> Bill { get; set; }
+        public DbSet<BillItem> BillItem { get; set; }
         public DbSet<SKUDetail> SKU { get; set; }
         public DbSet<DiscountDetail> Discount { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,8 +44,8 @@ namespace Fyp.DataAccess.Data
 
 
             modelBuilder.Entity<SKUDetail>().HasData(
-                new SKUDetail { SKUID = 1, SKU = "GUC-MC-BLA-S" },
-                new SKUDetail { SKUID = 2, SKU = "NIK-WC-FLO-M" }
+                new SKUDetail { SKUID = 1, Code = "GUC-MC-BLA-S" },
+                new SKUDetail { SKUID = 2, Code = "NIK-WC-FLO-M" }
 
             );
 
@@ -58,7 +62,8 @@ namespace Fyp.DataAccess.Data
                     RFIDTag = "123456",
                     Sizes = "S",
                     ImageUrl = "",
-                    SKUID = 1 // Reference to the seeded SKUDetail
+                    SKUID = 1 // Reference to the seeded SKUDetail,
+
                 },
                 new ProductDetail
                 {

@@ -47,44 +47,6 @@ namespace FypWeb.Areas.Admin.Controllers
             public string ErrorMessage { get; set; }
         }
 
-        /*        public async Task<JsonResult> ReadAndWriteEPC()
-                {
-                    try
-                    {
-                        // Connect to the device
-                        util.connect(device, false);
-
-                        string readMode = util.getReadMode(device, false);
-
-                        if (readMode != "AUTONOMOUS")
-                        {
-                            util.setDeviceMode(device, "Autonomous", false);
-                        }
-
-                        // Make an inventory and collect all the EPCs
-                        util.startStopDevice(device, true, false);
-                        await Task.Delay(2000);
-                        List<string> detectedEPCs = util.getSequentialInventory(device, true, false);
-                        *//*Thread.Sleep(2000);*//*
-
-                        util.startStopDevice(device, false, false);
-
-                        var result = new List<EpcScanResult>();
-
-                        // Iterate through detected EPCs
-                        foreach (string epc in detectedEPCs)
-                        {
-                            // Simply add the original EPC to the result
-                            result.Add(new EpcScanResult { OriginalEPC = epc, NewEPC = epc });
-                        }
-
-                        return new JsonResult(new ScanResponse { Results = result });
-                    }
-                    catch (Exception ex)
-                    {
-                        return new JsonResult(new ScanResponse { ErrorMessage = ex.Message });
-                    }
-                }*/
         public async Task<JsonResult> ReadAndWriteEPC()
         {
             try
@@ -146,41 +108,56 @@ namespace FypWeb.Areas.Admin.Controllers
 
             return Json(inventoryList);
         }
-
-
-
-        /*
-                [HttpGet]
-                public IActionResult refreshProductList()
-                {
-                    var response = ReadAndWriteEPC();
-                    // You may need to convert the response to a format suitable for your view
-                    return response;
-                }*/
-
-        /*       private string changeFirstBit(string epc)
-               {
-                   // Change the first bit of the EPC
-                   string binEPC = this.utilities.HexStringToBinary(epc);
-                   string newBinEPC = binEPC[0] == '0' ? '1' + binEPC.Substring(1) : '0' + binEPC.Substring(1);
-                   return this.utilities.BinaryStringToHex(newBinEPC);
-               }*/
         // GET: Product
+        /*    public async Task<IActionResult> Index()
+            {
+                var today = DateTime.Today;
+                // Fetch products with their categories
+                var products = await _context.Product
+                    .Include(p => p.Category) // Eagerly load Category data
+                    .ToListAsync();
+
+                // Map to ProductDetailViewModel
+                var productViewModels = products.Select(p => new ProductDetailViewModel
+                {
+                    Product = p
+                }).ToList();
+                ViewBag.productCount = productViewModels.Count();
+
+                return View(productViewModels);
+            }*/
         public async Task<IActionResult> Index()
         {
-            // Fetch products with their categories
-            var products = await _context.Product
-                .Include(p => p.Category) // Eagerly load Category data
+            var today = DateTime.Today;
+            var productsWithDiscounts = await _context.Product
+                .Include(p => p.Category)
+                .Select(p => new
+                {
+                    Product = p,
+                    Discount = _context.Discount
+                        .Where(d => d.IsActive && d.StartDate == today && d.EndDate > today &&
+                                    (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
+                                    (d.BrandID == null || d.BrandID == p.BrandID))
+                        .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply
+                        .FirstOrDefault()
+                })
                 .ToListAsync();
 
-            // Map to ProductDetailViewModel
-            var productViewModels = products.Select(p => new ProductDetailViewModel
+            var productViewModels = productsWithDiscounts.Select(pd => new ProductDetailViewModel
             {
-                Product = p
+                Product = pd.Product,
+                DiscountStartDate = pd.Discount?.StartDate,
+                DiscountEndDate = pd.Discount?.EndDate,               
             }).ToList();
-            ViewBag.productCount = productViewModels.Count();
+
+            ViewBag.productCount = productViewModels.Count;
 
             return View(productViewModels);
+        }
+
+        private double CalculateDiscountedPrice(double originalPrice, decimal discountPercentage)
+        {
+            return originalPrice * (1 - (double)discountPercentage / 100);
         }
 
 
@@ -287,11 +264,11 @@ namespace FypWeb.Areas.Admin.Controllers
                 }
 
                 // Check if an SKU exists with the provided SKU code
-                var existingSku = _context.SKU.FirstOrDefault(sku => sku.SKU == productViewModel.SKU);
+                var existingSku = _context.SKU.FirstOrDefault(sku => sku.Code == productViewModel.SKU);
                 if (existingSku == null)
                 {
                     // If not, create a new SKUDetail entry
-                    existingSku = new SKUDetail { SKU = productViewModel.SKU };
+                    existingSku = new SKUDetail { Code = productViewModel.SKU };
                     _context.SKU.Add(existingSku);
                     _context.SaveChanges(); // Save changes to obtain the SKUID
                 }
