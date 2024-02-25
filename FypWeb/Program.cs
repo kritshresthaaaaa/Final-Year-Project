@@ -5,7 +5,6 @@ using Fyp.DataAccess.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Fyp.Utility;
-using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,15 +34,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-// Add Hangfire services.
-builder.Services.AddHangfire(config =>
-    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-        .UseSimpleAssemblyNameTypeSerializer()
-        .UseRecommendedSerializerSettings()
-        // Replace "YourConnectionString" with your actual connection string name defined in appsettings.json
-        .UseSqlServerStorage(builder.Configuration.GetConnectionString("FypConnectionString")));
 
-builder.Services.AddHangfireServer();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,7 +48,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseHangfireDashboard();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

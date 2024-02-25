@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240223041305_addBillingToDb")]
-    partial class addBillingToDb
+    [Migration("20240225140748_addedOrderDetailsAndOrderHeaderToDB")]
+    partial class addedOrderDetailsAndOrderHeaderToDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,83 +24,6 @@ namespace Fyp.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Fyp.Models.Bill", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("BillingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CustomerEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerPhone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PaymentConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("Bill");
-                });
-
-            modelBuilder.Entity("Fyp.Models.BillItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BillId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BillId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("BillItem");
-                });
 
             modelBuilder.Entity("Fyp.Models.BrandDetail", b =>
                 {
@@ -234,6 +157,71 @@ namespace Fyp.DataAccess.Migrations
                     b.ToTable("Employee");
                 });
 
+            modelBuilder.Entity("Fyp.Models.OrderDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OrderHeaderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderHeaderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("Fyp.Models.OrderHeader", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CustomerEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("OrderTotal")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentIntentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderHeaders");
+                });
+
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
                 {
                     b.Property<int>("Id")
@@ -253,6 +241,9 @@ namespace Fyp.DataAccess.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
+                    b.Property<double>("DiscountedPrice")
+                        .HasColumnType("float");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -260,9 +251,6 @@ namespace Fyp.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
-
-                    b.Property<double>("OriginalPrice")
-                        .HasColumnType("float");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -295,9 +283,9 @@ namespace Fyp.DataAccess.Migrations
                             BrandID = 1,
                             CategoryID = 1,
                             Description = "Product 1 Description",
+                            DiscountedPrice = 0.0,
                             ImageUrl = "",
                             Name = "Black Tshirt",
-                            OriginalPrice = 0.0,
                             Price = 100.0,
                             RFIDTag = "123456",
                             SKUID = 1,
@@ -309,9 +297,9 @@ namespace Fyp.DataAccess.Migrations
                             BrandID = 2,
                             CategoryID = 2,
                             Description = "Product 2 Description",
+                            DiscountedPrice = 0.0,
                             ImageUrl = "",
                             Name = "Florence Tshirt",
-                            OriginalPrice = 0.0,
                             Price = 200.0,
                             RFIDTag = "123457",
                             SKUID = 2,
@@ -347,28 +335,6 @@ namespace Fyp.DataAccess.Migrations
                             SKUID = 2,
                             Code = "NIK-WC-FLO-M"
                         });
-                });
-
-            modelBuilder.Entity("Fyp.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -613,36 +579,6 @@ namespace Fyp.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("Fyp.Models.Bill", b =>
-                {
-                    b.HasOne("Fyp.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("Fyp.Models.BillItem", b =>
-                {
-                    b.HasOne("Fyp.Models.Bill", "Bill")
-                        .WithMany("BillItems")
-                        .HasForeignKey("BillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Fyp.Models.ProductDetail", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Bill");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Fyp.Models.DiscountDetail", b =>
                 {
                     b.HasOne("Fyp.Models.BrandDetail", "Brand")
@@ -662,6 +598,25 @@ namespace Fyp.DataAccess.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("SKU");
+                });
+
+            modelBuilder.Entity("Fyp.Models.OrderDetail", b =>
+                {
+                    b.HasOne("Fyp.Models.OrderHeader", "OrderHeader")
+                        .WithMany()
+                        .HasForeignKey("OrderHeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fyp.Models.ProductDetail", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderHeader");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
@@ -689,25 +644,6 @@ namespace Fyp.DataAccess.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("SKU");
-                });
-
-            modelBuilder.Entity("Fyp.Models.ShoppingCart", b =>
-                {
-                    b.HasOne("Fyp.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Fyp.Models.ProductDetail", "Product")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -759,11 +695,6 @@ namespace Fyp.DataAccess.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Fyp.Models.Bill", b =>
-                {
-                    b.Navigation("BillItems");
                 });
 
             modelBuilder.Entity("Fyp.Models.BrandDetail", b =>

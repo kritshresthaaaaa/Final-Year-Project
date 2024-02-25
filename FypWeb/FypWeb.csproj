@@ -17,9 +17,6 @@
 		<UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="Hangfire.AspNetCore" Version="1.8.11" />
-	  <PackageReference Include="Hangfire.Core" Version="1.8.11" />
-	  <PackageReference Include="Hangfire.SqlServer" Version="1.8.11" />
 	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.15" />
 	  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.15" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />

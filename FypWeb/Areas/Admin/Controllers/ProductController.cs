@@ -135,7 +135,7 @@ namespace FypWeb.Areas.Admin.Controllers
                 {
                     Product = p,
                     Discount = _context.Discount
-                        .Where(d => d.IsActive && d.StartDate == today && d.EndDate > today &&
+                        .Where(d => d.IsActive && d.StartDate<=today && today <= d.EndDate &&
                                     (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
                                     (d.BrandID == null || d.BrandID == p.BrandID))
                         .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply

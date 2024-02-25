@@ -7,7 +7,7 @@
 namespace Fyp.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class discountWSKUProduct : Migration
+    public partial class addedOrderDetailsAndOrderHeaderToDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,11 +23,11 @@ namespace Fyp.DataAccess.Migrations
 
             migrationBuilder.InsertData(
                 table: "Product",
-                columns: new[] { "Id", "BrandID", "CategoryID", "Description", "ImageUrl", "Name", "OriginalPrice", "Price", "RFIDTag", "SKUID", "Sizes" },
+                columns: new[] { "Id", "BrandID", "CategoryID", "Description", "DiscountedPrice", "ImageUrl", "Name", "Price", "RFIDTag", "SKUID", "Sizes" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, "Product 1 Description", "", "Black Tshirt", 0.0, 100.0, "123456", 1, "S" },
-                    { 2, 2, 2, "Product 2 Description", "", "Florence Tshirt", 0.0, 200.0, "123457", 2, "M" }
+                    { 1, 1, 1, "Product 1 Description", 0.0, "", "Black Tshirt", 100.0, "123456", 1, "S" },
+                    { 2, 2, 2, "Product 2 Description", 0.0, "", "Florence Tshirt", 200.0, "123457", 2, "M" }
                 });
         }
 

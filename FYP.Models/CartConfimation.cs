@@ -21,8 +21,10 @@ namespace Fyp.Models
    
         public string ProductRFID { get; set; }
         public double OrderTotal { get; set; }
+        public double DiscountAmount { get; set; }
         public DateTime? DiscountStartDate { get; set; }
         public DateTime? DiscountEndDate { get; set; }
         public DiscountDetail? Discount { get; set; }
+        public OrderHeader? OrderHeader { get; set; }
     }
 }

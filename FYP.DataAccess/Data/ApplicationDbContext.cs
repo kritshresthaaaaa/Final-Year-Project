@@ -17,13 +17,11 @@ namespace Fyp.DataAccess.Data
         public DbSet<CategoryDetail> Category { get; set; }
         public DbSet<BrandDetail> Brand { get; set; }
         public DbSet<EmployeeDetail> Employee { get; set; }
-        public DbSet<Bill> Bill { get; set; }
-        public DbSet<BillItem> BillItem { get; set; }
         public DbSet<SKUDetail> SKU { get; set; }
         public DbSet<DiscountDetail> Discount { get; set; }
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
-
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<OrderHeader> OrderHeaders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
