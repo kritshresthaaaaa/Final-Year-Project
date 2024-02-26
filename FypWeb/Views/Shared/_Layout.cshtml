@@ -386,6 +386,16 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
+@*     <script>
+        var hash = CryptoJS.HmacSHA256("total_amount=300,transaction_uuid=594365c8-74b8-44cc-b68e-d8c988eec1ee,product_code=EPAYTEST", "secret");
+        var hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
+        document.write(hashInBase64);
+    </script>
+
+ *@
 
 
 

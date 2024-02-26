@@ -21,7 +21,7 @@
     </div>
     <div class="flex flex-row  bg-white rounded-md h-[80%]  border ">
 
-        <div id="nullProduct" class="w-[65%]  rounded-md pt-12 hidden ">
+        <div id="nullProduct" hidden class="w-[65%]  rounded-md pt-12  ">
             <div class="">
                 <div class="flex justify-center items-center  ">
 
@@ -41,7 +41,7 @@
         <div id="productDetails" class="w-[100%] grid grid-cols-4 gap-4 rounded-md p-4 overflow-auto h-[100%] custom-scrollbar">
             <!-- Each Product Card -->
 
-            <div class="rounded overflow-hidden border bg-white h-56 ">
+   @*          <div class="rounded overflow-hidden border bg-white h-56 ">
                 <!-- Adjusted fixed height here -->
                 <img class="w-full h-[11rem] object-cover" src="https://via.placeholder.com/150" alt="Product Image">
                 <div class="flex justify-center">
@@ -53,7 +53,7 @@
                 </div>
 
 
-            </div>
+            </div> *@
 
 
 
@@ -110,6 +110,10 @@
     <script>
         // Ensure window.onload or document.ready functions are set up correctly
         $(document).ready(function () {
+
+            // Show #nullProduct by default
+            $("#nullProduct").show();
+
             $("#refreshBtn").on("click", function (e) {
                 e.preventDefault(); // Prevent default button action
                 $("#loadingSpinner").show(); // Show loading spinner
@@ -133,7 +137,7 @@
                                     '<img class="w-full h-[11rem] object-cover" src="https://via.placeholder.com/150" alt="Product Image">' +
                                     '<div class="flex justify-center">' +
                                     '<div class="p-2 text-center">' +
-                                    '<span class="inline-block bg-green-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">Rs.' + product.productPrice + '</span>' +                               
+                                    '<span class="inline-block bg-green-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">Rs.' + product.orderTotal + '</span>' +                               
                                     '<span class="ml-2 inline-block bg-blue-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">x' + product.productCount + '</span>' +
                                     '</div>' +
                                     '</div>' +
@@ -141,10 +145,11 @@
                             });
 
 
-                            $("#productDetails").html(detailsHtml); // Update the productDetails div with new content
+                            $("#productDetails").html(detailsHtml);
+                            $("#nullProduct").hide();// Update the productDetails div with new content
                         } else {
-                            // Handle case where no product is found or an error in fetching product details
-                            $("#nullProduct").show(); // Show no items message
+                            // If no products, ensure #nullProduct is visible
+                            $("#nullProduct").show();
                             $("#productDetails").html(''); // Clear previous details
                         }
                     },
@@ -153,7 +158,7 @@
                         $("#scanBtnText").show(); // Show the button text again
                         // Handle AJAX error
                         console.error("Error fetching product details:", error);
-                        $("#nullProduct").show(); // Show no items message
+                      // Show no items message
                         $("#productDetails").html(''); // Clear previous details
                     }
                 });
