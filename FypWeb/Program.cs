@@ -29,12 +29,12 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.IdleTimeout = TimeSpan.FromMinutes(2);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddScoped<IEmailSender, EmailSender>();
-
+/*builder.Services.AddScoped<IEmailSender, EmailSender>();*/
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

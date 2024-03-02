@@ -43,8 +43,9 @@ namespace Fyp.DataAccess.Data
 
             modelBuilder.Entity<SKUDetail>().HasData(
                 new SKUDetail { SKUID = 1, Code = "GUC-MC-BLA-S" },
-                new SKUDetail { SKUID = 2, Code = "NIK-WC-FLO-M" }
-
+                new SKUDetail { SKUID = 2, Code = "NIK-WC-FLO-M" },
+                new SKUDetail { SKUID = 3, Code = "NIK-WC-PRO-M" },
+                new SKUDetail { SKUID = 4, Code = "NIK-WC-PRO-XL" }
             );
 
 
@@ -75,7 +76,72 @@ namespace Fyp.DataAccess.Data
                     Sizes = "M",
                     ImageUrl = "",
                     SKUID = 2 // Reference to the seeded SKUDetail
-                }
+                },
+                    new ProductDetail
+                    {
+                        Id = 3,
+                        Name = "Product 3",
+                        Description = "Product 3 Description",
+                        Price = 200,
+                        BrandID = 2,
+                        CategoryID = 2,
+                        RFIDTag = "123450",
+                        Sizes = "M",
+                        ImageUrl = "",
+                        SKUID = 2 // Reference to the seeded SKUDetail
+                    },
+                        new ProductDetail
+                        {
+                            Id = 4,
+                            Name = "Product 4",
+                            Description = "Product 4 Description",
+                            Price = 200,
+                            BrandID = 2,
+                            CategoryID = 2,
+                            RFIDTag = "123488",
+                            Sizes = "XL",
+                            ImageUrl = "",
+                            SKUID = 2 // Reference to the seeded SKUDetail
+                        },
+                          new ProductDetail
+                          {
+                              Id = 5,
+                              Name = "Product 5",
+                              Description = "Product 5 Description",
+                              Price = 200,
+                              BrandID = 2,
+                              CategoryID = 2,
+                              RFIDTag = "123498",
+                              Sizes = "XL",
+                              ImageUrl = "",
+                              SKUID = 2 // Reference to the seeded SKUDetail
+                          },
+                            new ProductDetail
+                            {
+                                Id = 6,
+                                Name = "Product 6",
+                                Description = "Product 6 Description",
+                                Price = 200,
+                                BrandID = 2,
+                                CategoryID = 2,
+                                RFIDTag = "123490",
+                                Sizes = "XL",
+                                ImageUrl = "",
+                                SKUID = 2 // Reference to the seeded SKUDetail
+                            },
+                                new ProductDetail
+                                {
+                                    Id = 7,
+                                    Name = "Product 7",
+                                    Description = "Product 7 Description",
+                                    Price = 200,
+                                    BrandID = 2,
+                                    CategoryID = 2,
+                                    RFIDTag = "123496",
+                                    Sizes = "XL",
+                                    ImageUrl = "",
+                                    SKUID = 2 // Reference to the seeded SKUDetail
+                                }
             );
         }
 

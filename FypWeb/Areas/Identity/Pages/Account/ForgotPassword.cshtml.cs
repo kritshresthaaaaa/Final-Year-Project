@@ -70,6 +70,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
+             
                 await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Reset Password",

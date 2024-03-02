@@ -76,7 +76,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
         public IActionResult GetProductDetailsByRFID()
         {
             // List of RFIDs
-            string[] rfids = new[] { "123456", "123457" };
+            string[] rfids = new[] { "123490 " };
             var today = DateTime.Today; // Today's date for discount validation
 
             // Fetch products matching any of the RFIDs in the list
@@ -343,27 +343,30 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
         [HttpPost]
         public IActionResult StoreCustomerDetailsInSession([FromBody] CustomerDetailsViewModel model)
         {
-           
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var employeeId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            model.ApplicationUserId = employeeId;
+
+
             if (model == null)
             {
                 return Json(new { success = false, message = "Customer details are missing." });
             }
-
             
-            if (string.IsNullOrWhiteSpace(model.CustomerName) ||
+
+
+            if (
+                string.IsNullOrWhiteSpace(model.ApplicationUserId) ||
+                string.IsNullOrWhiteSpace(model.CustomerName) ||
                 string.IsNullOrWhiteSpace(model.CustomerEmail) ||
                 string.IsNullOrWhiteSpace(model.CustomerPhone))
             {
                 return Json(new { success = false, message = "Customer name, email, or phone is missing." });
             }
-            if (ModelState.IsValid)
-            {
-                // Assuming you have a method to serialize the model to a string
-                var serializedModel = JsonConvert.SerializeObject(model);
-                HttpContext.Session.SetString("CustomerDetails", serializedModel);
-                return Json(new { success = true });
-            }
-            return Json(new { success = false });
+            var serializedModel = JsonConvert.SerializeObject(model);
+
+            HttpContext.Session.SetString("CustomerDetails", serializedModel);
+            return Json(new { success = true });
         }
 
 
@@ -419,8 +422,13 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                             OrderDate = DateTime.Now,
                             OrderTotal = products.Sum(p => p.OrderTotal),
                             PaymentStatus = SD.PaymentStatusApproved,
-                            PaymentDate = DateTime.Now
+                            PaymentDate = DateTime.Now,
+                            PaymentIntentId = transactionCode,
+                            ApplicationUserId = customerDetails.ApplicationUserId
+
                         };
+                        _context.OrderHeaders.Add(orderHeader);
+                        await _context.SaveChangesAsync();
                         var orderDetailsList = new List<OrderDetail>();
                         foreach (var product in products)
                         {
@@ -428,7 +436,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                             if (productEntity !=null)
                             {
                                 // Remove product entity since the purchase is complete
-                                _context.Product.Remove(productEntity);
+                               /* _context.Product.Remove(productEntity);*/
                                 var orderDetail = new OrderDetail
                                 {
                                     Id = Guid.NewGuid(),
@@ -442,9 +450,18 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                             }
 
                         }
-                        _context.OrderHeaders.Add(orderHeader);
-                        _context.OrderDetails.AddRange(orderDetailsList);
-                         await _context.SaveChangesAsync();
+                        try
+                        {
+                           
+                            _context.OrderDetails.AddRange(orderDetailsList);
+                            await _context.SaveChangesAsync();
+
+                        }
+                        catch (Exception ex)
+                        {
+                            return Json(new { success = false, message = "Failed to process order." });
+                        }
+                        
                       
 
                         // Clear the session after order has been processed
@@ -481,7 +498,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                 // Handle the case where data is null or empty
                 return RedirectToAction("ConfirmOrder");
             }
-        }
+            }
 
 
 

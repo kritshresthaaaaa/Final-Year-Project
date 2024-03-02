@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240225140748_addedOrderDetailsAndOrderHeaderToDB")]
-    partial class addedOrderDetailsAndOrderHeaderToDB
+    [Migration("20240301032106_productAddition3")]
+    partial class productAddition3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,6 +190,9 @@ namespace Fyp.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("CustomerEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -218,6 +221,8 @@ namespace Fyp.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("OrderHeaders");
                 });
@@ -304,6 +309,76 @@ namespace Fyp.DataAccess.Migrations
                             RFIDTag = "123457",
                             SKUID = 2,
                             Sizes = "M"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BrandID = 2,
+                            CategoryID = 2,
+                            Description = "Product 3 Description",
+                            DiscountedPrice = 0.0,
+                            ImageUrl = "",
+                            Name = "Product 3",
+                            Price = 200.0,
+                            RFIDTag = "123450",
+                            SKUID = 2,
+                            Sizes = "M"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BrandID = 2,
+                            CategoryID = 2,
+                            Description = "Product 4 Description",
+                            DiscountedPrice = 0.0,
+                            ImageUrl = "",
+                            Name = "Product 4",
+                            Price = 200.0,
+                            RFIDTag = "123488",
+                            SKUID = 2,
+                            Sizes = "XL"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BrandID = 2,
+                            CategoryID = 2,
+                            Description = "Product 5 Description",
+                            DiscountedPrice = 0.0,
+                            ImageUrl = "",
+                            Name = "Product 5",
+                            Price = 200.0,
+                            RFIDTag = "123498",
+                            SKUID = 2,
+                            Sizes = "XL"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BrandID = 2,
+                            CategoryID = 2,
+                            Description = "Product 6 Description",
+                            DiscountedPrice = 0.0,
+                            ImageUrl = "",
+                            Name = "Product 6",
+                            Price = 200.0,
+                            RFIDTag = "123490",
+                            SKUID = 2,
+                            Sizes = "XL"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BrandID = 2,
+                            CategoryID = 2,
+                            Description = "Product 7 Description",
+                            DiscountedPrice = 0.0,
+                            ImageUrl = "",
+                            Name = "Product 7",
+                            Price = 200.0,
+                            RFIDTag = "123496",
+                            SKUID = 2,
+                            Sizes = "XL"
                         });
                 });
 
@@ -334,6 +409,16 @@ namespace Fyp.DataAccess.Migrations
                         {
                             SKUID = 2,
                             Code = "NIK-WC-FLO-M"
+                        },
+                        new
+                        {
+                            SKUID = 3,
+                            Code = "NIK-WC-PRO-M"
+                        },
+                        new
+                        {
+                            SKUID = 4,
+                            Code = "NIK-WC-PRO-XL"
                         });
                 });
 
@@ -617,6 +702,15 @@ namespace Fyp.DataAccess.Migrations
                     b.Navigation("OrderHeader");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Fyp.Models.OrderHeader", b =>
+                {
+                    b.HasOne("Fyp.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>

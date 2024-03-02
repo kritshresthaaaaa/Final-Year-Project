@@ -4,6 +4,7 @@ using Fyp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240229163734_productAddition2")]
+    partial class productAddition2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,48 +335,6 @@ namespace Fyp.DataAccess.Migrations
                             Name = "Product 4",
                             Price = 200.0,
                             RFIDTag = "123488",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 5 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 5",
-                            Price = 200.0,
-                            RFIDTag = "123498",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 6 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 6",
-                            Price = 200.0,
-                            RFIDTag = "123490",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 7 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 7",
-                            Price = 200.0,
-                            RFIDTag = "123496",
                             SKUID = 2,
                             Sizes = "XL"
                         });

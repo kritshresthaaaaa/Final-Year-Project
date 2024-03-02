@@ -86,8 +86,31 @@ namespace FypWeb.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        /*    public async Task OnGetAsync(string returnUrl = null)
+            {
+                if (!string.IsNullOrEmpty(ErrorMessage))
+                {
+                    ModelState.AddModelError(string.Empty, ErrorMessage);
+                }
+
+                returnUrl ??= Url.Content("~/");
+
+                // Clear the existing external cookie to ensure a clean login process
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+                ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                ReturnUrl = returnUrl;
+            }*/
+
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                // User is already logged in, redirect them to the home page or another appropriate page
+                return LocalRedirect(returnUrl ?? Url.Content("~/")); // Adjust the redirection as needed
+            }
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -101,7 +124,12 @@ namespace FypWeb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+
+            // Since the user is not authenticated and is accessing the login page,
+            // simply continue to return the Page without redirection.
+            return Page();
         }
+
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
