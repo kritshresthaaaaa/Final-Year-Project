@@ -6,6 +6,7 @@ namespace Fyp.Models.ViewModels
     public class ProductDetailViewModel
     {
        public ProductDetail Product { get; set; }
+        public List<ProductDetail> Products { get; set; }
         // Add SKU property to capture the SKU from the form
         [Required(ErrorMessage = "SKU is required.")]
         [StringLength(30, ErrorMessage = "SKU cannot be longer than 30 characters.")]
@@ -15,6 +16,7 @@ namespace Fyp.Models.ViewModels
         public DateTime? DiscountStartDate { get; set; }
         public DateTime? DiscountEndDate { get; set; }
         public DiscountDetail? Discount { get; set; }
+
 
     }
 }

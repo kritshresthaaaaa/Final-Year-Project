@@ -6,6 +6,10 @@ namespace Fyp.Models
 {
     public class ProductDetail
     {
+        public ProductDetail()
+        {
+            RecommendedProducts = new List<ProductRecommendation>();
+        }
         [Key]
         public int Id { get; set; }
 
@@ -45,7 +49,8 @@ namespace Fyp.Models
       
 
         public string? ImageUrl { get; set; }
-     
+        [ValidateNever]
+        public List<ProductRecommendation> RecommendedProducts { get; set; } // Changed to List<T>
 
 
     }

@@ -379,6 +379,24 @@ namespace Fyp.DataAccess.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Fyp.Models.ProductRecommendation", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecommendedProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "RecommendedProductId");
+
+                    b.HasIndex("RecommendedProductId");
+
+                    b.ToTable("ProductRecommendations");
+                });
+
             modelBuilder.Entity("Fyp.Models.SKUDetail", b =>
                 {
                     b.Property<int>("SKUID")
@@ -737,6 +755,25 @@ namespace Fyp.DataAccess.Migrations
                     b.Navigation("SKU");
                 });
 
+            modelBuilder.Entity("Fyp.Models.ProductRecommendation", b =>
+                {
+                    b.HasOne("Fyp.Models.ProductDetail", "Product")
+                        .WithMany("RecommendedProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fyp.Models.ProductDetail", "RecommendedProduct")
+                        .WithMany()
+                        .HasForeignKey("RecommendedProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("RecommendedProduct");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -796,6 +833,11 @@ namespace Fyp.DataAccess.Migrations
             modelBuilder.Entity("Fyp.Models.CategoryDetail", b =>
                 {
                     b.Navigation("Discounts");
+                });
+
+            modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
+                {
+                    b.Navigation("RecommendedProducts");
                 });
 #pragma warning restore 612, 618
         }

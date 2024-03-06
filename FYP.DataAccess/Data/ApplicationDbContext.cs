@@ -14,6 +14,7 @@ namespace Fyp.DataAccess.Data
         }
         public DbSet<ProductDetail> Product { get; set; }
 
+        public DbSet<ProductRecommendation> ProductRecommendations { get; set; }
         public DbSet<CategoryDetail> Category { get; set; }
         public DbSet<BrandDetail> Brand { get; set; }
         public DbSet<EmployeeDetail> Employee { get; set; }
@@ -25,6 +26,22 @@ namespace Fyp.DataAccess.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ProductRecommendation>()
+                .HasKey(pr => new { pr.ProductId, pr.RecommendedProductId });
+
+            modelBuilder.Entity<ProductRecommendation>()
+                .HasOne(pr => pr.Product)
+                .WithMany(p => p.RecommendedProducts) // Assuming ProductDetail has a collection of ProductRecommendation
+                .HasForeignKey(pr => pr.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // If you decide to add a navigation property for reverse navigation from RecommendedProduct back to its recommendations, you would adjust this:
+            modelBuilder.Entity<ProductRecommendation>()
+                .HasOne(pr => pr.RecommendedProduct)
+                .WithMany() // Replace with .WithMany(r => r.ReverseNavigationProperty) if applicable
+                .HasForeignKey(pr => pr.RecommendedProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configure decimal precision for DiscountDetail entity
             modelBuilder.Entity<DiscountDetail>()

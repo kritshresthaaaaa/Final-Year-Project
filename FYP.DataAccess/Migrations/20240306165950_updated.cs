@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Fyp.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class refresh : Migration
+    public partial class updated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -354,6 +354,31 @@ namespace Fyp.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductRecommendations",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    RecommendedProductId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductRecommendations", x => new { x.ProductId, x.RecommendedProductId });
+                    table.ForeignKey(
+                        name: "FK_ProductRecommendations_Product_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductRecommendations_Product_RecommendedProductId",
+                        column: x => x.RecommendedProductId,
+                        principalTable: "Product",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -437,6 +462,11 @@ namespace Fyp.DataAccess.Migrations
                 name: "IX_Product_SKUID",
                 table: "Product",
                 column: "SKUID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductRecommendations_RecommendedProductId",
+                table: "ProductRecommendations",
+                column: "RecommendedProductId");
         }
 
         /// <inheritdoc />
@@ -465,6 +495,9 @@ namespace Fyp.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "OrderDetails");
+
+            migrationBuilder.DropTable(
+                name: "ProductRecommendations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240301032106_productAddition3")]
-    partial class productAddition3
+    [Migration("20240306165950_updated")]
+    partial class updated
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -280,106 +280,24 @@ namespace Fyp.DataAccess.Migrations
                     b.HasIndex("SKUID");
 
                     b.ToTable("Product");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            Description = "Product 1 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "123456",
-                            SKUID = 1,
-                            Sizes = "S"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 2 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Florence Tshirt",
-                            Price = 200.0,
-                            RFIDTag = "123457",
-                            SKUID = 2,
-                            Sizes = "M"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 3 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 3",
-                            Price = 200.0,
-                            RFIDTag = "123450",
-                            SKUID = 2,
-                            Sizes = "M"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 4 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 4",
-                            Price = 200.0,
-                            RFIDTag = "123488",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 5 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 5",
-                            Price = 200.0,
-                            RFIDTag = "123498",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 6 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 6",
-                            Price = 200.0,
-                            RFIDTag = "123490",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            Description = "Product 7 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 7",
-                            Price = 200.0,
-                            RFIDTag = "123496",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        });
+            modelBuilder.Entity("Fyp.Models.ProductRecommendation", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RecommendedProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "RecommendedProductId");
+
+                    b.HasIndex("RecommendedProductId");
+
+                    b.ToTable("ProductRecommendations");
                 });
 
             modelBuilder.Entity("Fyp.Models.SKUDetail", b =>
@@ -398,28 +316,6 @@ namespace Fyp.DataAccess.Migrations
                     b.HasKey("SKUID");
 
                     b.ToTable("SKU");
-
-                    b.HasData(
-                        new
-                        {
-                            SKUID = 1,
-                            Code = "GUC-MC-BLA-S"
-                        },
-                        new
-                        {
-                            SKUID = 2,
-                            Code = "NIK-WC-FLO-M"
-                        },
-                        new
-                        {
-                            SKUID = 3,
-                            Code = "NIK-WC-PRO-M"
-                        },
-                        new
-                        {
-                            SKUID = 4,
-                            Code = "NIK-WC-PRO-XL"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -740,6 +636,25 @@ namespace Fyp.DataAccess.Migrations
                     b.Navigation("SKU");
                 });
 
+            modelBuilder.Entity("Fyp.Models.ProductRecommendation", b =>
+                {
+                    b.HasOne("Fyp.Models.ProductDetail", "Product")
+                        .WithMany("RecommendedProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fyp.Models.ProductDetail", "RecommendedProduct")
+                        .WithMany()
+                        .HasForeignKey("RecommendedProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("RecommendedProduct");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -799,6 +714,11 @@ namespace Fyp.DataAccess.Migrations
             modelBuilder.Entity("Fyp.Models.CategoryDetail", b =>
                 {
                     b.Navigation("Discounts");
+                });
+
+            modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
+                {
+                    b.Navigation("RecommendedProducts");
                 });
 #pragma warning restore 612, 618
         }

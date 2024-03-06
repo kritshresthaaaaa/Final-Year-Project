@@ -1,0 +1,281 @@
+﻿@model MapVM
+<section class="p-4 bg-gray-100 min-h-screen">
+    <div class="max-w-full mx-auto bg-white border rounded-lg shadow-sm overflow-hidden">
+        <div class="px-4 py-5 sm:p-6">
+            <h2 class="text-xl font-semibold text-gray-800">Products in SKU</h2>
+        </div>
+        <div class="flex flex-wrap">
+            <!-- Left Portion: Product Details with Scrollbar -->
+            <div class="w-full lg:w-2/3 border-r border-gray-200">
+                <div class="overflow-y-auto custom-scrollbar" style="max-height: 75vh;">
+                    @foreach (var productViewModel in Model.SkuProducts)
+                    {
+                        <div class="border-b  hover:bg-gray-50 transition duration-150 ease-in-out">
+                            <div class="flex flex-wrap items-center p-4">
+                                <div class="w-full md:w-1/3 lg:w-1/4 p-2">
+                                    <img src="@productViewModel.Product.ImageUrl" alt="Product Image" class="w-full h-auto rounded-lg">
+                                </div>
+                                <div class="w-full md:w-2/3 lg:w-3/4 p-2">
+                                    <h3 class="text-lg font-semibold text-gray-800">@productViewModel.Product.Name</h3>
+                                    <p class="text-gray-600 mt-1">@productViewModel.Product.Price</p>
+                                    @*    <p class="text-gray-600 mt-1">@productViewModel.Product.Brand.BrandName</p> *@
+
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+            </div>
+            <!-- Right Portion: Recommendation Settings -->
+
+            <div class="w-full lg:w-1/3 p-2">
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Settings for choosing Products</h3>
+                        <!-- Category Checkbox -->
+                        <div class="flex items-center mb-4">
+                            <input type="radio" id="categoryCheckbox" name="selectionType" value="category" class="mr-2">
+                            <label for="categoryCheckbox" class="text-sm font-medium text-gray-700">Category</label>
+                        </div>
+                        <!-- Brand Checkbox -->
+                        <div class="flex items-center mb-4">
+                            <input type="radio" id="brandCheckbox" name="selectionType" value="brand" class="mr-2">
+                            <label for="brandCheckbox" class="text-sm font-medium text-gray-700">Brand</label>
+                        </div>
+                        <!-- Category Dropdown, initially hidden -->
+                        <div id="categorySelectContainer" class="hidden">
+                            <label for="categorySelect" class="block text-sm font-medium text-gray-700">Select Category:</label>
+                            <select id="categorySelect" class="border px-2 h-8 rounded-md focus:outline-blue-200 w-full rounded-md">
+                                <option value="">Select a Category</option>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <option value="@category.Value">@category.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <!-- Brand Dropdown, initially hidden -->
+                        <div id="brandSelectContainer" class="hidden">
+                            <label for="brandSelect" class="block text-sm font-medium text-gray-700">Select Brand:</label>
+                            <select id="brandSelect" class="border px-2 h-8 rounded-md w-full focus:outline-blue-200 rounded-md">
+                                <option value="">Select a Brand</option>
+                                @foreach (var brand in Model.Brands)
+                                {
+                                    <option value="@brand.Value">@brand.Text</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedSku" name="selectedSku" value="@ViewBag.SKU">
+                    <form id="productSelectionForm" method="post" name="selectedProducts">
+                        <div id="productsList" class="products-container overflow-y-auto max-h-[19rem]">
+                            <!-- Dynamically populated products with checkboxes -->
+                        </div>
+                        <button type="submit" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Submit Selections</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categoryCheckbox = document.getElementById('categoryCheckbox');
+            const brandCheckbox = document.getElementById('brandCheckbox');
+            const categorySelectContainer = document.getElementById('categorySelectContainer');
+            const brandSelectContainer = document.getElementById('brandSelectContainer');
+            const categorySelect = document.getElementById('categorySelect');
+            const brandSelect = document.getElementById('brandSelect');
+            const productsList = document.getElementById('productsList');
+
+            function toggleDropdowns() {
+                categorySelectContainer.style.display = categoryCheckbox.checked ? 'block' : 'none';
+                brandSelectContainer.style.display = brandCheckbox.checked ? 'block' : 'none';
+                productsList.innerHTML = ''; // Clear the products list
+            }
+            $('#categorySelect').change(function () {
+                var categoryId = $(this).val();
+                console.log("Selected Category ID:", categoryId); // Debug log
+                fetchProducts("category", categoryId);
+            });
+
+            $('#brandSelect').change(function () {
+                var brandId = $(this).val();
+                console.log("Selected Brand ID:", brandId); // Debug log
+                fetchProducts("brand", brandId);
+            });
+
+
+            function fetchProducts(type, id) {
+                console.log(id);
+                var url = '';
+                if (type === "category") {
+                    url = '@Url.Action("GetProductsByCategory", "Mapping", new { area = "Admin" })?categoryId=' + id;
+
+                } else if (type === "brand") {
+                    url = '@Url.Action("GetProductsByBrand", "Mapping", new { area = "Admin" })?brandId=' + id;
+                }
+
+                $.ajax({
+
+                    url: url,
+                    type: 'GET',
+                    success: function (data) {
+                        $('#productsList').empty();
+                        $.each(data, function (index, product) {
+                            $('#productsList').append(`
+                            <div class="max-w-sm rounded overflow-hidden border m-2 bg-white">
+                                <label class="block p-2 cursor-pointer">
+                                    <input type="checkbox" class="product-checkbox mr-2" name="selectedProducts" value="${product.id}">
+                                    <img class="w-full" src="${product.imageUrl}" alt="${product.name}">
+                                    <div class="px-4 py-2">
+                                        <div class="font-bold text-xl mb-2">${product.name}</div>
+                                        <p class="text-gray-700 text-base">Price: ${product.price}</p>
+                                    </div>
+                                </label>
+                            </div>
+                        `);
+                        });
+                    },
+
+                    error: function (error) {
+                        console.log("Error fetching products: ", error);
+                    }
+                });
+            }
+            $('#productSelectionForm').submit(function (event) {
+                event.preventDefault(); // Prevent the form from submitting traditionally
+
+                var selectedProductIds = $('input[name="selectedProducts"]:checked').map(function () {
+                    return this.value;
+                }).get();
+
+                var selectedSku = $('#selectedSku').val(); // Get the SKU value
+
+                console.log("Selected Product IDs:", selectedProductIds, "SKU:", selectedSku); // For debugging
+
+                // Prepare the data object to include selectedProductIds and SKU
+                var dataToSend = {
+                    selectedProductIds: selectedProductIds,
+                    sku: selectedSku
+                };
+
+                // Perform an AJAX request to submit the selected product IDs and SKU
+                $.ajax({
+                    url: '@Url.Action("SubmitSelectedProducts", "Mapping", new { area = "Admin" })', // Adjust URL as necessary
+                    type: 'POST',
+                    contentType: 'application/json', // Ensure correct content type for JSON
+                    data: JSON.stringify(dataToSend), // Send the combined data
+                    success: function (response) {
+                        // Handle success - maybe display a confirmation message or redirect
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () {
+                                window.location.href = '@Url.Action("Index", "Mapping", new { area = "Admin" })'; // Adjust URL as necessary
+                            }, 2000);
+
+                        }
+                        else {
+                            toastr.error(response.message);
+                        }                  
+                    },
+                    error: function (error) {
+                        // Handle error
+                        console.error("Submission error:", error);
+                    }
+                });
+            });
+
+
+
+
+
+            categoryCheckbox.addEventListener('change', toggleDropdowns);
+            brandCheckbox.addEventListener('change', toggleDropdowns);
+
+        });
+    </script>
+}
+
+
+@*    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const allProducts = @Html.Raw(Json.Serialize(allProducts));
+
+            const categoryCheckbox = document.getElementById('categoryCheckbox');
+            const brandCheckbox = document.getElementById('brandCheckbox');
+            const categorySelectContainer = document.getElementById('categorySelectContainer');
+            const brandSelectContainer = document.getElementById('brandSelectContainer');
+            const categorySelect = document.getElementById('categorySelect');
+            const brandSelect = document.getElementById('brandSelect');
+            const productsList = document.getElementById('productsList');
+
+            // Populate categories and brands dropdown
+            populateDropdowns();
+
+            function populateDropdowns() {
+                let categories = new Set(allProducts.map(p => ({ id: p.CategoryID, name: p.CategoryName })));
+                let brands = new Set(allProducts.map(p => ({ id: p.BrandID, name: p.BrandName })));
+
+                categories.forEach(c => {
+                    let option = new Option(c.name, c.id);
+                    categorySelect.add(option);
+                });
+
+                brands.forEach(b => {
+                    let option = new Option(b.name, b.id);
+                    brandSelect.add(option);
+                });
+            }
+
+            // Toggle visibility of category and brand selection containers
+            function toggleSelection() {
+                categorySelectContainer.style.display = categoryCheckbox.checked ? 'block' : 'none';
+                brandSelectContainer.style.display = brandCheckbox.checked ? 'block' : 'none';
+                filterProducts();
+            }
+
+            // Filter products based on category or brand selection
+            function filterProducts() {
+                let filteredProducts = allProducts;
+                if (categoryCheckbox.checked && categorySelect.value) {
+                    filteredProducts = allProducts.filter(p => p.CategoryID == categorySelect.value);
+                } else if (brandCheckbox.checked && brandSelect.value) {
+                    filteredProducts = allProducts.filter(p => p.BrandID == brandSelect.value);
+                }
+
+                displayProducts(filteredProducts);
+            }
+
+            // Display filtered products
+            function displayProducts(products) {
+                productsList.innerHTML = ''; // Clear previous products
+                products.forEach(product => {
+                    let div = document.createElement('div');
+                    div.className = 'product-item';
+                    div.innerHTML = `
+                        <img src="${product.ImageUrl}" alt="${product.ProductName}" class="product-image">
+                        <div class="product-info">
+                            <span class="product-name">${product.ProductName}</span>
+                            <span class="product-category">${product.CategoryName}</span>
+                            <span class="product-brand">${product.BrandName}</span>
+                        </div>
+                    `;
+                    productsList.appendChild(div);
+                });
+            }
+
+            // Event listeners for category and brand selection changes
+            categoryCheckbox.addEventListener('change', toggleSelection);
+            brandCheckbox.addEventListener('change', toggleSelection);
+            categorySelect.addEventListener('change', filterProducts);
+            brandSelect.addEventListener('change', filterProducts);
+
+            // Initially display all products
+            displayProducts(allProducts);
+        });
+    </script> *@
+
+
