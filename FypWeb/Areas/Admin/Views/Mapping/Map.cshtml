@@ -89,113 +89,102 @@
             const categorySelect = document.getElementById('categorySelect');
             const brandSelect = document.getElementById('brandSelect');
             const productsList = document.getElementById('productsList');
+            const selectedSku = document.getElementById('selectedSku').value; // Assuming you have an input#selectedSku holding the SKU value.
 
             function toggleDropdowns() {
                 categorySelectContainer.style.display = categoryCheckbox.checked ? 'block' : 'none';
                 brandSelectContainer.style.display = brandCheckbox.checked ? 'block' : 'none';
                 productsList.innerHTML = ''; // Clear the products list
             }
-            $('#categorySelect').change(function () {
-                var categoryId = $(this).val();
-                console.log("Selected Category ID:", categoryId); // Debug log
-                fetchProducts("category", categoryId);
-            });
-
-            $('#brandSelect').change(function () {
-                var brandId = $(this).val();
-                console.log("Selected Brand ID:", brandId); // Debug log
-                fetchProducts("brand", brandId);
-            });
-
 
             function fetchProducts(type, id) {
-                console.log(id);
                 var url = '';
                 if (type === "category") {
-                    url = '@Url.Action("GetProductsByCategory", "Mapping", new { area = "Admin" })?categoryId=' + id;
-
+                    url = '@Url.Action("GetProductsByCategory", "Mapping", new { area = "Admin" })' + '?categoryId=' + id + '&sku=' + encodeURIComponent(selectedSku);
                 } else if (type === "brand") {
-                    url = '@Url.Action("GetProductsByBrand", "Mapping", new { area = "Admin" })?brandId=' + id;
+                    var url = '@Url.Action("GetProductsByBrand", "Mapping", new { area = "Admin" })' + '?brandId=' + id + '&sku=' + encodeURIComponent(selectedSku);
+
                 }
 
                 $.ajax({
-
                     url: url,
                     type: 'GET',
                     success: function (data) {
-                        $('#productsList').empty();
-                        $.each(data, function (index, product) {
-                            $('#productsList').append(`
-                            <div class="max-w-sm rounded overflow-hidden border m-2 bg-white">
-                                <label class="block p-2 cursor-pointer">
-                                    <input type="checkbox" class="product-checkbox mr-2" name="selectedProducts" value="${product.id}">
-                                    <img class="w-full" src="${product.imageUrl}" alt="${product.name}">
-                                    <div class="px-4 py-2">
-                                        <div class="font-bold text-xl mb-2">${product.name}</div>
-                                        <p class="text-gray-700 text-base">Price: ${product.price}</p>
-                                    </div>
-                                </label>
-                            </div>
-                        `);
+                        productsList.innerHTML = ''; // Clear existing products
+                        data.forEach(product => {
+                            const checkedAttribute = product.isRecommended ? 'checked' : '';
+                            productsList.innerHTML += `
+                                <div class="max-w-sm rounded overflow-hidden border m-2 bg-white">
+                                    <label class="block p-2 cursor-pointer">
+                                        <input type="checkbox" class="product-checkbox mr-2" name="selectedProducts" value="${product.id}" ${checkedAttribute}>
+                                        <img class="w-full" src="${product.imageUrl}" alt="${product.name}">
+                                        <div class="px-4 py-2">
+                                            <div class="font-bold text-xl mb-2">${product.name}</div>
+                                            <p class="text-gray-700 text-base">Price: ${product.price}</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            `;
                         });
                     },
-
                     error: function (error) {
-                        console.log("Error fetching products: ", error);
+                        console.error("Error fetching products: ", error);
                     }
                 });
             }
-            $('#productSelectionForm').submit(function (event) {
-                event.preventDefault(); // Prevent the form from submitting traditionally
 
+            $(categorySelect).change(function () {
+                fetchProducts("category", $(this).val());
+            });
+
+            $(brandSelect).change(function () {
+                fetchProducts("brand", $(this).val());
+            });
+
+            $('#productSelectionForm').submit(function (event) {
+                event.preventDefault(); // Prevent traditional form submission
+                // All product IDs shown to the user.
+                var allProductIds = $('input[name="selectedProducts"]').map(function () {
+                    return $(this).val();
+                }).get();
+                // IDs of products that are checked (selected).
                 var selectedProductIds = $('input[name="selectedProducts"]:checked').map(function () {
-                    return this.value;
+                    return $(this).val();
                 }).get();
 
-                var selectedSku = $('#selectedSku').val(); // Get the SKU value
+                // IDs of products that are not checked (deselected).
+                var deselectedProductIds = allProductIds.filter(id => !selectedProductIds.includes(id));
 
-                console.log("Selected Product IDs:", selectedProductIds, "SKU:", selectedSku); // For debugging
 
-                // Prepare the data object to include selectedProductIds and SKU
                 var dataToSend = {
                     selectedProductIds: selectedProductIds,
-                    sku: selectedSku
+                    DeselectedProductIds: deselectedProductIds,
+                    Sku: $('#selectedSku').val()
                 };
 
-                // Perform an AJAX request to submit the selected product IDs and SKU
                 $.ajax({
-                    url: '@Url.Action("SubmitSelectedProducts", "Mapping", new { area = "Admin" })', // Adjust URL as necessary
+                    url: '@Url.Action("SubmitSelectedProducts", "Mapping", new { area = "Admin" })',
                     type: 'POST',
-                    contentType: 'application/json', // Ensure correct content type for JSON
-                    data: JSON.stringify(dataToSend), // Send the combined data
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend),
                     success: function (response) {
-                        // Handle success - maybe display a confirmation message or redirect
                         if (response.success) {
                             toastr.success(response.message);
-                            setTimeout(function () {
-                                window.location.href = '@Url.Action("Index", "Mapping", new { area = "Admin" })'; // Adjust URL as necessary
-                            }, 2000);
-
-                        }
-                        else {
+                            setTimeout(() => window.location.href = '@Url.Action("Index", "Mapping", new { area = "Admin" })', 2000);
+                        } else {
                             toastr.error(response.message);
-                        }                  
+                        }
                     },
                     error: function (error) {
-                        // Handle error
                         console.error("Submission error:", error);
                     }
                 });
             });
 
-
-
-
-
             categoryCheckbox.addEventListener('change', toggleDropdowns);
             brandCheckbox.addEventListener('change', toggleDropdowns);
-
         });
+
     </script>
 }
 

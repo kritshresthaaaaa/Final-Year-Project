@@ -1,0 +1,14 @@
+﻿/* Hide elements not needed in print */
+.nav, .footer, .print-button {
+    display: none;
+}
+
+/* Ensure tables are fully visible */
+table {
+    page-break-inside: auto;
+}
+
+tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+}

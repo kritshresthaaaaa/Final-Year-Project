@@ -102,16 +102,19 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitSelectedProducts([FromBody] SelectedProductsViewModel submissionData)
         {
-            if (submissionData == null || submissionData.SelectedProductIds == null || !submissionData.SelectedProductIds.Any())
+            if (submissionData == null || (submissionData.SelectedProductIds == null && submissionData.DeselectedProductIds == null))
             {
-                return Json(new { success = false, message = "No products selected." });
+                return Json(new { success = false, message = "Invalid submission data." });
             }
+            submissionData.DeselectedProductIds ??= new List<int>();
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
+                    // Fetch all products for the given SKU.
                     var skuProducts = await _context.Product
+                                                     .Include(p => p.RecommendedProducts) // Ensure you load the recommended products.
                                                      .Where(p => p.SKU.Code == submissionData.Sku)
                                                      .ToListAsync();
 
@@ -120,69 +123,85 @@ namespace FypWeb.Areas.Admin.Controllers
                         return Json(new { success = false, message = "No products found with the provided SKU." });
                     }
 
-                    foreach (var skuProduct in skuProducts)
+                    foreach (var product in skuProducts)
                     {
-                        foreach (var recommendedProductId in submissionData.SelectedProductIds)
+                        // Handle new recommendations.
+                        foreach (var selectedId in submissionData.SelectedProductIds.Except(product.RecommendedProducts.Select(rp => rp.RecommendedProductId)))
                         {
-                            if (skuProduct.Id != recommendedProductId)
-                            {
-                                var existingRecommendation = await _context.ProductRecommendations
-                                                                            .FirstOrDefaultAsync(pr => pr.ProductId == skuProduct.Id && pr.RecommendedProductId == recommendedProductId);
+                            product.RecommendedProducts.Add(new ProductRecommendation { ProductId = product.Id, RecommendedProductId = selectedId });
+                        }
 
-                                if (existingRecommendation == null)
-                                {
-                                    var recommendation = new ProductRecommendation
-                                    {
-                                        ProductId = skuProduct.Id,
-                                        RecommendedProductId = recommendedProductId
-                                    };
+                        // Handle deselected recommendations.
+                        var recommendationsToRemove = product.RecommendedProducts
+                            .Where(rp => submissionData.DeselectedProductIds.Contains(rp.RecommendedProductId))
+                            .ToList();
 
-                                    _context.ProductRecommendations.Add(recommendation);
-                                }
-                            }
+                        foreach (var recommendation in recommendationsToRemove)
+                        {
+                            product.RecommendedProducts.Remove(recommendation);
+                            _context.ProductRecommendations.Remove(recommendation); // Also remove from the context to ensure deletion.
                         }
                     }
 
                     await _context.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    return Json(new { success = true, message = "Recommended products added successfully." });
+                    return Json(new { success = true, message = "Recommendations updated successfully." });
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception (adjust logging based on your logging framework/configuration)
-                    Console.WriteLine(ex.Message);
-
-                    // Rollback transaction if there was an error
                     await transaction.RollbackAsync();
-
-                    return Json(new { success = false, message = "An error occurred while processing your request." });
+                    return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
                 }
             }
         }
 
-
-
         #region API CALLS
         [HttpGet]
-        public async Task<JsonResult> GetProductsByCategory(int categoryId)
+        public async Task<JsonResult> GetProductsByCategory(int categoryId, string sku)
         {
+            var recommendedProductIds = await _context.ProductRecommendations
+                                                       .Where(pr => pr.Product.SKU.Code == sku)
+                                                       .Select(pr => pr.RecommendedProductId)
+                                                       .ToListAsync();
+
             var products = await _context.Product
                                           .Where(p => p.CategoryID == categoryId)
-                                          .Select(p => new { p.Id, p.Name, p.ImageUrl, p.Price })
+                                          .Select(p => new
+                                          {
+                                              p.Id,
+                                              p.Name,
+                                              p.ImageUrl,
+                                              p.Price,
+                                              IsRecommended = recommendedProductIds.Contains(p.Id)
+                                          })
                                           .ToListAsync();
             return Json(products);
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetProductsByBrand(int brandId)
+        public async Task<JsonResult> GetProductsByBrand(int brandId, string sku)
         {
+            // Fetch IDs of recommended products based on the provided SKU
+            var recommendedProductIds = await _context.ProductRecommendations
+                                                       .Where(pr => pr.Product.SKU.Code == sku)
+                                                       .Select(pr => pr.RecommendedProductId)
+                                                       .ToListAsync();
+
             var products = await _context.Product
                                           .Where(p => p.BrandID == brandId)
-                                          .Select(p => new { p.Id, p.Name, p.ImageUrl, p.Price })
+                                          .Select(p => new
+                                          {
+                                              p.Id,
+                                              p.Name,
+                                              p.ImageUrl,
+                                              p.Price,
+                                              IsRecommended = recommendedProductIds.Contains(p.Id) // Determine if the product is recommended
+                                          })
                                           .ToListAsync();
             return Json(products);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

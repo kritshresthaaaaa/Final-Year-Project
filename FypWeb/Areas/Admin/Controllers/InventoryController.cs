@@ -21,7 +21,7 @@ namespace FypWeb.Areas.Admin.Controllers
         // GET: HomeController1
         public ActionResult Index()
         {
-  /*          var inventoryList = _context.Product
+            var inventoryList = _context.Product
                 .GroupBy(p => new { p.Name, p.Sizes, p.Price, p.Category.CategoryName })
                 .Select(group => new InventoryViewModel
                 {
@@ -32,9 +32,9 @@ namespace FypWeb.Areas.Admin.Controllers
                     CategoryName = group.Key.CategoryName
 
                 })
-                .ToList();*/
+                .ToList();
 
-            return View();
+            return View(inventoryList);
         }
 
         // GET: HomeController1/Details/5
@@ -97,11 +97,15 @@ namespace FypWeb.Areas.Admin.Controllers
                .GroupBy(p => new { p.Name, p.Sizes, p.Price, p.Category.CategoryName })
                .Select(group => new InventoryViewModel
                {
+                   Id = group.Select(p => p.Id).FirstOrDefault(),
                    ProductName = group.Key.Name,
                    Size = group.Key.Sizes,
                    Price = group.Key.Price,
                    Stock = group.Count(),
-                   CategoryName = group.Key.CategoryName
+                   CategoryName = group.Key.CategoryName,
+                   BrandName = group.Select(p => p.Brand.BrandName).FirstOrDefault(),
+                
+                   
                })
                .ToListAsync(); // Corrected to use await with ToListAsync
 

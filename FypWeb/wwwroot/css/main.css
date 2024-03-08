@@ -38,3 +38,34 @@
     .product-item .product-name {
         font-size: 16px;
     }
+
+@media print {
+    /* Hide everything by default */
+    body * {
+        visibility: hidden;
+    }
+    /* Then display order details container and its children */
+    .print-container, .print-container * {
+        visibility: visible;
+    }
+    /* Position the order details at the start of the page */
+    .print-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    /* Additional print-specific styles here */
+    table {
+        width: 100%;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+}

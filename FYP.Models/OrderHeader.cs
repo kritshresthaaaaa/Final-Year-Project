@@ -20,6 +20,7 @@ namespace Fyp.Models
         public string CustomerPhone { get; set; }
         public DateTime OrderDate { get; set; }
         public double OrderTotal { get; set; }
+        public int TotalQuantity { get; set; }
         public string? PaymentStatus { get; set; }
         public DateTime PaymentDate { get; set; }
         public string? PaymentIntentId { get; set; }

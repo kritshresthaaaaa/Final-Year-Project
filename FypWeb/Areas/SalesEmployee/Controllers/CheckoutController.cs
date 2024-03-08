@@ -76,7 +76,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
         public IActionResult GetProductDetailsByRFID()
         {
             // List of RFIDs
-            string[] rfids = new[] { "123490 " };
+            string[] rfids = new[] {  "123457", "123450" };
             var today = DateTime.Today; // Today's date for discount validation
 
             // Fetch products matching any of the RFIDs in the list
@@ -317,7 +317,8 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                 CustomerPhone = model.CustomerPhone,
                 OrderDate = DateTime.Now,
                 OrderTotal = products.Sum(p => p.OrderTotal),
-                PaymentStatus = SD.PaymentStatusPending
+                PaymentStatus = SD.PaymentStatusPending,
+                TotalQuantity = products.Sum(p => p.ProductQuantity)
             };
             var orderDetailsList = new List<OrderDetail>();
             foreach (var product in products)
@@ -424,7 +425,8 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                             PaymentStatus = SD.PaymentStatusApproved,
                             PaymentDate = DateTime.Now,
                             PaymentIntentId = transactionCode,
-                            ApplicationUserId = customerDetails.ApplicationUserId
+                            ApplicationUserId = customerDetails.ApplicationUserId,
+                            TotalQuantity = products.Sum(p => p.ProductQuantity)
 
                         };
                         _context.OrderHeaders.Add(orderHeader);

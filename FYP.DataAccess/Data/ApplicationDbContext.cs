@@ -158,7 +158,36 @@ namespace Fyp.DataAccess.Data
                                     Sizes = "XL",
                                     ImageUrl = "",
                                     SKUID = 2 // Reference to the seeded SKUDetail
-                                }
+                                },
+                                        new ProductDetail
+                                        {
+                                            Id = 8,
+                                            Name = "Black Tshirt",
+                                            Description = "black t prodyc 1 ",
+                                            Price = 100,
+                                            BrandID = 1,
+                                            CategoryID = 1,
+                                            RFIDTag = "12312312",
+                                            Sizes = "S",
+                                            ImageUrl = "",
+                                            SKUID = 1 // Reference to the seeded SKUDetail,
+
+                                        }, new ProductDetail
+                                        {
+                                            Id = 9,
+                                            Name = "Black Tshirt",
+                                            Description = "black t prodyc 1 ",
+                                            Price = 100,
+                                            BrandID = 1,
+                                            CategoryID = 1,
+                                            RFIDTag = "12312412",
+                                            Sizes = "S",
+                                            ImageUrl = "",
+                                            SKUID = 1 // Reference to the seeded SKUDetail,
+
+                                        }
+
+
             );
         }
 
