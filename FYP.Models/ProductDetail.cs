@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Fyp.Models
 {
@@ -50,6 +51,7 @@ namespace Fyp.Models
 
         public string? ImageUrl { get; set; }
         [ValidateNever]
+        [JsonIgnore]
         public List<ProductRecommendation> RecommendedProducts { get; set; } // Changed to List<T>
 
 

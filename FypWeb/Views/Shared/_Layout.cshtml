@@ -5,10 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FYP</title>
-
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
- 
-
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/main.css     " />
     <link rel="stylesheet" href="~/css/scroll.css" asp-append-version="true" />
@@ -21,10 +18,19 @@
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <style>
+        .sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000; /* Ensure the navbar is above other content */
+        }
+ 
+    </style>
 </head>
 
 <body>
-    <nav class="bg-[#262626]">
+    <nav class="bg-[#262626] sticky">
         <div class=" mx-auto ">
             <div class="flex justify-between  ">
 
@@ -46,7 +52,7 @@
     <div class="flex">
         @if (User.IsInRole(SD.Role_Admin))
         {
-            <div class="min-h-screen flex flex-row bg-[#7258DB] ">
+            <div class="min-h-screen flex flex-row bg-[#7258DB] fixed left-0">
                 <div class="flex flex-col w-[12rem] overflow-hidden">
                     <ul class="flex flex-col py-4">
                         <li>
@@ -257,26 +263,14 @@
                             <a asp-area="Admin" asp-controller="Inventory" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
                                 Stock List
                             </a>
-                            @*        <a asp-area="Admin" asp-controller="Employee" asp-action="Details" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                        Assign Employee
-                        </a> *@
                         </li>
-
-
-
-                        @*        <li>
-                    <a asp-area="Admin" asp-controller="Home" asp-action="LogOut" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
-                    <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-log-out"></i></span>
-                    <span class="text-sm font-medium">Logout</span>
-                    </a>
-                    </li> *@
                     </ul>
                 </div>
             </div>
         }
         @if (User.IsInRole(SD.Role_Sales_Employee))
         {
-            <div class="min-h-screen flex flex-row bg-[#22C55E] ">
+            <div class="min-h-screen flex flex-row bg-[#22C55E]  ">
                 <div class="flex flex-col w-[12rem] overflow-hidden">
                     <ul class="flex flex-col py-4">
                         <li>
@@ -351,41 +345,20 @@
                                 Add Brand
                             </a>
                         </li>
-
-
-
-                        @*        <li>
-                    <a asp-area="Admin" asp-controller="Home" asp-action="LogOut" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
-                    <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-log-out"></i></span>
-                    <span class="text-sm font-medium">Logout</span>
-                    </a>
-                    </li> *@
                     </ul>
                 </div>
             </div>
         }
-        @* side bar *@
+   
 
 
         <div class="container  bg-[#F9FBFD]">
-            <main role="main" class=" ">
+            <main role="main" class="ml-[12rem] ">
                 <partial name="_Notification" />
                 @RenderBody()
             </main>
         </div>
     </div>
-
-
-
-    @*     else
-    {
-    <div class="container p-2  bg-[#F9FBFD]">
-    <main role="main" class="p-2 ">
-    <partial name="_Notification" />
-    @RenderBody()
-    </main>
-    </div>
-    } *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -395,16 +368,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
-@*     <script>
-        var hash = CryptoJS.HmacSHA256("total_amount=300,transaction_uuid=594365c8-74b8-44cc-b68e-d8c988eec1ee,product_code=EPAYTEST", "secret");
-        var hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
-        document.write(hashInBase64);
-    </script>
-
- *@
-
-
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

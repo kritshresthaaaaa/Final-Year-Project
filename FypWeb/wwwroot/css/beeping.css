@@ -1,0 +1,19 @@
+﻿
+@keyframes beepEffect {
+    0%, 80%
+
+{
+    color: #4B5563; /* Gray-600 */
+}
+
+40% {
+    color: #3B82F6; /* Blue-500 */
+}
+
+}
+
+.bx-beeping {
+    animation: beepEffect 2s infinite; /* Adjust '2s' to control the speed */
+}
+
+
