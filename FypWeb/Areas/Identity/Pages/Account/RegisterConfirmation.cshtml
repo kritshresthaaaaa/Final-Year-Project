@@ -1,23 +1,27 @@
 ﻿@page
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register confirmation";
+    ViewData["Title"] = "Register Confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
+<div class="max-w-4xl mx-auto px-4 py-8 ml-[12rem] ">
+    <h1 class="text-xl font-semibold text-gray-900">@ViewData["Title"]</h1>
+    @if (Model.DisplayConfirmAccountLink)
     {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
+        <div class="mt-6 bg-blue-100 border-t-4 border-blue-500 rounded-b text-blue-900 px-4 py-3 shadow-md" role="alert">
+            <div class="flex">
+                <div class="py-1"><svg class="fill-current h-6 w-6 text-blue-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-18a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm.707 10.707a1 1 0 0 1-1.414 0L8 11.414l-2.293 2.293a1 1 0 1 1-1.414-1.414l3-3a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1 0 1.414zM9 9V6a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0z" /></svg></div>
+                <div>
+                    <p class="font-bold">This app does not currently have a real email sender registered. For how to configure a real email sender, see <a href="https://aka.ms/aspaccountconf" class="underline text-blue-800">these docs</a>.</p>
+                    <p class="text-sm">Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl" class="underline text-blue-800">Click here to confirm your account</a></p>
+                </div>
+            </div>
+        </div>
     }
     else
     {
-<p>
-        Please check your email to confirm your account.
-</p>
+        <p class="mt-6 text-gray-600">
+            Please check the respected email to confirm the account.
+        </p>
     }
-}
-
+</div>

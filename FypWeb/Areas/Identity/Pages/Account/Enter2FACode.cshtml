@@ -1,0 +1,17 @@
+﻿@page
+@model FypWeb.Areas.Identity.Pages.Account.Enter2FACodeModel
+@{
+}
+
+<h2>Enter 2FA Code</h2>
+<p>You should have received a 2FA code via email. Please enter it below to verify your identity and continue.</p>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Input.TwoFactorCode"></label>
+        <input asp-for="Input.TwoFactorCode" class="form-control" />
+        <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Verify Code</button>
+</form>

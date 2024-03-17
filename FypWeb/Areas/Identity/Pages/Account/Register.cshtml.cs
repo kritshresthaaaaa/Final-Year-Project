@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
@@ -25,22 +27,22 @@ using Microsoft.Extensions.Logging;
 
 namespace FypWeb.Areas.Identity.Pages.Account
 {
-/*    [Authorize(Roles = SD.Role_Admin)]*/
+    /*    [Authorize(Roles = SD.Role_Admin)]*/
     public class RegisterModel : PageModel
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IWebHostEnvironment _webHostEnvironment;
         public RegisterModel(
             RoleManager<IdentityRole> roleManager,
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            IUserStore<ApplicationUser> userStore,
+            SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             IWebHostEnvironment webHostEnvironment)
@@ -148,7 +150,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
         SD.Role_Sub_Admin,
         SD.Role_Sales_Employee,
         SD.Role_Fitting_Employee,
-        
+
     };
 
             foreach (var role in roles)
@@ -213,7 +215,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                 user.Gender = Input.Gender;
                 user.RegistrationDate = DateTime.Now;
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
+                user.TwoFactorEnabled = true;
 
                 if (result.Succeeded)
                 {
@@ -236,7 +238,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    await SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -266,6 +268,33 @@ namespace FypWeb.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+        private async Task<bool> SendEmailAsync(string email, string subject, string confirmLink)
+        {
+            MailMessage message = new MailMessage();
+            SmtpClient smtp = new SmtpClient();
+            message.From = new MailAddress("np03cs4s220079@heraldcollege.edu.np");
+            message.To.Add(email);
+            message.Subject = subject;
+            message.IsBodyHtml = true;
+            message.Body = confirmLink;
+            smtp.Port = 587;
+            smtp.Host = "smtp.gmail.com";
+            smtp.EnableSsl = true;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential("np03cs4s220079@heraldcollege.edu.np", "eizdbtlqjhheslfd");
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            try
+            {
+                await smtp.SendMailAsync(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+
+        }
 
         private ApplicationUser CreateUser()
         {
@@ -275,19 +304,19 @@ namespace FypWeb.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(IdentityUser)}'. " +
-                    $"Ensure that '{nameof(IdentityUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<IdentityUser> GetEmailStore()
+        private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<IdentityUser>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }
 }

@@ -25,6 +25,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
         {
             _context = context;
         }
+        [Authorize]
         public IActionResult Index()
         {
 
@@ -72,7 +73,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                   return Json(new { success = true, products = shoppingCartModels });
 
               }*/
-
+        [Authorize]
         public IActionResult GetProductDetailsByRFID()
         {
             // List of RFIDs
@@ -156,6 +157,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                 return Json(new { redirectUrl = redirectUrl });
 
             }*/
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> OrderConfirmation([FromBody] OrderConfirmationVM model)
         {
@@ -223,6 +225,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                return count * price;
 
            }*/
+        [Authorize]
         public IActionResult ConfirmOrder()
         {
             // Retrieve the products list from session
@@ -270,7 +273,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             // Continue as normal
             return View(products); // Assuming you're still passing the list of products to the view
         }
-
+        [Authorize]
         private string GenerateSignature(string message, string secretKey)
         {
             var encoding = new ASCIIEncoding();
@@ -282,7 +285,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                 return Convert.ToBase64String(hashmessage);
             }
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ProcessOrder([FromBody] CustomerDetailsViewModel model)
         {
@@ -341,6 +344,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             HttpContext.Session.Remove("OrderProducts");
             return Json(new { success = true, message = "Order processed successfully", orderId = orderHeader.Id });
         }
+        [Authorize]
         [HttpPost]
         public IActionResult StoreCustomerDetailsInSession([FromBody] CustomerDetailsViewModel model)
         {
@@ -370,7 +374,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             return Json(new { success = true });
         }
 
-
+        [Authorize]
         public async Task<IActionResult> VerifyEsewa(string data)
         {
 

@@ -3,22 +3,25 @@
 @{
     ViewData["Title"] = "Details";
 }
+<section class="ml-[12rem]">
 
-<h1>Details</h1>
+    <h1>Details</h1>
 
-<div>
-    <h4>CategoryDetail</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CategoryName)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.CategoryID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <h4>CategoryDetail</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CategoryName)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.CategoryID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+</section>

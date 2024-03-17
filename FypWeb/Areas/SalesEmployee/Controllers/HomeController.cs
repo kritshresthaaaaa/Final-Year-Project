@@ -8,6 +8,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
     [Authorize(Roles = SD.Role_Sales_Employee)]
     public class HomeController : Controller
     {
+        [Authorize]
         public IActionResult Index()
         {
             return View();

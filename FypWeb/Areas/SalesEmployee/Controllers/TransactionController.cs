@@ -4,6 +4,7 @@ using Fyp.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace FypWeb.Areas.SalesEmployee.Controllers
 {
@@ -12,15 +13,17 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
     public class TransactionController : Controller
     {
         private readonly ApplicationDbContext _context;
+      
         public TransactionController(ApplicationDbContext context)
         {
-            _context = context;
-            
+            _context = context;        
         }
+
         public IActionResult Index()
         {
             return View();
         }
+  
         public async Task<IActionResult> Details(Guid id)
         {
             // Fetch OrderDetails related to the given OrderHeaderId
@@ -52,12 +55,15 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             return View(viewModel);
         }
 
+  
         #region API CALLS
         [HttpGet]
         public async Task<IActionResult> GetAllTransactions()
         {
-            // Fetching the necessary data with joins
+            string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+         
             var query = from orderHeader in _context.OrderHeaders
+                        where orderHeader.ApplicationUserId == currentUserId 
                         join orderDetail in _context.OrderDetails on orderHeader.Id equals orderDetail.OrderHeaderId
                         join product in _context.Product on orderDetail.ProductId equals product.Id
                         select new
@@ -73,7 +79,6 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
 
             var rawData = await query.ToListAsync();
 
-            // Grouping the data by order header and aggregating the order details
             var groupedData = rawData
                 .GroupBy(x => new { x.Id, x.CustomerName, x.CustomerEmail, x.CustomerPhone, x.OrderDate, x.OrderTotal })
                 .Select(g => new
@@ -90,8 +95,6 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
 
             return Json(new { data = groupedData });
         }
-
-
         #endregion
     }
 }

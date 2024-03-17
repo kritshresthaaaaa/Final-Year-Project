@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fyp.Models", "FYP.Models\Fy
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FypWeb", "FypWeb\FypWeb.csproj", "{D9388BE0-BC86-46E4-AD57-E183ABA79FED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fyp.Utility", "Fyp.Utility\Fyp.Utility.csproj", "{0D404B03-460D-4F0E-942A-55B39BEE9291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fyp.Utility", "Fyp.Utility\Fyp.Utility.csproj", "{0D404B03-460D-4F0E-942A-55B39BEE9291}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

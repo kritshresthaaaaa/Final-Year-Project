@@ -19,11 +19,11 @@ namespace FypWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.Role_Admin)]
     public class EmployeeController : Controller
     {
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<ApplicationUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public EmployeeController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public EmployeeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

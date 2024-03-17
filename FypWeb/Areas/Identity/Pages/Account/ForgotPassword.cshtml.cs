@@ -4,9 +4,12 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Fyp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -18,10 +21,10 @@ namespace FypWeb.Areas.Identity.Pages.Account
 {
     public class ForgotPasswordModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
 
-        public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -71,7 +74,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                     protocol: Request.Scheme);
 
              
-                await _emailSender.SendEmailAsync(
+                await SendEmailAsync(
                     Input.Email,
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
@@ -81,5 +84,33 @@ namespace FypWeb.Areas.Identity.Pages.Account
 
             return Page();
         }
+        private async Task<bool> SendEmailAsync(string email, string subject, string confirmLink)
+        {
+            MailMessage message = new MailMessage();
+            SmtpClient smtp = new SmtpClient();
+            message.From = new MailAddress("np03cs4s220079@heraldcollege.edu.np");
+            message.To.Add(email);
+            message.Subject = subject;
+            message.IsBodyHtml = true;
+            message.Body = confirmLink;
+            smtp.Port = 587;
+            smtp.Host = "smtp.gmail.com";
+            smtp.EnableSsl = true;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential("np03cs4s220079@heraldcollege.edu.np", "eizdbtlqjhheslfd");
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            try
+            {
+                await smtp.SendMailAsync(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+
+        }
+
     }
 }
