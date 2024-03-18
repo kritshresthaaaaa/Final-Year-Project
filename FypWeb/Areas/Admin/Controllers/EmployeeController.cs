@@ -72,7 +72,7 @@ namespace FypWeb.Areas.Admin.Controllers
                 ApplicationUser applicationUser = _context.ApplicationUser.FirstOrDefault(u => u.Id == roleManagementVM.ApplicationUser.Id);
                 _context.SaveChanges();
                 _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
-                _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
+                 _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
             }
 
 

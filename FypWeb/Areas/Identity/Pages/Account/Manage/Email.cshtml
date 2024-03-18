@@ -4,37 +4,32 @@
     ViewData["Title"] = "Manage Email";
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
-
-<h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="email-form" method="post">
-            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+<div class=" p-4 rounded-md">
+    <div class="max-w-md mx-auto">
+        <form id="email-form" method="post" class="space-y-2">
+            <div asp-validation-summary="All" class="text-red-500" role="alert"></div>
             @if (Model.IsEmailConfirmed)
             {
-                <div class="form-floating mb-3 input-group">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                        <div class="input-group-append">
-                            <span class="h-100 input-group-text text-success font-weight-bold">✓</span>
-                        </div>
-                    <label asp-for="Email" class="form-label"></label>
+                <div class="relative">
+                    <input asp-for="Email" class="w-full px-4 py-3 border rounded-md" placeholder="Please enter your email." disabled />
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                        <span class="h-6 w-6 text-green-500 font-bold">✓</span>
+                    </div>
                 </div>
             }
             else
             {
-                <div class="form-floating mb-3">
-                    <input asp-for="Email" class="form-control" placeholder="Please enter your email." disabled />
-                    <label asp-for="Email" class="form-label"></label>
-                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="btn btn-link">Send verification email</button>
+                <div class="relative">
+                    <input asp-for="Email" class="w-full px-4 py-3 border rounded-md" placeholder="Please enter your email." disabled />
+                    <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="absolute inset-y-0 right-0 flex items-center px-3 text-green-500">Send verification email</button>
                 </div>
             }
-            <div class="form-floating mb-3">
-                <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
-                <label asp-for="Input.NewEmail" class="form-label"></label>
-                <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+            <div>
+                <input asp-for="Input.NewEmail" class="w-full px-4 py-3 border rounded-md" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
+                <span asp-validation-for="Input.NewEmail" class="text-red-500"></span>
             </div>
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-100 btn btn-lg btn-primary">Change email</button>
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="inline-flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Change email</button>
         </form>
     </div>
 </div>

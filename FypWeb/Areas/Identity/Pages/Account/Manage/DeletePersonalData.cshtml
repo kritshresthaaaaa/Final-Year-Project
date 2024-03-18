@@ -5,27 +5,28 @@
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
-<h3>@ViewData["Title"]</h3>
+<div class="max-w-md mx-auto">
 
-<div class="alert alert-warning" role="alert">
-    <p>
-        <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-    </p>
-</div>
-
-<div>
-    <form id="delete-user" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-        @if (Model.RequirePassword)
-        {
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Please enter your password." />
-                <label asp-for="Input.Password" class="form-label"></label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-        }
-        <button class="w-100 btn btn-lg btn-danger" type="submit">Delete data and close my account</button>
-    </form>
+    <div class="alert alert-warning" role="alert">
+        <p>
+            <strong class="text-red-600">Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
+        </p>
+    </div>
+    <div>
+        <form id="delete-user" method="post" class="space-y-4">
+            <div asp-validation-summary="ModelOnly" class="text-red-500" role="alert"></div>
+            @if (Model.RequirePassword)
+            {
+                <div class="form-floating mb-3">
+                    <label asp-for="Input.Password" class="form-label"></label>
+                    <input asp-for="Input.Password" class="w-full px-4 py-3 border rounded-md" autocomplete="current-password" aria-required="true" placeholder="Please enter your password." />
+               
+                    <span asp-validation-for="Input.Password" class="text-red-500"></span>
+                </div>
+            }
+            <button class="w-full px-4 py-3 border border-transparent rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" type="submit">Delete data and close my account</button>
+        </form>
+    </div>
 </div>
 
 @section Scripts {

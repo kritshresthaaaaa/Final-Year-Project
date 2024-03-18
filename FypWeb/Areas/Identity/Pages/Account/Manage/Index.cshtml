@@ -5,8 +5,8 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<div class="max-w-4xl  px-4 py-8">
-    <h2 class="text-2xl font-semibold text-gray-900 mb-2">@ViewData["Title"]</h2>
+<div class="max-w-4xl  px-4">
+
     <partial name="_StatusMessage" for="StatusMessage" />
 
     <div class="bg-white border rounded-md overflow-hidden">
@@ -52,3 +52,6 @@
         </div>
     </div>
 </div>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"/>
+}
