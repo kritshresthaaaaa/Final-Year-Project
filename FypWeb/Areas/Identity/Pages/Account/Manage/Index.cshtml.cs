@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Fyp.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,13 +18,16 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public IndexModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+          UserManager<ApplicationUser> userManager,
+          SignInManager<ApplicationUser> signInManager,
+          IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
@@ -61,20 +65,23 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
             public string PhoneNumber { get; set; }
 
             public string FullName { get; set; }
+
+            public string? ImageUrl { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-   
+
 
             Username = userName;
 
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
-                FullName = user.FullName
+                FullName = user.FullName,
+                ImageUrl = user.ImageUrl
             };
         }
 
@@ -90,7 +97,7 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(IFormFile? file)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -115,10 +122,114 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            var fullName = user.FullName;
+            if (Input.FullName != fullName)
+            {
+                user.FullName = Input.FullName;
+                var setFullNameResult = await _userManager.UpdateAsync(user);
+                if (!setFullNameResult.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set full name.";
+                    return RedirectToPage();
+                }
+            }
+
+            // Check if a file was uploaded
+            if (file != null && file.Length > 0)
+            {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string employeePath = Path.Combine(wwwRootPath, "images", "employee");
+
+                // Create the directory if it doesn't exist
+                if (!Directory.Exists(employeePath))
+                {
+                    Directory.CreateDirectory(employeePath);
+                }
+
+                string filePath = Path.Combine(employeePath, fileName);
+                // Save the uploaded file to disk
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+                // Update the user's ImageUrl property
+                user.ImageUrl = "/images/employee/" + fileName;
+            }
+
+            // Update the user
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                StatusMessage = "Unexpected error when trying to update user profile.";
+                return RedirectToPage();
+            }
+
+            // Refresh user's sign-in session
             await _signInManager.RefreshSignInAsync(user);
             TempData["success"] = "Successfully updated your profile";
-       /*     StatusMessage = "Your profile has been updated";*/
             return RedirectToPage();
         }
+
+        /*    public async Task<IActionResult> OnPostAsync(IFormFile? file)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    await LoadAsync(user);
+                    return Page();
+                }
+
+                var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+                if (Input.PhoneNumber != phoneNumber)
+                {
+                    var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+                    if (!setPhoneResult.Succeeded)
+                    {
+                        StatusMessage = "Unexpected error when trying to set phone number.";
+                        return RedirectToPage();
+                    }
+                }
+                var fullName = user.FullName;
+                if (Input.FullName != fullName)
+                {
+                    user.FullName = Input.FullName;
+                    var setFullNameResult = await _userManager.UpdateAsync(user);
+                    if (!setFullNameResult.Succeeded)
+                    {
+                        StatusMessage = "Unexpected error when trying to set full name.";
+                        return RedirectToPage();
+                    }
+                }
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string employeePath = Path.Combine(wwwRootPath, "images", "employee");
+                    if (!Directory.Exists(employeePath))
+                    {
+                        Directory.CreateDirectory(employeePath);
+                    }
+                    string filePath = Path.Combine(employeePath, fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    user.ImageUrl = "/images/employee/" + fileName;
+
+
+                }
+
+
+                await _signInManager.RefreshSignInAsync(user);
+                TempData["success"] = "Successfully updated your profile";
+                *//*     StatusMessage = "Your profile has been updated";*//*
+                return RedirectToPage();
+            }*/
     }
 }

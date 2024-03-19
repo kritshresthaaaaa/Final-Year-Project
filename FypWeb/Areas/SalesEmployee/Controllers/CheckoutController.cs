@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -373,6 +375,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             HttpContext.Session.SetString("CustomerDetails", serializedModel);
             return Json(new { success = true });
         }
+      
 
         [Authorize]
         public async Task<IActionResult> VerifyEsewa(string data)
@@ -460,6 +463,27 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                         {
                            
                             _context.OrderDetails.AddRange(orderDetailsList);
+                            var email = customerDetails.CustomerEmail;
+                            if (email != null)
+                            {
+                                // Construct the email subject dynamically
+                                var subject = $"Order Confirmation - Order #{orderHeader.Id}";
+                                var body = "Your order has been successfully processed. Details: ";
+                                foreach (var orderDetail in orderDetailsList)
+                                {
+                                    var product = await _context.Product.FirstOrDefaultAsync(p => p.Id == orderDetail.ProductId);
+                                    if (product != null)
+                                    {
+                                        // Add product information to the subject
+                                        body += $" | {product.Name} (Qty: {orderDetail.Quantity})";
+                                    }
+                                }
+                                // Add additional information to the subject
+                                subject += $" | Total Amount: ${orderHeader.OrderTotal}";
+
+                                // Send the email with the constructed subject
+                                await SendEmailAsync(email, subject,body);
+                            }
                             await _context.SaveChangesAsync();
 
                         }
@@ -507,6 +531,32 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             }
 
 
+        private async Task<bool> SendEmailAsync(string email, string subject,string body)
+        {
+            MailMessage message = new MailMessage();
+            SmtpClient smtp = new SmtpClient();
+            message.From = new MailAddress("np03cs4s220079@heraldcollege.edu.np");
+            message.To.Add(email);
+            message.Subject = subject;
+            message.Body = body;
+            message.IsBodyHtml = true;        
+            smtp.Port = 587;
+            smtp.Host = "smtp.gmail.com";
+            smtp.EnableSsl = true;
+            smtp.UseDefaultCredentials = false;
+            smtp.Credentials = new NetworkCredential("np03cs4s220079@heraldcollege.edu.np", "eizdbtlqjhheslfd");
+            smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+            try
+            {
+                await smtp.SendMailAsync(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
 
+
+        }
     }
 }
