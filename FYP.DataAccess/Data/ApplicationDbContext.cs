@@ -23,6 +23,8 @@ namespace Fyp.DataAccess.Data
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Noti> Notification { get; set; }
+        public DbSet<RoomDetail> Room { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

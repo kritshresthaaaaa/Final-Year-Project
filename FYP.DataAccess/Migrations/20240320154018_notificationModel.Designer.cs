@@ -4,6 +4,7 @@ using Fyp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240320154018_notificationModel")]
+    partial class notificationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,10 +190,10 @@ namespace Fyp.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("ToEmployeeId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ToRoomId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("ToEmployeeName")
+                    b.Property<string>("ToRoomName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

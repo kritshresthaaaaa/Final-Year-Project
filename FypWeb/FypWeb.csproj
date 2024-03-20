@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\**" />
+    <Content Remove="wwwroot\lib\**" />
+    <EmbeddedResource Remove="wwwroot\lib\**" />
+    <None Remove="wwwroot\lib\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\dashboard.css" />
   </ItemGroup>
 	<ItemGroup>

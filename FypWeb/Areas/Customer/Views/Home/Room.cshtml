@@ -1,0 +1,219 @@
+﻿@{
+    Layout = "~/Views/Shared/_Customers.cshtml";
+}
+<div class="bg-white h-screen flex flex-row border rounded-md">
+
+    <div class="w-[45%] overflow-y-auto custom-scrollbar">
+        <!-- Flex container for the button -->
+        <div class="flex justify-end p-4">
+            <button id="refreshButton" class="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+                Scan
+            </button>
+        </div>
+        <div class="flex flex-col items-center justify-center min-h-[70vh] bg-white" id="welcomeMessage">
+            <i class='bx bxs-user text-6xl bx-beeping' id="userIcon"></i>
+            <p class="text-xl text-gray-600" id="instructionText">Please stand closer to the mirror and press Scan button...</p>
+        </div>
+
+        <div id="bucketItemsSection" class="hidden">
+            <div class="bottom mb-1">
+                <h3 class="text-2xl text-center font-semibold">Items in your Bucket :)</h3>
+            </div>
+            <div class="mx-auto max-w-md px-4 py-2 lg:max-w-7xl lg:px-4 flex-grow">
+                <div id="productList" class="grid grid-cols-1 gap-x-4 gap-y-8 lg:grid-cols-3">
+                    <!-- Products will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-[55%] border-l">
+        <div class="top">
+            <div class="max-w-7xl px-4 flex-grow mt-10">
+                <div class="px-4 ">
+
+                    <div class="flex flex-row border rounded-md -mx-4" id="productDetail">
+
+                        <div class="mx-auto">
+                            <div id="placeholderMessage" class="flex flex-col items-center  min-h-[90vh] pt-[14rem]">
+                                <i class='bx bx-closet bx-beeping text-6xl text-gray-500 '></i>
+                                <p class="text-xl text-gray-600 px-4">Select a product to view the details</p>
+                            </div>
+                        </div>
+
+
+
+
+                        @*     <div class="md:flex-1">
+                        <div class="h-[180px] rounded-md bg-white">
+                        <img src="https://mockuptree.com/wp-content/uploads/edd/2022/07/free-loose-fit-t-shirt-mockup.jpg" alt="Clothing" class="object-cover rounded-md object-center h-full w-full group-hover:opacity-75">
+                        </div>
+                        </div>
+                        <div class="md:flex-1 px-4">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-2 mt-2">Product Name</h2>
+                        <p class="text-gray-600 text-sm mb-2">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed ante justo. Integer euismod libero id mauris malesuada tincidunt.
+                        </p>
+                        <div class="flex mb-4">
+                        <div class="mr-4">
+                        <span class="font-bold text-gray-700">Price:</span>
+                        <span class="text-gray-600">$29.99</span>
+                        </div>
+                        <div>
+                        <span class="font-bold text-gray-700">Availability:</span>
+                        <span class="text-gray-600">In Stock</span>
+                        </div>
+                        </div>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+
+    </div>
+
+</div>
+
+@section Scripts{
+    <script>
+        document.getElementById('refreshButton').addEventListener('click', function () {
+            // Hide the welcome message, icon, and text
+            document.getElementById('welcomeMessage').style.display = 'none';
+
+            // Call the function to load and display products
+            fetchRFIDProducts();
+
+            // Show the "Items in your Bucket" section
+            document.getElementById('bucketItemsSection').classList.remove('hidden');
+        });
+
+
+        async function fetchRFIDProducts() {
+            // Example fetch function
+            try {
+                const response = await fetch('/Customer/Home/GetAllRecommendedItems');
+                const result = await response.json();
+                // Assuming a function to display these products exists
+                displayRFIDProducts(result);
+            } catch (error) {
+                console.error('Error fetching RFID products:', error);
+            }
+        }
+        function displayRFIDProducts(result) {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = ''; // Clear existing content before displaying new products
+            const productsWithRFID = result.data; // Access the 'data' property
+            // Iterate through each RFID tag in the response
+            Object.entries(productsWithRFID).forEach(([rfidTag, { product, recommended }]) => {
+                // There might be multiple products per RFID in your structure, hence the forEach
+                product.forEach(productDetail => {
+                    const productCard = createProductCard(productDetail, rfidTag, productsWithRFID); // Pass productsWithRFID for full access
+                    productList.appendChild(productCard);
+                });
+            });
+        }
+
+        function createProductCard(productDetail, rfidTag, productsWithRFID) {
+            const card = document.createElement('div');
+            card.classList.add('group', 'flex', 'flex-col', 'items-center', 'border', 'rounded-md', 'cursor-pointer', 'transition-colors', 'duration-150'); // Add 'transition-colors' for a smooth color transition
+            card.innerHTML = `
+                                <img src="https://mockuptree.com/wp-content/uploads/edd/2022/07/free-loose-fit-t-shirt-mockup.jpg" alt="${productDetail.name}" class="object-cover rounded-t-md object-center h-full w-full group-hover:opacity-75">
+                        <h3 class="mt-4 text-sm text-gray-700">${productDetail.name}</h3>
+                        <p class="mt-1 text-lg font-medium text-gray-900">$${productDetail.price}</p>
+                    `;
+
+            card.addEventListener('click', () => {
+                // Reset previously selected items
+                document.querySelectorAll('.productCard').forEach(item => {
+                    item.classList.remove('bg-gray-100'); // Or 'selectedProduct' if using a custom class
+                });
+
+                // Set the current item as selected
+                card.classList.add('bg-gray-100'); // Or 'selectedProduct' if using a custom class
+
+                // Display the product details
+                displayProductDetails(rfidTag, productsWithRFID);
+            });
+
+            // Assign a common class to all cards for easy selection
+            card.classList.add('productCard');
+
+            return card;
+        }
+
+
+        function displayProductDetails(rfidTag, productsWithRFID) {
+            // Hide the placeholder message
+
+            const { product, recommended } = productsWithRFID[rfidTag];
+            const productDetails = product[0]; // Assuming always at least one product per RFID tag
+
+            // Update sections for product detail and recommendations
+            updateProductDetailSection(productDetails);
+            updateRecommendedProductsSection(recommended);
+        }
+
+        function updateProductDetailSection(productDetails) {
+            const productDetailDiv = document.getElementById('productDetail');
+            productDetailDiv.innerHTML = `
+                <div class=" py-8">
+                    <div class="max-w-6xl mx-auto px-4 ">
+                        <div class="flex flex-col md:flex-row -mx-4">
+                            <div class="md:flex-1 px-4">
+                                <div class="h-[460px] rounded-lg bg  mb-4">
+                                    <img class="w-full h-full object-cover" style="max-width: 500px;" src="https://mockuptree.com/wp-content/uploads/edd/2022/07/free-loose-fit-t-shirt-mockup.jpg" alt="${productDetails.name}">
+                                </div>
+                            </div>
+                            <div class="md:flex-1 px-4">
+                                <h2 class="text-2xl font-bold text-gray-800  mb-2">${productDetails.name}</h2>
+                                <p class="text-gray-600  text-sm mb-4">${productDetails.description}</p>
+                                <div class="flex mb-4">
+                                    <div class="mr-4">
+                                        <span class="font-bold text-gray-700 ">Price:</span>
+                                        <span class="text-gray-600 ">$${productDetails.price}</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-gray-700 ">Availability:</span>
+                                        <span class="text-gray-600 ">${productDetails.sizes ? 'In Stock' : 'Out of Stock'}</span>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <span class="font-bold text-gray-700">Select Color:</span>
+                                    <div class="flex items-center mt-2">
+                                        <button class="w-6 h-6 rounded-full bg-gray-800  mr-2"></button>
+                                        <button class="w-6 h-6 rounded-full bg-red-500 mr-2"></button>
+                                        <button class="w-6 h-6 rounded-full bg-blue-500 mr-2"></button>
+                                        <button class="w-6 h-6 rounded-full bg-yellow-500 mr-2"></button>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <span class="font-bold text-gray-700 ">Select Size:</span>
+                                    <div class="flex items-center mt-2">
+                                        <button class="bg-gray-300  text-gray-700  py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 ">S</button>
+                                        <button class="bg-gray-300  text-gray-700  py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400">M</button>
+                                        <button class="bg-gray-300  text-gray-700  py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 ">L</button>
+                                        <button class="bg-gray-300  text-gray-700  py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 ">XL</button>
+                                        <button class="bg-gray-300  text-gray-700  py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 ">XXL</button>
+                                    </div>
+                                </div>
+                                <div class="flex -mx-2 mb-4">
+                                    <div class="w-full px-2">
+                                        <button class="w-full bg-gray-900  text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 ">Send Request</button>
+                                    </div>
+                                </div>
+                                        <p class="text-gray-600 text-sm">
+            <span class="font-bold">Note:</span> If the sizes are not available, you can request them by clicking the button below.
+        </p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+
+
+
+    </script>
+}

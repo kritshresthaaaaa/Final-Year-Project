@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Fyp.Utility;
 using Fyp.Models;
+using FypWeb.IService;
+using FypWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,8 @@ builder.Services.AddSession(options =>
 });
 /*builder.Services.AddScoped<IEmailSender, EmailSender>();*/
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddScoped<INotiService, NotiService>();
+
 
 var app = builder.Build();
 

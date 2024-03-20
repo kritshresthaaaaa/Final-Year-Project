@@ -24,6 +24,10 @@ namespace FypWeb.Areas.Customer.Controllers
         {
             return View("Index", "_Customers");
         }
+        public IActionResult TrailRoom()
+        {
+            return View("Room", "_Customers");
+        }
         #region API CALLS
 
         [HttpGet]
