@@ -164,7 +164,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                         }
                         else if (roles.Contains("Fitting Room Employee"))
                         {
-                            returnUrl = "/CustomerHandlerEmployee/Home/Index"; // Update this as needed
+                            returnUrl = "/FittingRoomEmployee/Home/AllNotifications"; // Update this as needed
                         }
                     }
 

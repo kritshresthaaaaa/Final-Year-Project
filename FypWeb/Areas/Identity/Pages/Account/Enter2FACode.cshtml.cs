@@ -70,6 +70,17 @@ namespace FypWeb.Areas.Identity.Pages.Account
                 {
                     return LocalRedirect("/SalesEmployee/Home/Index");
                 }
+                else if (roles.Contains("Fitting Room Employee"))
+                {
+                    return LocalRedirect("/FittingRoomEmployee/Home/AllNotifications");
+                }
+      
+           
+                else
+                {
+                    // Handle default redirection
+                    return LocalRedirect(returnUrl ?? Url.Content("~/"));
+                }
                 // Add additional roles and redirections as needed...
 
                 // If user's role doesn't match any of the above, redirect to a default page

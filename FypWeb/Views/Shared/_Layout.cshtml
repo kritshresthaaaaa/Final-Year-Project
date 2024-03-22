@@ -25,7 +25,6 @@
             width: 100%;
             z-index: 1000; /* Ensure the navbar is above other content */
         }
- 
     </style>
 </head>
 
@@ -39,6 +38,7 @@
                     <p class="text-3xl text-green-400">Sync</p>
                 </div>
                 <div class="flex items-center">
+                    <div id="noti_Container"></div>
                     <partial name="_LoginPartial" />
                 </div>
 
@@ -61,41 +61,12 @@
                                 <span class="text-sm font-medium">Dashboard</span>
                             </a>
                         </li>
-                
-
-                        <li class="relative" data-te-dropdown-ref>
-                            <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
-                               data-te-dropdown-toggle-ref
-                               data-dropdown-target="notificationDropdown">
-                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
-                                    <i class='bx bxs-bell'></i>
-                                </span>
-
-                                <span class="text-sm font-medium">Notification</span>
-                                <span class="ml-3 inline-block h-6 w-6 text-sm leading-6 text-center text-white bg-red-500 rounded-full">1</span>
-                         @*        <span class="ml-2 w-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         viewBox="0 0 20 20"
-                                         fill="currentColor"
-                                         class="h-5 w-5">
-                                        <path fill-rule="evenodd"
-                                              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                                              clip-rule="evenodd" />
-                                    </svg>
-                                </span> *@
-                            </a>
+                        <li id="noti_Container">
+                            @*   <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                        <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-home"></i></span>
+                        <span class="text-sm font-medium">Notifications</span>
+                        </a> *@
                         </li>
-
-                        <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2] " id="notificationDropdown">
-                            <a asp-area="Admin" asp-controller="Notification" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                View Notifications
-                            </a>
-                            <a asp-area="Admin" asp-controller="Notification" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                Set stock alerter
-                            </a>
-
-                        </li>
-
                         <li class="relative" data-te-dropdown-ref>
                             <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
                                data-te-dropdown-toggle-ref
@@ -213,9 +184,9 @@
                         </li>
                         <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2]" id="recommendationDropdown">
                             <a asp-area="Admin" asp-controller="Mapping" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                               Recommendation
+                                Recommendation
                             </a>
-                         
+
                         </li>
 
                         <li class="relative" data-te-dropdown-ref>
@@ -353,7 +324,7 @@
                                 <span class="text-sm font-medium">Transactions</span>
                             </a>
                         </li>
-            
+
                         <li class="relative" data-te-dropdown-ref>
                             <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
                                data-te-dropdown-toggle-ref
@@ -386,7 +357,88 @@
                 </div>
             </div>
         }
-   
+        @if (User.IsInRole(SD.Role_Fitting_Employee))
+        {
+            <div class="min-h-screen flex flex-row bg-[#F3C63C]  ">
+                <div class="flex flex-col w-[12rem] overflow-hidden">
+                    <ul class="flex flex-col py-4">
+                        <li>
+                            <a asp-area="" asp-controller="Home" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-home"></i></span>
+                                <span class="text-sm font-medium">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="relative" data-te-dropdown-ref>
+                            <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
+                               data-te-dropdown-toggle-ref
+                               data-dropdown-target="productDropdown">
+                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
+                                    <i class='bx bx-cart'></i>
+                                </span>
+                                <span class="text-sm font-medium">Checkout</span>
+                                <span class="ml-2 w-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 20 20"
+                                         fill="currentColor"
+                                         class="h-5 w-5">
+                                        <path fill-rule="evenodd"
+                                              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                              clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2] " id="productDropdown">
+                            <a asp-area="" asp-controller="" asp-action="" class="flex justify-center items-start hover:text-amber-300 cursor-pointer">
+                                Cart Checkout
+                            </a>
+
+                            <a asp-area="" asp-controller="" asp-action="" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                                Scan a Product
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a asp-area="" asp-controller="" asp-action="" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">  <i class='bx bxs-report'></i></span>
+                                <span class="text-sm font-medium">Transactions</span>
+                            </a>
+                        </li>
+
+                        <li class="relative" data-te-dropdown-ref>
+                            <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
+                               data-te-dropdown-toggle-ref
+                               data-dropdown-target="brandDropdown">
+                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
+                                    <i class='bx bx-help-circle'></i><!-- You can change the icon to suit brands -->
+                                </span>
+                                <span class="text-sm font-medium">Help</span>
+                                <span class="ml-2 w-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 20 20"
+                                         fill="currentColor"
+                                         class="h-5 w-5">
+                                        <path fill-rule="evenodd"
+                                              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                              clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2]" id="brandDropdown">
+                            <a asp-area="" asp-controller="" asp-action="" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                                Brand List
+                            </a>
+                            <a asp-area="" asp-controller="" asp-action="" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                                Add 
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
+
 
 
         <div class="container ">
@@ -396,7 +448,7 @@
             </main>
         </div>
     </div>
-    <script src="~/notification/ikr.notificationplugin.js"></script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -406,6 +458,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
+    <script src="~/notification/ikr.notificationplugin.js"></script>
+    <script src="~/js/noti.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+

@@ -1,11 +1,5 @@
 (function ($) {
-    // ****** Add ikr.notification.css ******
     $.fn.ikrNotificationSetup = function (options) {
-        /*
-          Declaration : $("#noti_Container").ikrNotificationSetup({
-                    List: objCollectionList
-          });
-       */
         var defaultSettings = $.extend({
             BeforeSeenColor: "#2E467C",
             AfterSeenColor: "#ccc"
@@ -56,28 +50,22 @@
         }
     };
     $.fn.ikrNotificationCount = function (options) {
-        /*
-          Declaration : $("#myComboId").ikrNotificationCount({
-                    NotificationList: [],
-                    NotiFromPropName: "",
-                    ListTitlePropName: "",
-                    ListBodyPropName: "",
-                    ControllerName: "Notifications",
-                    ActionName: "AllNotifications"
-          });
-       */
         var defaultSettings = $.extend({
             NotificationList: [],
             NotiFromPropName: "",
             ListTitlePropName: "",
             ListBodyPropName: "",
-            ControllerName: "Notifications",
-            ActionName: "AllNotifications"
+            ControllerName: "Notification",
+            ActionName: "AllNotifications",
+            Area: "FittingRoomEmployee"
         }, options);
         var parentId = $(this).attr("id");
         if ($.trim(parentId) != "" && parentId.length > 0) {
-            $("#" + parentId + " .ikrNotifications .ikrSeeAll").click(function () {
-                window.open('../' + defaultSettings.ControllerName + '/' + defaultSettings.ActionName + '', '_blank');
+            $("#" + parentId + " .ikrNotifications .ikrSeeAll").click(function (e) {
+                e.preventDefault(); // Prevent the default action to ensure smooth redirection.
+                // Correct the URL by removing the extra '/' and properly concatenating the Area
+                var url = '/' + defaultSettings.Area + '/' + defaultSettings.ControllerName + '/' + defaultSettings.ActionName;
+                window.open(url, '_blank'); // Opens the constructed URL in a new tab.
             });
 
             var totalUnReadNoti = defaultSettings.NotificationList.filter(x => x.isRead == false).length;
@@ -90,7 +78,7 @@
                     $("#" + parentId + " .ikrNotificationItems").append("<div class='ikrSingleNotiDiv" + className + "' notiId=" + item.notiId + ">" +
                         "<h4 class='ikrNotiFromPropName'>" + sNotiFromPropName + "</h4>" +
                         "<h5 class='ikrNotificationTitle'>" + item[ikrLowerFirstLetter(defaultSettings.ListTitlePropName)] + "</h5>" +
-                            "<div class='ikrNotificationBody'>" + item[ikrLowerFirstLetter(defaultSettings.ListBodyPropName)] + "</div>" +
+                        "<div class='ikrNotificationBody'>" + item[ikrLowerFirstLetter(defaultSettings.ListBodyPropName)] + "</div>" +
                         "<div class='ikrNofiCreatedDate'>" + item.createdDateSt + "</div>" +
                         "</div>");
                     $("#" + parentId + " .ikrNotificationItems .ikrSingleNotiDiv[notiId=" + item.notiId + "]").click(function () {
