@@ -39,6 +39,8 @@
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Areas\SmartTrailroom\Controllers\" />
+	  <Folder Include="Areas\SmartTrailroom\Views\" />
 	  <Folder Include="wwwroot\images\employee\" />
 	  <Folder Include="wwwroot\images\product\" />
 	</ItemGroup>
@@ -46,6 +48,16 @@
 	  <ProjectReference Include="..\FYP.DataAccess\Fyp.DataAccess.csproj" />
 	  <ProjectReference Include="..\FYP.Models\Fyp.Models.csproj" />
 	  <ProjectReference Include="..\Fyp.Utility\Fyp.Utility.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Update="Areas\SmartCheckout\Views\_ViewImports.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
+	  <Content Update="Areas\SmartCheckout\Views\_ViewStart.cshtml">
+	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<Target Name="Tailwind" BeforeTargets="Build">

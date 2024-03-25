@@ -32,28 +32,90 @@
 <body>
     <!-- navbar goes here -->
     <nav class="bg-[#262626] sticky">
-        <div class="mx-auto">
-            <div class="flex justify-between">
+        <div class=" mx-auto ">
+            <div class="flex justify-between  ">
 
-                <div class="flex">
+                <div class="flex items-center ">
                     <p class="text-3xl font-semibold text-white">stock</p>
                     <p class="text-3xl text-green-400">Sync</p>
+                </div>
+                <div class="flex items-center">
+                    <div id="noti_Container"></div>
+                    <partial name="_LoginPartial" />
                 </div>
 
             </div>
         </div>
 
     </nav>
-    <div class="container p-2  bg-[#F9FBFD]">
-        <main role="main" class="p-2 ">
-            <partial name="_Notification" />
-            @RenderBody()
-        </main>
-    </div>
+@*     @if (User.IsInRole(SD.Role_Customer_Handler))
+    {
+        <div class="min-h-screen bg-[#F3C63C] fixed left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out" id="sidebar">
+            <div class="flex flex-col w-[12rem] overflow-hidden">
+                <ul class="flex flex-col py-4">
+                    <li>
+                        <a asp-area="FittingRoomEmployee" asp-controller="Home" asp-action="AllNotifications" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-home"></i></span>
+                            <span class="text-sm font-medium">View All</span>
+                        </a>
+                    </li>
+
+                    <li class="relative" data-te-dropdown-ref>
+                        <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
+                           data-te-dropdown-toggle-ref
+                           data-dropdown-target="brandDropdown">
+                            <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
+                                <i class='bx bx-help-circle'></i><!-- You can change the icon to suit brands -->
+                            </span>
+                            <span class="text-sm font-medium">Help</span>
+                            <span class="ml-2 w-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 20 20"
+                                     fill="currentColor"
+                                     class="h-5 w-5">
+                                    <path fill-rule="evenodd"
+                                          d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                                          clip-rule="evenodd" />
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2]" id="brandDropdown">
+                        <a asp-area="" asp-controller="" asp-action="" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Brand List
+                        </a>
+                        <a asp-area="" asp-controller="" asp-action="" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                            Add
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    } *@
+     @if (User.IsInRole(SD.Role_Customer_Handler))
+    {
+        <div class="container p-2  bg-[#F9FBFD]">
+            <main role="main" class="p-2 ">
+                <partial name="_Notification" />
+                @RenderBody()
+            </main>
+        </div>
+    }
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
+
+    <script src="~/notification/ikr.notificationplugin.js"></script>
+    <script src="~/js/noti.js"></script>
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

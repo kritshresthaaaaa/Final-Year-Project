@@ -66,9 +66,9 @@ namespace FypWeb.Areas.Identity.Pages.Account
                 {
                     returnUrl = "/Admin/Home/Index";
                 }
-                else if (roles.Contains("Sales Employee"))
+                else if (roles.Contains("Employee"))
                 {
-                    return LocalRedirect("/SalesEmployee/Home/Index");
+                    return LocalRedirect("/Employee/Home/Index");
                 }
                 else if (roles.Contains("Fitting Room Employee"))
                 {

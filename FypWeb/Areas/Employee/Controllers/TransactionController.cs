@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace FypWeb.Areas.SalesEmployee.Controllers
+namespace FypWeb.Areas.Employee.Controllers
 {
-    [Area("SalesEmployee")]
-    [Authorize(Roles = SD.Role_Sales_Employee)]
+    [Area("Employee")]
+    [Authorize(Roles = SD.Role_Employee)]
     public class TransactionController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -55,15 +55,15 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             return View(viewModel);
         }
 
-  
+
         #region API CALLS
         [HttpGet]
         public async Task<IActionResult> GetAllTransactions()
         {
             string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-         
+
             var query = from orderHeader in _context.OrderHeaders
-                        where orderHeader.ApplicationUserId == currentUserId 
+                        where orderHeader.ApplicationUserId == currentUserId
                         join orderDetail in _context.OrderDetails on orderHeader.Id equals orderDetail.OrderHeaderId
                         join product in _context.Product on orderDetail.ProductId equals product.Id
                         select new

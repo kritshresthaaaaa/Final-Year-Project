@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Fyp.Models;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FypWeb.Areas.Identity.Pages.Account
 {
@@ -110,8 +111,47 @@ namespace FypWeb.Areas.Identity.Pages.Account
         {
             if (User.Identity.IsAuthenticated)
             {
-                // User is already logged in, redirect them to the home page or another appropriate page
-                return LocalRedirect(returnUrl ?? Url.Content("~/")); // Adjust the redirection as needed
+                // User is already logged in, check their roles for redirection
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    string selectedService = HttpContext.Session.GetString("SelectedService");
+
+                    // Redirect based on roles
+                    if (roles.Contains("Admin"))
+                    {
+                        return LocalRedirect(Url.Content("~/Admin/Home/Index"));
+                    }
+                    else if (roles.Contains("Employee"))
+                    {
+                        return LocalRedirect(Url.Content("~/Employee/Home/Index"));
+                    }
+                    else if (roles.Contains("Customer-Handler") && !string.IsNullOrEmpty(selectedService))
+                    {
+                        switch (selectedService)
+                        {
+                            case "SmartFittingRoom":
+                                returnUrl = "/Customer/Home/TrailRoom";
+                                break;
+                            case "SmartCheckout":
+                                returnUrl = "/SmartCheckout/Checkout/Index";
+                                break;
+                            case "RecommendationsCheckout":
+                                returnUrl = "/Customer/Home/Index";
+                                break;
+                            default:
+                                // Keep the default returnUrl if no service selected or for other roles
+                                break;
+                        }
+                        return LocalRedirect(returnUrl);
+                  
+                    }
+                    // Add more role checks as needed
+                }
+
+                // Default redirection if no specific role found
+                return LocalRedirect(returnUrl ?? Url.Content("~/"));
             }
 
             if (!string.IsNullOrEmpty(ErrorMessage))
@@ -121,15 +161,12 @@ namespace FypWeb.Areas.Identity.Pages.Account
 
             returnUrl ??= Url.Content("~/");
 
-            // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
 
-            // Since the user is not authenticated and is accessing the login page,
-            // simply continue to return the Page without redirection.
             return Page();
         }
 
@@ -145,6 +182,13 @@ namespace FypWeb.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    string selectedService = Request.Form["selectedService"];
+                    // Store selectedService in session if it's not null or empty
+                    if (!string.IsNullOrEmpty(selectedService))
+                    {
+                        HttpContext.Session.SetString("SelectedService", selectedService);
+                    }
+
                     var user = await _userManager.FindByEmailAsync(Input.Email);
                     if (user != null)
                     {
@@ -158,9 +202,24 @@ namespace FypWeb.Areas.Identity.Pages.Account
                         {
                             returnUrl = "/Employee/Home/Index"; // Update this as needed
                         }
-                        else if (roles.Contains("Sales Employee"))
+                        else if (roles.Contains("Customer-Handler") && !string.IsNullOrEmpty(selectedService) )
                         {
-                            returnUrl = "/SalesEmployee/Home/Index"; // Update this as needed
+                            switch (selectedService)
+                            {
+                                case "SmartFittingRoom":
+                                    returnUrl = "/Customer/Home/TrailRoom";
+                                    break;
+                                case "SmartCheckout":
+                                    returnUrl = "/SmartCheckout/Checkout/Index";
+                                    break;
+                                case "RecommendationsCheckout":
+                                    returnUrl = "/Customer/Home/Index";
+                                    break;
+                                default:
+                                    // Keep the default returnUrl if no service selected or for other roles
+                                    break;
+                            }
+                            return LocalRedirect(returnUrl);
                         }
                         else if (roles.Contains("Fitting Room Employee"))
                         {

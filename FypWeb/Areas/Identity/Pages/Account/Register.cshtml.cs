@@ -148,7 +148,9 @@ namespace FypWeb.Areas.Identity.Pages.Account
     {
         SD.Role_Admin,
         SD.Role_Sub_Admin,
-        SD.Role_Sales_Employee,
+        SD.Role_Employee,
+        SD.Role_Customer_Handler,
+        SD.Role_Sales_Employee_Panel,     
         SD.Role_Fitting_Employee,
 
     };
@@ -216,19 +218,71 @@ namespace FypWeb.Areas.Identity.Pages.Account
                 user.RegistrationDate = DateTime.Now;
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 user.TwoFactorEnabled = true;
+                user.EmployeeRelationId = Guid.NewGuid();
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (Input.Role == null)
+                    if (Input.Role == null || Input.Role == SD.Role_Employee)
                     {
                         await _userManager.AddToRoleAsync(user, SD.Role_Employee);
+                        var userEmail= await _userManager.GetEmailAsync(user);
+                        var userName = userEmail.Split('@')[0];
+                        var customerHandlerEmail = $"{userName}@customerhandler.com";              
+                        var customerHandlerUser = new ApplicationUser
+                        {
+                            UserName = customerHandlerEmail,
+                            Email = customerHandlerEmail,
+                            FullName = Input.FullName,
+                            DOB = Input.DOB,
+                            PhoneNumber = Input.PhoneNumber,
+                            City = Input.City,
+                            Country = Input.Country,
+                            PostalCode = Input.PostalCode,
+                            StreetAddress = Input.StreetAddress,
+                            Gender = Input.Gender,
+                            RegistrationDate = DateTime.Now,
+                            EmployeeRelationId = user.EmployeeRelationId,                  
+                            // Copy other needed properties from the employee user
+                        };
+                        var resultCustomerEmployee = await _userManager.CreateAsync(customerHandlerUser, Input.Password);
+
+                        // Check if the customer handler account was successfully created
+                        if (!resultCustomerEmployee.Succeeded)
+                        {
+                            // Log the errors or add them to the ModelState to display in the view
+                            foreach (var error in resultCustomerEmployee.Errors)
+                            {
+                                _logger.LogError($"Error creating customer handler account: {error.Description}");
+                                ModelState.AddModelError(string.Empty, $"Customer handler account creation failed: {error.Description}");
+                            }
+
+                            // Optionally, handle the failure further, such as rolling back the primary user creation if necessary
+                        }
+                        else
+                        {
+                            // Add the customer handler role to the customer handler account
+                            await _userManager.AddToRoleAsync(customerHandlerUser, SD.Role_Customer_Handler);
+                        }
+                        
+
+                    }
+                    else if (Input.Role == SD.Role_Admin)
+                    {
+                        // Logic for handling admin accounts
+                        await _userManager.AddToRoleAsync(user, SD.Role_Admin);
+                    }
+                    else if (Input.Role == SD.Role_Sub_Admin)
+                    {
+                        // Logic for handling sub-admin accounts
+                        await _userManager.AddToRoleAsync(user, SD.Role_Sub_Admin);
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, Input.Role);
+                        await _userManager.AddToRoleAsync(user, SD.Role_Employee);
                     }
+
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

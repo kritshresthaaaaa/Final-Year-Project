@@ -4,7 +4,7 @@ $(document).ready(function () {
 });
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
-        "ajax": { url: '/SalesEmployee/Transaction/GetAllTransactions' }, // Make sure this URL matches the updated action method that includes product counts.
+        "ajax": { url: '/Employee/Transaction/GetAllTransactions' }, // Make sure this URL matches the updated action method that includes product counts.
         "columns": [
             { "data": "id", "width": "10%" },
             { "data": "customerName", "width": "15%" },

@@ -1,30 +1,35 @@
 ﻿@using Microsoft.AspNetCore.Identity
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="flex   gap-5 p-3">
+<ul class="flex gap-5 p-3">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class=" flex justify-center items-center gap-2">
+        var user = await UserManager.GetUserAsync(User);
+        var roles = await UserManager.GetRolesAsync(user);
+        var isCustomerHandler = roles.Contains("Customer-Handler");
+
+        <li class="flex justify-center items-center gap-2">
             <i class='bx bx-user text-xl text-white'></i>
-            <a id="manage" class=" text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+            @if (!isCustomerHandler)
+            {
+                <a id="manage" class="text-white cursor-default" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+            }
+            else
+            {
+                <span class="text-white">Hello @UserManager.GetUserName(User)!</span>
+            }
         </li>
-        <li class=" flex justify-center ">
-            <form id="logoutForm" class=" flex gap-2" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <li class="flex justify-center">
+            <form id="logoutForm" class="flex gap-2" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <span class="inline-flex items-center justify-center text-xl text-white"><i class="bx bx-log-out"></i></span><button id="logout" type="submit" class="text-white">Logout</button>
             </form>
         </li>
     }
     else
     {
-    @*     <li class="nav-item ">
-            <a class="nav-link text-white" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li> *@
         <li class="nav-item ">
             <a class="nav-link text-white" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
         </li>
     }
 </ul>
-
-

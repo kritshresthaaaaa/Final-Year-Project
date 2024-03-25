@@ -12,26 +12,27 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Fyp.DataAccess.Migrations;
 
-namespace FypWeb.Areas.SalesEmployee.Controllers
+namespace FypWeb.Areas.SmartCheckout.Controllers
 {
 
-    [Area("SalesEmployee")]
-    [Authorize(Roles = SD.Role_Sales_Employee)]
-    public class CheckoutController : Controller
+    [Area("SmartCheckout")]
+    [Authorize(Roles = SD.Role_Customer_Handler)]
+    public class Checkout : Controller
     {
         private readonly ApplicationDbContext _context;
 
 
-        public CheckoutController(ApplicationDbContext context)
+        public Checkout(ApplicationDbContext context)
         {
             _context = context;
         }
-        [Authorize]
+   
         public IActionResult Index()
         {
 
-            return View();
+            return View("Index","_Customers");
         }
         /* [HttpPost]
          [Authorize]
@@ -75,7 +76,6 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                   return Json(new { success = true, products = shoppingCartModels });
 
               }*/
-        [Authorize]
         public IActionResult GetProductDetailsByRFID()
         {
             // List of RFIDs
@@ -159,7 +159,6 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                 return Json(new { redirectUrl = redirectUrl });
 
             }*/
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> OrderConfirmation([FromBody] OrderConfirmationVM model)
         {
@@ -210,7 +209,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             var productsJson = System.Text.Json.JsonSerializer.Serialize(products);
             HttpContext.Session.SetString("OrderProducts", productsJson);
 
-            var redirectUrl = Url.Action("ConfirmOrder", "Checkout", new { Area = "SalesEmployee" });
+            var redirectUrl = Url.Action("ConfirmOrder", "Checkout", new { Area = "SmartCheckout" });
             return Json(new { redirectUrl = redirectUrl });
         }
 
@@ -227,7 +226,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                return count * price;
 
            }*/
-        [Authorize]
+      
         public IActionResult ConfirmOrder()
         {
             // Retrieve the products list from session
@@ -275,7 +274,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             // Continue as normal
             return View(products); // Assuming you're still passing the list of products to the view
         }
-        [Authorize]
+      
         private string GenerateSignature(string message, string secretKey)
         {
             var encoding = new ASCIIEncoding();
@@ -287,7 +286,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
                 return Convert.ToBase64String(hashmessage);
             }
         }
-        [Authorize]
+ 
         [HttpPost]
         public async Task<IActionResult> ProcessOrder([FromBody] CustomerDetailsViewModel model)
         {
@@ -346,13 +345,36 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
             HttpContext.Session.Remove("OrderProducts");
             return Json(new { success = true, message = "Order processed successfully", orderId = orderHeader.Id });
         }
-        [Authorize]
+     
         [HttpPost]
         public IActionResult StoreCustomerDetailsInSession([FromBody] CustomerDetailsViewModel model)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var employeeId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-            model.ApplicationUserId = employeeId;
+            if (string.IsNullOrWhiteSpace(employeeId))
+            {
+                return Json(new { success = false, message = "Employee ID is missing." });
+            }
+            var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == employeeId);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "Employee not found." });
+            }
+
+            var employeeRelationIdCustomerHandler = user.EmployeeRelationId;
+            if (employeeRelationIdCustomerHandler == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Employee relation ID is missing." });
+            }
+
+            // Fetch the related user (customer handler) that shares the same EmployeeRelationId
+            var relatedUser = _context.ApplicationUser.FirstOrDefault(u => u.EmployeeRelationId == employeeRelationIdCustomerHandler && u.Id != employeeId);
+            if (relatedUser == null)
+            {
+                return Json(new { success = false, message = "Related user not found." });
+            }
+
+            model.ApplicationUserId = relatedUser.Id;
 
 
             if (model == null)
@@ -377,7 +399,7 @@ namespace FypWeb.Areas.SalesEmployee.Controllers
         }
       
 
-        [Authorize]
+  
         public async Task<IActionResult> VerifyEsewa(string data)
         {
 

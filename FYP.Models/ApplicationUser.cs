@@ -36,5 +36,6 @@ namespace Fyp.Models
         public string? Country { get; set; }
         [NotMapped]
         public string Role { get; set; }
+        public Guid? EmployeeRelationId { get; set; }
     }
 }

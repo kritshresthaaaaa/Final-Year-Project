@@ -1,0 +1,208 @@
+﻿@{
+    Layout = "~/Views/Shared/_Customers.cshtml";
+}
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    // Retrieve the JSON string from session
+    var productsJson = HttpContextAccessor.HttpContext.Session.GetString("OrderProducts");
+    // Deserialize the JSON string back into a list of products
+    List<CartConfimation> products = new List<CartConfimation>();
+
+    if (!string.IsNullOrEmpty(productsJson))
+    {
+        products = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CartConfimation>>(productsJson);
+    }
+
+}
+
+<div class="py-2 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+    <!--- more free and premium Tailwind CSS components at https://tailwinduikit.com/ --->
+    @if (products.Any())
+    {
+
+        <div class="flex justify-start item-start space-y-2 flex-col">
+            <h1 class="text-3xl  lg:text-4xl font-semibold leading-7 lg:leading-9 text-gray-800">Products Summary</h1>
+            <input id="orderDate" type="date" disabled class="text-base font-medium  text-gray-600" />
+        </div>
+        <div class="mt-2 flex flex-col  xl:flex-row jusitfy-center items-stretch w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
+            <div class="flex flex-col border rounded-md justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
+                <div class="flex flex-col justify-start items-start  bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+                    <p class="text-lg md:text-xl font-semibold leading-6 xl:leading-5 text-gray-800">Customer’s Cart</p>
+                    @foreach (var product in products)
+                    {
+                        <div class="mt-4 md:mt-6 flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 xl:space-x-8 w-full">
+                            <div class="pb-4 md:pb-8 w-full md:w-40">
+                                <img class="w-full hidden md:block" src="https://i.ibb.co/84qQR4p/Rectangle-10.png" alt="dress" />
+                                <img class="w-full md:hidden" src="https://i.ibb.co/L039qbN/Rectangle-10.png" alt="dress" />
+                            </div>
+                            <div class="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full pb-8 space-y-4 md:space-y-0">
+                                <div class="w-full flex flex-col justify-start items-start space-y-8">
+                                    <h3 class="text-xl xl:text-2xl font-semibold leading-6 text-gray-800">@product.ProductName</h3>
+                                    <div class="flex justify-start items-start flex-col space-y-2">
+                                        <p class="text-sm leading-none text-gray-800"><span class=" text-gray-300">Brand: </span>@product.ProductBrand</p>
+                                        <p class="text-sm leading-none text-gray-800"><span class=" text-gray-300">Size: </span> @product.ProductSize</p>
+                                        <p class="text-sm  leading-none text-gray-800"><span class=" text-gray-300">Color: </span> Light Blue</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between space-x-8 items-start w-full">
+
+                                    <p class="text-base xl:text-lg leading-6 text-gray-800">x @product.ProductQuantity</p>
+                                    <p class="text-base  xl:text-lg font-semibold leading-6 text-gray-800">Rs.@product.OrderTotal</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+                <div class="flex justify-center flex-col md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
+                    <div class="flex flex-col  border-t px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-100 space-y-6">
+                        <h3 class="text-xl font-semibold leading-5 text-black">Summary</h3>
+                        <div class="flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4">
+                            <div class="flex justify-between w-full">
+                                <p class="text-base  leading-4 text-gray-800">Subtotal</p>
+                                <p class="text-base leading-4 text-gray-600">  Rs.@ViewBag.Subtotal</p>
+                            </div>
+                            <div class="flex justify-between items-center w-full">
+                                <p class="text-base  leading-4 text-gray-800">Discount </p>
+                                <p class="text-base  leading-4 text-gray-600">-Rs. @ViewBag.DiscountedAmt</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center w-full">
+                            <p class="text-basefont-semibold leading-4 text-gray-800">Total</p>
+                            <p class="text-base font-semibold leading-4 text-gray-600">Rs.@ViewBag.Total</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="w-96 border rounded-md p-4 flex-col items-center space-y-4">
+                @*           <h3 class="text-xl  font-semibold leading-5 text-gray-800">Customer Details</h3> *@
+                <h3 class="text-xl  font-semibold leading-5 ">Customer Details</h3>
+                <div class=" w-full">
+                    <!-- Name Input -->
+                    <div class="mb-4">
+                        <label for="customerName" class="block text-sm font-medium text-gray-700">Name<sup class="text-red-600">*</sup> </label>
+                        <input type="text" required id="customerName" name="customerName" placeholder="Enter Your Name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="mb-4">
+                        <label for="customerEmail" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" required id="customerEmail" name="customerEmail" placeholder="youremail@example.com" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Phone Input -->
+                    <div class="mb-4">
+                        <label for="customerPhone" class="block text-sm font-medium text-gray-700">Phone Number<sup class="text-red-600">*</sup></label>
+                        <input type="tel" required id="customerPhone" name="customerPhone" placeholder="98-------" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" id="esewaPaymentForm" method="POST">
+                        <input type="hidden" id="amount" name="amount" value="@ViewBag.Total" required>
+                        <input type="hidden" id="tax_amount" name="tax_amount" value="0" required>
+                        <input type="hidden" id="total_amount" name="total_amount" value="@ViewBag.Total" required>
+                        <input type="hidden" id="transaction_uuid" name="transaction_uuid" value="@ViewBag.TransactionId" required>
+                        <input type="hidden" id="product_code" name="product_code" value="EPAYTEST" required>
+                        <input type="hidden" id="product_service_charge" name="product_service_charge" value="@ViewBag.ServiceCharge" required>
+                        <input type="hidden" id="product_delivery_charge" name="product_delivery_charge" value="@ViewBag.ProductDeliveryCharge" required>
+                        <input type="hidden" id="success_url" name="success_url" value="http://localhost:5008/SmartCheckout/Checkout/VerifyEsewa" required>
+                        <input type="hidden" id="failure_url" name="failure_url" value="http://localhost:5008/SmartCheckout/Checkout/ConfirmOrder" required>
+                        <input type="hidden" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required>
+                        <input type="hidden" id="signature" name="signature" value="@ViewBag.Signature" required>
+                        <input value="Proceed to Payment" id="proceedToPayment" class="mt-6 bg-[#7258DB] hover:bg-purple-700 focus:ring-blue-500 dark:text-white py-2 px-4 rounded-md transition ease-in duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2">
+                    </form>
+
+
+              @*       <div class="flex justify-center items-center">
+                        <button id="submitOrder" class="mt-6 bg-[#7258DB] hover:bg-purple-700 focus:ring-blue-500 dark:text-white py-2 px-4 rounded-md transition ease-in duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2">Submit</button>
+                    </div> *@
+
+
+                </div>
+            </div>
+  
+
+        </div>
+    }
+    else
+    {
+        <div class="flex justify-center items-center h-96">
+            <p class="text-2xl font-semibold text-gray-800">No Items in Cart</p>
+        </div>
+    }
+
+</div>
+@section Scripts
+    {
+    <script>
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById('orderDate').value = today;
+        document.getElementById("proceedToPayment").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent the form submission
+
+            // Gather customer details
+            const customerDetails = {
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                customerPhone: document.getElementById('customerPhone').value
+            };
+
+            // Store customer details in session via AJAX
+            fetch('@Url.Action("StoreCustomerDetailsInSession", "Checkout", new { Area = "SmartCheckout" })', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(customerDetails)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.success) {
+                        // Redirect to payment if details stored successfully
+                        document.getElementById("esewaPaymentForm").submit();
+                    } else {
+                        alert("Failed to store customer details.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+
+        /*
+
+        document.getElementById("submitOrder").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent the form from submitting via the browser.
+
+            const customerName = document.getElementById('customerName').value;
+            const customerEmail = document.getElementById('customerEmail').value;
+            const customerPhone = document.getElementById('customerPhone').value;
+
+            // Send the customer details to your server
+            fetch('@Url.Action("ProcessOrder", "Checkout", new { Area = "SalesEmployee" })', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '@HttpContextAccessor.HttpContext.Request.Cookies["X-CSRF-TOKEN"]' // Add CSRF token if needed
+                },
+                body: JSON.stringify({ customerName, customerEmail, customerPhone })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle response
+                    console.log(data);
+                    if (data.success) {
+                        alert("Order processed successfully.");
+                        // Redirect or update UI as needed
+                    } else {
+                        alert("Failed to process order.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }); */
+
+
+    </script>
+}

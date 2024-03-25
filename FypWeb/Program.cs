@@ -59,6 +59,24 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+// Redirect to the login page if not authenticated for any route
+/*app.Use(async (context, next) =>
+{
+    // Check if the user is not authenticated and not already requesting the login page
+    if (!context.User.Identity.IsAuthenticated && 
+        !context.Request.Path.StartsWithSegments("/Identity/Account/Login") &&
+        !context.Request.Path.StartsWithSegments("/Identity/Account/Register")) // Exclude register or any other paths as needed
+    {
+        // Redirect to the login page
+        context.Response.Redirect("/Identity/Account/Login");
+    }
+    else
+    {
+        // Proceed with the request
+        await next.Invoke();
+    }
+});*/
+
 app.UseSession();
 app.MapRazorPages();
 app.MapControllerRoute(

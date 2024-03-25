@@ -1,5 +1,6 @@
 ﻿using Fyp.DataAccess.Data;
 using Fyp.Models;
+using Fyp.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,17 +20,18 @@ namespace FypWeb.Areas.Customer.Controllers
         {
             _context = context;
         }
-
+      /*  [Authorize]*/
         public IActionResult Index()
         {
             return View("Index", "_Customers");
         }
+      
         public IActionResult TrailRoom()
         {
             return View("Room", "_Customers");
         }
         #region API CALLS
-
+      
         [HttpGet]
         public async Task<IActionResult> GetAllRecommendedItems()
         {
