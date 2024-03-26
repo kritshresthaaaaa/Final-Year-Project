@@ -38,11 +38,11 @@
                     <p class="text-3xl text-green-400">Sync</p>
                 </div>
                 <div class="flex items-center">
-                    @if (User.IsInRole(SD.Role_Admin) && (User.IsInRole(SD.Role_Sub_Admin)))
+                    @if (User.IsInRole(SD.Role_Admin) || (User.IsInRole(SD.Role_Employee)))
                     {
                         <div id="noti_Container"></div>
                     }
-                 
+
                     <partial name="_LoginPartial" />
                 </div>
 
@@ -282,7 +282,7 @@
         }
         @if (User.IsInRole(SD.Role_Employee))
         {
-            <div class="min-h-screen flex flex-row bg-[#22C55E]  ">
+            <div class="min-h-screen flex flex-row bg-[#22C55E] fixed left-0  ">
                 <div class="flex flex-col w-[12rem] overflow-hidden">
                     <ul class="flex flex-col py-4">
                         <li>
@@ -291,7 +291,8 @@
                                 <span class="text-sm font-medium">Dashboard</span>
                             </a>
                         </li>
-        
+                  
+
                         <li>
                             <a asp-area="Employee" asp-controller="Transaction" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
                                 <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">  <i class='bx bxs-report'></i></span>
@@ -330,7 +331,7 @@
                     </ul>
                 </div>
             </div>
-        }     
+        }
         @if (User.IsInRole(SD.Role_Fitting_Employee))
         {
             <div class="min-h-screen bg-[#F3C63C] fixed left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out" id="sidebar">
@@ -342,7 +343,7 @@
                                 <span class="text-sm font-medium">View All</span>
                             </a>
                         </li>
-                     
+
                         <li class="relative" data-te-dropdown-ref>
                             <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
                                data-te-dropdown-toggle-ref
@@ -368,7 +369,7 @@
                                 Brand List
                             </a>
                             <a asp-area="" asp-controller="" asp-action="" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                Add 
+                                Add
                             </a>
                         </li>
                     </ul>
@@ -385,7 +386,7 @@
                     @RenderBody()
 
                 </div>
-             
+
             </main>
         </div>
     </div>
@@ -399,7 +400,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/hmac-sha256.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/enc-base64.min.js"></script>
-   
+
     <script src="~/notification/ikr.notificationplugin.js"></script>
     <script src="~/js/noti.js"></script>
 

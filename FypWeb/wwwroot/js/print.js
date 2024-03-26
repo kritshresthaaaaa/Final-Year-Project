@@ -13,7 +13,7 @@ function printOrderDetails() {
     printFrame.contentDocument.open();
     printFrame.contentDocument.write('<html><head><title>Print</title>');
     // Optionally include a link to a CSS file for print styling
-    printFrame.contentDocument.write('<link rel="stylesheet" href="./css/print-styles.css">');
+    printFrame.contentDocument.write('<link rel="stylesheet" href="~/css/print-styles.css">');
     printFrame.contentDocument.write('</head><body>');
     printFrame.contentDocument.write(contentToPrint);
     printFrame.contentDocument.write('</body></html>');

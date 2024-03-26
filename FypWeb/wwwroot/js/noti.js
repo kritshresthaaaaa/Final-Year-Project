@@ -3,19 +3,19 @@ $(document).ready(function () {
     $.ajax({
         type: "GET",
         dataType: "json",
-        url: "/FittingRoomEmployee/Home/GetAllNotifications",
+        url: "/Employee/Notification/GetAllNotifications",
         success: function (data) {
             console.log(data);
   
 
             $("#noti_Container").ikrNotificationCount({
                 NotificationList: data.data,
-                NotiFromPropName: "FromUserName",
+                NotiFromPropName: "FromRoomName",
                 ListTitlePropName: "NotiHeader",
                 ListBodyPropName: "NotiBody",
                 ControllerName: "Notification",
                 ActionName: "AllNotifications",
-                Area: "FittingRoomEmployee"
+                Area: "Employee"
             });
 
         },

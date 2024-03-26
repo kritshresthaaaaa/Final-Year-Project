@@ -13,7 +13,7 @@
             <i class='bx bx-user text-xl text-white'></i>
             @if (!isCustomerHandler)
             {
-                <a id="manage" class="text-white cursor-default" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <a id="manage" class="text-white cursor-pointer" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             }
             else
             {

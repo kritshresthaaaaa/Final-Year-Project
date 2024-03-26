@@ -121,24 +121,24 @@ namespace FypWeb.Areas.Identity.Pages.Account
                     // Redirect based on roles
                     if (roles.Contains("Admin"))
                     {
-                        return LocalRedirect(Url.Content("~/Admin/Home/Index"));
+                        return LocalRedirect(Url.Content("~/"));
                     }
                     else if (roles.Contains("Employee"))
                     {
-                        return LocalRedirect(Url.Content("~/Employee/Home/Index"));
+                        return LocalRedirect(Url.Content("~/"));
                     }
                     else if (roles.Contains("Customer-Handler") && !string.IsNullOrEmpty(selectedService))
                     {
                         switch (selectedService)
                         {
                             case "SmartFittingRoom":
-                                returnUrl = "/Customer/Home/TrailRoom";
+                                returnUrl = "/";
                                 break;
                             case "SmartCheckout":
-                                returnUrl = "/SmartCheckout/Checkout/Index";
+                                returnUrl = "/";
                                 break;
-                            case "RecommendationsCheckout":
-                                returnUrl = "/Customer/Home/Index";
+                            case "Recommendation":
+                                returnUrl = "/";
                                 break;
                             default:
                                 // Keep the default returnUrl if no service selected or for other roles
@@ -207,13 +207,13 @@ namespace FypWeb.Areas.Identity.Pages.Account
                             switch (selectedService)
                             {
                                 case "SmartFittingRoom":
-                                    returnUrl = "/Customer/Home/TrailRoom";
+                                    returnUrl = "/SmartTrailroom/Home/TrailRoom";
                                     break;
                                 case "SmartCheckout":
                                     returnUrl = "/SmartCheckout/Checkout/Index";
                                     break;
-                                case "RecommendationsCheckout":
-                                    returnUrl = "/Customer/Home/Index";
+                                case "Recommendation":
+                                    returnUrl = "/Recommendation/Home/Index";
                                     break;
                                 default:
                                     // Keep the default returnUrl if no service selected or for other roles

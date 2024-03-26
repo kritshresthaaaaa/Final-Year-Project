@@ -9,9 +9,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FypWeb.Areas.Customer.Controllers
+namespace FypWeb.Areas.Recommendation.Controllers
 {
-    [Area("Customer")]
+    [Area("Recommendation")]
+    [Authorize(Roles = SD.Role_Customer_Handler)]
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -1,110 +1,111 @@
 ﻿@model List<ShoppingCart>
-<section class="p-2 flex-col space-y-4 h-screen">
-    <div class=" w-full rounded-md flex justify-end gap-x-3">
-        @*     <button type="button" class="flex items-center justify-center w-[15%] flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#7258DB] ">
+<section class="ml-[12rem]">
+    <section class="p-2 flex-col space-y-4 h-screen">
+        <div class=" w-full rounded-md flex justify-end gap-x-3">
+            @*     <button type="button" class="flex items-center justify-center w-[15%] flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#7258DB] ">
 
-        Try Manually
-        </button> *@
-        <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
-
-
-            <button id="refreshBtn" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#4ADE80]">
-                <svg aria-hidden="true" role="status" id="loadingSpinner" class="  hidden ml-2 w-5 h-5 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"></path>
-                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"></path>
-                </svg>
-                <span id="scanBtnText">Refresh</span>
-            </button>
+            Try Manually
+            </button> *@
+            <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
 
 
-        </div>
-    </div>
-    <div class="flex flex-row  bg-white rounded-md h-[80%]  border ">
+                <button id="refreshBtn" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#4ADE80]">
+                    <svg aria-hidden="true" role="status" id="loadingSpinner" class="  hidden ml-2 w-5 h-5 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"></path>
+                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"></path>
+                    </svg>
+                    <span id="scanBtnText">Refresh</span>
+                </button>
 
-        <div id="nullProduct" hidden class="w-[65%]  rounded-md pt-12  ">
-            <div class="">
-                <div class="flex justify-center items-center  ">
 
-                    <img src="~/img/cart-download-solid-228.png" class=" text-8xl  text-gray-600" />
-
-                </div>
-                <div class="">
-                    <p class="text-center text-2xl text-gray-400  ml-8">No items in cart</p>
-                </div>
             </div>
         </div>
+        <div class="flex flex-row  bg-white rounded-md h-[80%]  border ">
+
+            <div id="nullProduct" hidden class="w-[65%]  rounded-md pt-12  ">
+                <div class="">
+                    <div class="flex justify-center items-center  ">
+
+                        <img src="~/img/cart-download-solid-228.png" class=" text-8xl  text-gray-600" />
+
+                    </div>
+                    <div class="">
+                        <p class="text-center text-2xl text-gray-400  ml-8">No items in cart</p>
+                    </div>
+                </div>
+            </div>
 
 
 
 
 
-        <div id="productDetails" class="w-[100%] grid grid-cols-4 gap-4 rounded-md p-4 overflow-auto h-[100%] custom-scrollbar">
-            <!-- Each Product Card -->
-
-   @*          <div class="rounded overflow-hidden border bg-white h-56 ">
+            <div id="productDetails" class="w-[100%] grid grid-cols-4 gap-4 rounded-md p-4 overflow-auto h-[100%] custom-scrollbar">
+                <!-- Each Product Card -->
+                @*          <div class="rounded overflow-hidden border bg-white h-56 ">
                 <!-- Adjusted fixed height here -->
                 <img class="w-full h-[11rem] object-cover" src="https://via.placeholder.com/150" alt="Product Image">
                 <div class="flex justify-center">
-                    <div class="p-2 text-center">
-                        <span class="inline-block bg-green-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">$24.99</span>
-                        <!-- Quantity Indicator -->
-                        <span class="ml-2 inline-block bg-blue-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">x2</span>
-                    </div>
+                <div class="p-2 text-center">
+                <span class="inline-block bg-green-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">$24.99</span>
+                <!-- Quantity Indicator -->
+                <span class="ml-2 inline-block bg-blue-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">x2</span>
+                </div>
                 </div>
 
 
+                </div> *@
+
+
+
+            </div>
+
+
+
+            @* <div class="w-[35%] border flex flex-col p-4 bg-white rounded-lg custom-scrollbar">
+            <div class="mb-8">
+            <h3 class="text-lg font-semibold mb-2">Customer Details</h3>
+            <!-- Form or display for customer details -->
+            <form class="flex-col gap-2">
+            <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" class="h-8 border mt-1 px-2 py-4 w-full   rounded focus:outline-blue-200">
+            </div>
+            <div class="mt-1">
+            <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+            <input type="number" class="h-8 border mt-1 px-2 py-4 w-full   rounded focus:outline-blue-200">
+            </div>
+            <div class="mt-1">
+            <label class="block text-sm font-medium text-gray-700">Email </label>
+            <input placeholder="customer@gmail.com" type="email" class="h-8 border mt-1 px-2 py-4 w-full  rounded focus:outline-blue-200">
+            </div>
+            <div class="mt-1">
+            <label class="block text-sm font-medium text-gray-700">Billing Date</label>
+            <input id="billingDate" type="date" disabled class="h-8 border text-gray-400 mt-1 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
+            </div>
+            <!-- Add more fields as needed -->
+            </form>
+            </div>
+            <div class="mt-auto">
+            <div class="flex items-center gap-4">
+            <h3 class="text-lg font-semibold text-gray-800">Products in Cart</h3>
+            <!-- Subtotal value here -->
+            <p class="text-lg font-semibold text-[#4ADE80]" id="totalItems">--</p>
+            </div>
+
+            <div class="mt-4">
+            <button type="button" class="w-full py-2 text-white bg-[#7258DB] rounded-md">Proceed</button>
+
+            </div>
+            </div>
+
             </div> *@
-
-
-
         </div>
+        <button type="button" id="proceedBtn" class="flex items-center justify-center w-[15%] float-end flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#7258DB] ">
 
+            Proceed
+        </button>
 
-
-        @* <div class="w-[35%] border flex flex-col p-4 bg-white rounded-lg custom-scrollbar">
-        <div class="mb-8">
-        <h3 class="text-lg font-semibold mb-2">Customer Details</h3>
-        <!-- Form or display for customer details -->
-        <form class="flex-col gap-2">
-        <div>
-        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-        <input type="text" class="h-8 border mt-1 px-2 py-4 w-full   rounded focus:outline-blue-200">
-        </div>
-        <div class="mt-1">
-        <label class="block text-sm font-medium text-gray-700">Phone Number</label>
-        <input type="number" class="h-8 border mt-1 px-2 py-4 w-full   rounded focus:outline-blue-200">
-        </div>
-        <div class="mt-1">
-        <label class="block text-sm font-medium text-gray-700">Email </label>
-        <input placeholder="customer@gmail.com" type="email" class="h-8 border mt-1 px-2 py-4 w-full  rounded focus:outline-blue-200">
-        </div>
-        <div class="mt-1">
-        <label class="block text-sm font-medium text-gray-700">Billing Date</label>
-        <input id="billingDate" type="date" disabled class="h-8 border text-gray-400 mt-1 rounded px-2 py-4 w-full bg-gray-50 focus:outline-blue-200" />
-        </div>
-        <!-- Add more fields as needed -->
-        </form>
-        </div>
-        <div class="mt-auto">
-        <div class="flex items-center gap-4">
-        <h3 class="text-lg font-semibold text-gray-800">Products in Cart</h3>
-        <!-- Subtotal value here -->
-        <p class="text-lg font-semibold text-[#4ADE80]" id="totalItems">--</p>
-        </div>
-
-        <div class="mt-4">
-        <button type="button" class="w-full py-2 text-white bg-[#7258DB] rounded-md">Proceed</button>
-
-        </div>
-        </div>
-
-        </div> *@
-    </div>
-    <button type="button" id="proceedBtn" class="flex items-center justify-center w-[15%] float-end flex-shrink-0 px-3 py-2 text-sm font-medium text-white border rounded-lg bg-[#7258DB] ">
-
-        Proceed
-    </button>
-
+    </section>
 </section>
 @section Scripts{
     <script>
@@ -130,14 +131,14 @@
                         if (response && response.products && response.products.length > 0) {
                             var detailsHtml = ''; // Initialize HTML string for product details
 
-                    
+
                             // Loop through each product in the response
                             response.products.forEach(function (product) {
                                 detailsHtml += '<div class="rounded overflow-hidden border bg-white h-56 " data-rfid="' + product.productRFID + '">' +
                                     '<img class="w-full h-[11rem] object-cover" src="https://via.placeholder.com/150" alt="Product Image">' +
                                     '<div class="flex justify-center">' +
                                     '<div class="p-2 text-center">' +
-                                    '<span class="inline-block bg-green-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">Rs.' + product.orderTotal + '</span>' +                               
+                                    '<span class="inline-block bg-green-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">Rs.' + product.orderTotal + '</span>' +
                                     '<span class="ml-2 inline-block bg-blue-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">x' + product.productCount + '</span>' +
                                     '</div>' +
                                     '</div>' +
@@ -158,11 +159,11 @@
                         $("#scanBtnText").show(); // Show the button text again
                         // Handle AJAX error
                         console.error("Error fetching product details:", error);
-                      // Show no items message
+                        // Show no items message
                         $("#productDetails").html(''); // Clear previous details
                     }
                 });
-             
+
             });
         });
         $("#proceedBtn").click(function () {

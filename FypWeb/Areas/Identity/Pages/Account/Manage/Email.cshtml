@@ -25,11 +25,16 @@
                     <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail" class="absolute inset-y-0 right-0 flex items-center px-3 text-green-500">Send verification email</button>
                 </div>
             }
-            <div>
-                <input asp-for="Input.NewEmail" class="w-full px-4 py-3 border rounded-md" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
-                <span asp-validation-for="Input.NewEmail" class="text-red-500"></span>
-            </div>
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="inline-flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Change email</button>
+            @if (!(User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Customer_Handler)))
+            {
+                <div>
+                    <input asp-for="Input.NewEmail" class="w-full px-4 py-3 border rounded-md" autocomplete="email" aria-required="true" placeholder="Please enter new email." />
+                    <span asp-validation-for="Input.NewEmail" class="text-red-500"></span>
+                </div>
+                <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="inline-flex justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">Change email</button>
+            }
+
+
         </form>
     </div>
 </div>

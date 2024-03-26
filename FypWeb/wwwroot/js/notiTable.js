@@ -1,7 +1,7 @@
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": '/FittingRoomEmployee/Home/GetAllNotifications',
+            "url": '/Employee/Notification/GetAllNotifications',
             "type": "GET",
             "datatype": "json"
         },
@@ -24,10 +24,18 @@ function loadDataTable() {
             {
                 "data": "notiId",
                 "render": function (data, type, row) {
-                    return `<button class="mark-read w-[200px] focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-id="${data}">Mark as Read</button>`;
+                    // Check if the notification is read or not
+                    var buttonClass = "bg-green-700 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700"; // Default class for read notifications
+                    var buttonText = "Read"; // Default text for read notifications
+                    if (row.isReadSt === "NO") { // Assuming isReadSt returns "Not Read" for unread notifications
+                        buttonClass = "bg-red-700 hover:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700"; // Change class for unread notifications
+                        buttonText = "Mark as Read"; // Change text for unread notifications
+                    }
+                    return `<button class="mark-read w-[200px] focus:outline-none text-white ${buttonClass} focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-green-800" data-id="${data}">${buttonText}</button>`;
                 },
                 "width": "20%"
             }
+
         ],
         "columnDefs": [
             { "orderable": false, "targets": 5 } // Disables ordering on the 'Mark as Read' button column
@@ -36,17 +44,14 @@ function loadDataTable() {
 }
 
 $(document).ready(function () {
-    loadDataTable();
-
-    // Correctly attach the event handler using delegation
+    loadDataTable();   
     $('#tblData tbody').on('click', '.mark-read', function () {
-        var id = $(this).data('id'); // Get the ID of the notification
+        var id = $(this).data('id'); 
 
-        // AJAX call to server to update the isRead status
         $.ajax({
-            url: '/FittingRoomEmployee/Home/SetNotificationRead',
+            url: '/Employee/Notification/SetNotificationRead',
             method: 'POST',
-            data: { id: id }, // Ensure your server-side action is expecting an `id` parameter
+            data: { id: id }, 
             success: function (response) {
                 if (response.message == "Already") {
                     dataTable.ajax.reload(null, false);

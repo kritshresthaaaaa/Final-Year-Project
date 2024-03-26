@@ -105,7 +105,7 @@
         async function fetchRFIDProducts() {
             // Example fetch function
             try {
-                const response = await fetch('/Customer/Home/GetAllRecommendedItems');
+                const response = await fetch('/Recommendation/Home/GetAllRecommendedItems');
                 const result = await response.json();
                 // Assuming a function to display these products exists
                 displayRFIDProducts(result);
