@@ -4,7 +4,6 @@ namespace FypWeb.IService
 {
     public interface INotiService
     {
-        List<Noti> GetNotifications(Guid nToEmployeeId, bool bIsGetOnlyUnread);
-     
+        Task<List<Noti>> GetNotifications(Guid nToEmployeeId, bool bIsGetOnlyUnread);
     }
 }

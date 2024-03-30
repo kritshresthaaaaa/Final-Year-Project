@@ -4,6 +4,7 @@ using Fyp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240328174209_skuAdded")]
+    partial class skuAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -456,34 +459,6 @@ namespace Fyp.DataAccess.Migrations
                             RFIDTag = "12312412",
                             SKUID = 1,
                             Sizes = "S"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            Description = "black t prodyc 1 ",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "1231241723",
-                            SKUID = 5,
-                            Sizes = "M"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            Description = "black t prodyc 1 ",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "1231999",
-                            SKUID = 6,
-                            Sizes = "L"
                         });
                 });
 

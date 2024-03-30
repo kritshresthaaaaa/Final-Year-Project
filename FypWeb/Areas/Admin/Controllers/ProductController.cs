@@ -51,18 +51,18 @@ namespace FypWeb.Areas.Admin.Controllers
         {
             try
             {
-                var reader = new Reader("192.168.1.1", false); // Configure your Reader
+                var reader = new Reader("192.168.1.1", false);
                 reader.ConnectToDevice();
                 reader.SetDeviceReadMode();
                 reader.StartDevice();
                 var detectedEPCs = reader.GetDetectedEPCs();
-                await Task.Delay(2000); // Consider using await Task.Delay(2000); for async
+                await Task.Delay(2000);
                 reader.StopDevice();
                 var result = new List<EpcScanResult>();
-                // Iterate through detected EPCs
+             
                 foreach (string epc in detectedEPCs)
                 {
-                    // Simply add the original EPC to the result
+                   
                     result.Add(new EpcScanResult { OriginalEPC = epc, NewEPC = epc });
                 }
 

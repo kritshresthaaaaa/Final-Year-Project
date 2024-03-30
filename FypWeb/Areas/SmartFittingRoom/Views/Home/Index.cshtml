@@ -1,0 +1,257 @@
+﻿@{
+    Layout = "~/Views/Shared/_Customers.cshtml";
+}
+<div class="bg-white h-screen flex flex-row border rounded-md">
+
+    <div class="w-[45%] overflow-y-auto custom-scrollbar">
+        <!-- Flex container for the button -->
+        <div class="flex justify-end p-4">
+            <button id="refreshButton" class="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+                Scan
+            </button>
+        </div>
+        <div class="flex flex-col items-center justify-center min-h-[70vh] bg-white" id="welcomeMessage">
+            <i class='bx bxs-user text-6xl bx-beeping' id="userIcon"></i>
+            <p class="text-xl text-gray-600" id="instructionText">Please stand closer to the mirror and press Scan button...</p>
+        </div>
+
+        <div id="bucketItemsSection" class="hidden">
+            <div class="bottom mb-1">
+                <h3 class="text-2xl text-center font-semibold">Items in your Bucket :)</h3>
+            </div>
+            <div class="mx-auto max-w-md px-4 py-2 lg:max-w-7xl lg:px-4 flex-grow">
+                <div id="productList" class="grid grid-cols-1 gap-x-4 gap-y-8 lg:grid-cols-3">
+                    <!-- Products will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-[55%] border-l">
+        <div class="top">
+            <div class="max-w-7xl px-4 flex-grow mt-10">
+                <div class="px-4 ">
+
+                    <div class="flex flex-row border rounded-md -mx-4" id="productDetail">
+
+                        <div class="mx-auto">
+                            <div id="placeholderMessage" class="flex flex-col items-center  min-h-[90vh] pt-[14rem]">
+                                <i class='bx bx-closet bx-beeping text-6xl text-gray-500 '></i>
+                                <p class="text-xl text-gray-600 px-4">Select a product to view the details</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+@section Scripts{
+    <script>
+        document.getElementById('refreshButton').addEventListener('click', function () {
+            // Hide the welcome message, icon, and text
+            document.getElementById('welcomeMessage').style.display = 'none';
+
+            // Call the function to load and display products
+            fetchRFIDProducts();
+
+            // Show the "Items in your Bucket" section
+            document.getElementById('bucketItemsSection').classList.remove('hidden');
+        });
+
+
+        function fetchRFIDProducts() {
+            $.ajax({
+                url: '/SmartFittingRoom/Home/GetProductsByRfidTagsWithSizes',
+                type: 'GET',
+                dataType: 'json',
+                success: function (result) {
+                    // Assuming a function to display these products exists
+                    displayRFIDProducts(result);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching RFID products:', error);
+                }
+            });
+        }
+
+        function displayRFIDProducts(result) {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = ''; // Clear existing content
+
+            if (!result || !result.data) {
+                console.error('Invalid or empty response data');
+                return;
+            }
+
+            const productsWithRFID = result.data;
+            console.log(productsWithRFID);
+
+            // Adjusting to process the expected data structure
+            Object.entries(productsWithRFID).forEach(([rfidTag, productInfo]) => {
+                if (productInfo && productInfo.product && Array.isArray(productInfo.sizes)) {
+                    const productDetail = productInfo.product;
+                    const sizes = productInfo.sizes;
+                    const productCard = createProductCard(productDetail, sizes);
+                    productList.appendChild(productCard);
+                } else {
+                    console.error(`Unexpected data format for RFID tag ${rfidTag}:`, productInfo);
+                }
+            });
+
+        }
+
+
+        function createProductCard(productDetail, sizes) {
+            // Creating a div element for the product card
+            const card = document.createElement('div');
+            card.classList.add('productCard', 'group', 'flex', 'flex-col', 'items-center', 'border', 'rounded-md', 'cursor-pointer', 'transition-colors', 'duration-150');
+
+            // Adding product image, name, and price to the card's inner HTML
+            card.innerHTML = `
+                                                                                                                <img src="https://mockuptree.com/wp-content/uploads/edd/2022/07/free-loose-fit-t-shirt-mockup.jpg" alt="${productDetail.name}" class="object-cover rounded-t-md object-center h-full w-full group-hover:opacity-75">
+                                                                                                        <h3 class="mt-4 text-sm text-gray-700">${productDetail.name}</h3>
+                                                                                                        <p class="mt-1 text-lg font-medium text-gray-900">$${productDetail.price}</p>
+                                                                                                        <div class="sizes">Sizes: ${sizes.join(', ')}</div>
+                                                                                                    `;
+
+            card.addEventListener('click', () => {
+                // Extract base SKU by removing the last '-S' part
+                const baseSku = productDetail.sku.code.substring(0, productDetail.sku.code.lastIndexOf('-'));
+
+                fetch(`/SmartFittingRoom/Home/GetProductDetailsWithAllSizes?baseSku=${baseSku}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Assuming 'data' contains product details within 'data' key and 'Sizes' array
+                        updateProductDetailSection(data.data.product, data.data.sizes);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching product details:', error);
+                    });
+            });
+
+            return card;
+        }
+
+
+        function displayProductDetails(rfidTag, productsWithRFID) {
+
+            if (!productsWithRFID[rfidTag] || productsWithRFID[rfidTag].length === 0) {
+                console.error('No product details available for this RFID tag:', rfidTag);
+                return;
+            }
+
+            const productDetails = productsWithRFID[rfidTag][0]; // Now we are sure it exists
+            updateProductDetailSection(productDetails);
+        }
+
+        function updateProductDetailSection(productDetails, sizes) {
+            if (!productDetails || !sizes) {
+                toastr.error('Missing product details or sizes.');
+                console.error('Missing product details or sizes.');
+                return;
+            }
+            // Update the HTML content with product details and sizes
+            const productDetailDiv = document.getElementById('productDetail');
+            let sizesHtml = sizes.map((size, index) => `<button id="size-${index}" class="size-btn bg-gray-300 text-gray-700 py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400" data-size="${size}">${size}</button>`).join(''); productDetailDiv.innerHTML = `
+                                                                <div class="py-8">
+                                                                    <div class="max-w-6xl mx-auto px-4">
+                                                                        <div class="flex flex-col md:flex-row -mx-4">
+                                                                            <div class="md:flex-1 px-4">
+                                                                                <div class="h-[460px] rounded-lg bg mb-4">
+                                                                                            <img class="w-full h-full object-cover" style="max-width: 500px;" src="https://mockuptree.com/wp-content/uploads/edd/2022/07/free-loose-fit-t-shirt-mockup.jpg" alt="${productDetails.name}">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="md:flex-1 px-4">
+                                                                                <h2 class="text-2xl font-bold text-gray-800 mb-2">${productDetails.name}</h2>
+                                                                                <p class="text-gray-600 text-sm mb-4">${productDetails.description}</p>
+                                                                                <div class="flex mb-4">
+                                                                                    <div class="mr-4">
+                                                                                        <span class="font-bold text-gray-700">Price:</span>
+                                                                                        <span class="text-gray-600">$${productDetails.price}</span>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <span class="font-bold text-gray-700">Availability:</span>
+                                                                                        <span class="text-gray-600">${sizes ? 'In Stock' : 'Out of Stock'}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                        <div class="mb-4">
+                                            <span class="font-bold text-gray-700">Select Size:</span>
+                                            <div class="flex items-center mt-2">${sizesHtml}</div>
+                                        </div>
+                                                                                                     <div class="w-full">
+                                            <button id="sendRequestBtn" class="w-full bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">Send Request</button>
+                                        </div>
+                                                                                 <p class="text-gray-600 text-sm mt-2">
+                                                                                    <span class="font-bold">Note:</span> If the sizes are not available, you can request them by clicking the button below.
+                                                                                </p>
+                                                                                 </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>`;
+            attachSizeSelectionListeners();
+            attachSendRequestListener(productDetails);
+
+            function attachSizeSelectionListeners() {
+                const sizeButtons = document.querySelectorAll('.size-btn');
+                sizeButtons.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        sizeButtons.forEach(btn => btn.classList.remove('selected-size'));
+                        this.classList.add('selected-size');
+                    });
+                });
+            }
+
+            function attachSendRequestListener(productDetails) {
+                const sendRequestBtn = document.getElementById('sendRequestBtn');
+                sendRequestBtn.addEventListener('click', function () {
+                    const selectedSizeBtn = document.querySelector('.size-btn.selected-size');
+                    if (!selectedSizeBtn) {
+                        toastr.success('Please select a size.');
+                        return;
+                    }
+
+                    const selectedSize = selectedSizeBtn.getAttribute('data-size');
+                    sendProductRequest(productDetails, selectedSize);
+                });
+            }
+
+            function sendProductRequest(productDetails, selectedSize) {
+                const sendRequestBtn = document.getElementById('sendRequestBtn');
+                sendRequestBtn.disabled = true;
+                sendRequestBtn.classList.add('loading-btn');
+                sendRequestBtn.innerText = 'Your Request in being Processed';
+                $.ajax({
+                    url: '/SmartFittingRoom/Home/PostSizeRequest',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ productId: productDetails.id, size: selectedSize }),
+                    success: function (response) {
+                        toastr.success('Request sent successfully');
+                        sendRequestBtn.classList.remove('loading-btn');
+                        sendRequestBtn.disabled = false; // Re-enable the button
+                        sendRequestBtn.innerHTML = 'Send Request'; // Reset button text
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Error sending request');
+                        sendRequestBtn.classList.remove('loading-btn');
+                        sendRequestBtn.disabled = false;
+                        sendRequestBtn.innerHTML = 'Send Request'; // Reset button text
+                        console.error('Error sending request:', error);
+
+                    }
+                });
+            }
+
+        }
+
+
+
+    </script>
+}

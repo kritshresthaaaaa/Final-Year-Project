@@ -39,8 +39,6 @@
 	  </Reference>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Areas\SmartTrailroom\Controllers\" />
-	  <Folder Include="Areas\SmartTrailroom\Views\" />
 	  <Folder Include="wwwroot\images\employee\" />
 	  <Folder Include="wwwroot\images\product\" />
 	</ItemGroup>

@@ -2,6 +2,39 @@
 * {
     font-family: 'Poppins', sans-serif;
 }
+
+.size-btn {
+    /* General styles for size buttons */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .size-btn.selected-size {
+        /* Styles for the selected size button */
+        background-color: #007bff; /* Change to your preferred color */
+        color: white;
+        border-color: #007bff; /* Change to your preferred color */
+    }
+
+/* Add this to your site's stylesheet */
+.loading-btn::after {
+    content: '';
+    display: inline-block;
+    margin-left: 8px;
+    border: 2px solid #fff; /* Adjust color to match button text color */
+    border-radius: 50%;
+    border-top-color: transparent;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .drop-zone {
     border: 2px dashed #ccc;
     padding: 20px;
@@ -13,6 +46,7 @@
 .selectedProduct {
     background-color: #f3f4f6; /* Equivalent to Tailwind's bg-gray-100 */
 }
+
 .recommended-product {
     padding: 10px;
     margin-top: 10px;
@@ -21,6 +55,7 @@
     justify-content: space-between;
     align-items: center;
 }
+
 .product-item {
     display: flex;
     align-items: center;

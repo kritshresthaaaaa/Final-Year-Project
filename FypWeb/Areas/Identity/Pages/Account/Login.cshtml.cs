@@ -207,7 +207,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                             switch (selectedService)
                             {
                                 case "SmartFittingRoom":
-                                    returnUrl = "/SmartTrailroom/Home/TrailRoom";
+                                    returnUrl = "/SmartFittingRoom/Home/Index";
                                     break;
                                 case "SmartCheckout":
                                     returnUrl = "/SmartCheckout/Checkout/Index";

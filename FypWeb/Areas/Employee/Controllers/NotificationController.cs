@@ -3,8 +3,10 @@ using Fyp.Models;
 using Fyp.Utility;
 using FypWeb.IService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace FypWeb.Areas.Employee.Controllers
 {
@@ -15,11 +17,13 @@ namespace FypWeb.Areas.Employee.Controllers
         INotiService _notiService = null;
         List<Noti> _oNotifications = new List<Noti>();
         private readonly ApplicationDbContext context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public Notification(INotiService notiService, ApplicationDbContext _context)
+        public Notification(INotiService notiService, ApplicationDbContext _context, UserManager<ApplicationUser> userManager)
         {
             _notiService = notiService;
             context = _context;
+            _userManager = userManager;
         }
         public IActionResult AllNotifications()
         {
@@ -27,13 +31,29 @@ namespace FypWeb.Areas.Employee.Controllers
         }
         #region API CALLS
         [HttpGet]
-        public JsonResult GetAllNotifications(bool bIsGetOnlyUnread = false)
+        public async Task<JsonResult> GetAllNotifications(bool bIsGetOnlyUnread = false)
         {
-            Guid nToEmployeeId = new Guid("757243c1-cbdd-43c5-a2da-605a6f1ba32e");
-            _oNotifications = new List<Noti>();
-            _oNotifications = _notiService.GetNotifications(nToEmployeeId, bIsGetOnlyUnread);
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var employeeId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (employeeId == null)
+            {
+                return Json(new { error = "User not found." });
+            }
+
+            var currentUser = await _userManager.FindByIdAsync(employeeId);
+            if (currentUser == null)
+            {
+                return Json(new { error = "User not found." });
+            }
+
+            Guid nToEmployeeId = new Guid(employeeId);
+
+            // Assuming GetNotifications is correctly implemented to be async and returning Task<List<Noti>>
+            var _oNotifications = await _notiService.GetNotifications(nToEmployeeId, bIsGetOnlyUnread);
+
             return Json(new { data = _oNotifications });
         }
+
 
 
         [HttpPost]

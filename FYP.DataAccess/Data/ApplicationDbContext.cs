@@ -64,7 +64,9 @@ namespace Fyp.DataAccess.Data
                 new SKUDetail { SKUID = 1, Code = "GUC-MC-BLA-S" },
                 new SKUDetail { SKUID = 2, Code = "NIK-WC-FLO-M" },
                 new SKUDetail { SKUID = 3, Code = "NIK-WC-PRO-M" },
-                new SKUDetail { SKUID = 4, Code = "NIK-WC-PRO-XL" }
+                new SKUDetail { SKUID = 4, Code = "NIK-WC-PRO-XL" },
+                new SKUDetail { SKUID = 5, Code = "GUC-MC-BLA-M" },
+                new SKUDetail { SKUID = 6, Code = "GUC-MC-BLA-L" }
             );
 
 
@@ -187,7 +189,35 @@ namespace Fyp.DataAccess.Data
                                             ImageUrl = "",
                                             SKUID = 1 // Reference to the seeded SKUDetail,
 
-                                        }
+                                        },
+                                         new ProductDetail
+                                         {
+                                             Id = 10,
+                                             Name = "Black Tshirt",
+                                             Description = "black t prodyc 1 ",
+                                             Price = 100,
+                                             BrandID = 1,
+                                             CategoryID = 1,
+                                             RFIDTag = "1231241723",
+                                             Sizes = "M",
+                                             ImageUrl = "",
+                                             SKUID = 5 // Reference to the seeded SKUDetail,
+
+                                         },
+                                         new ProductDetail
+                                         {
+                                                Id = 11,
+                                                Name = "Black Tshirt",
+                                                Description = "black t prodyc 1 ",
+                                                Price = 100,
+                                                BrandID = 1,
+                                                CategoryID = 1,
+                                                RFIDTag = "1231999",
+                                                Sizes = "L",
+                                                ImageUrl = "",
+                                                SKUID = 6 // Reference to the seeded SKUDetail,
+    
+                                            }
 
 
             );

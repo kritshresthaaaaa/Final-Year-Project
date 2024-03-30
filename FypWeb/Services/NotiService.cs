@@ -18,23 +18,23 @@ namespace FypWeb.Services
             _dbContext = dbContext;
         }
 
-        public List<Noti> GetNotifications(Guid nToEmployeeId, bool bIsGetOnlyUnread)
+        public async Task<List<Noti>> GetNotifications(Guid nToEmployeeId, bool bIsGetOnlyUnread)
         {
             List<Noti> _oNotifications = new List<Noti>(); // No need to initialize it as a field
 
             if (bIsGetOnlyUnread)
             {
-                _oNotifications = _dbContext.Notification
-                    .Where(x => x.ToEmployeeId == nToEmployeeId && !x.IsRead) // Simplified the boolean check
+                _oNotifications = await _dbContext.Notification
+                    .Where(x => x.ToEmployeeId == nToEmployeeId && !x.IsRead)
                     .OrderByDescending(x => x.CreatedDate)
-                    .ToList();
+                    .ToListAsync();
             }
             else
             {
-                _oNotifications = _dbContext.Notification
+                _oNotifications = await _dbContext.Notification
                     .Where(x => x.ToEmployeeId == nToEmployeeId)
                     .OrderByDescending(x => x.CreatedDate)
-                    .ToList();
+                    .ToListAsync();
             }
 
             return _oNotifications; // Corrected to return the list of notifications
