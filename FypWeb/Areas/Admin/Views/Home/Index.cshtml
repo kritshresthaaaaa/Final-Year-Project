@@ -1,10 +1,10 @@
 ﻿
 <div class="p-4 ml-[12rem]">
-@*     <div class="flex justify-center space-x-4 mb-4">
-        <button id="today" class="px-4 py-2 bg-blue-500 text-white rounded-md">Today</button>
-        <button id="week" class="px-4 py-2 bg-blue-500 text-white rounded-md">Week</button>
-        <button id="month" class="px-4 py-2 bg-blue-500 text-white rounded-md">Month</button>
-        <button id="year" class="px-4 py-2 bg-blue-500 text-white rounded-md">Year</button>
+    @*     <div class="flex justify-center space-x-4 mb-4">
+    <button id="today" class="px-4 py-2 bg-blue-500 text-white rounded-md">Today</button>
+    <button id="week" class="px-4 py-2 bg-blue-500 text-white rounded-md">Week</button>
+    <button id="month" class="px-4 py-2 bg-blue-500 text-white rounded-md">Month</button>
+    <button id="year" class="px-4 py-2 bg-blue-500 text-white rounded-md">Year</button>
     </div> *@
 
     <div class=" outerlayer flex-col">
@@ -38,12 +38,11 @@
             </div>
         </div>
         <div class="flex flex-wrap justify-center bg-white p-1  border rounded-md mt-2 ">
-            <button id="today" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Today</button>
             <button id="week" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Week</button>
             <button id="month" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Month</button>
             <button id="year" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Year</button>
         </div>
-        <div>
+        <div class="px-2 mt-2">
             <canvas id="myChart" width="250" height="100"></canvas>
         </div>
 
@@ -53,110 +52,104 @@
 </div>
 @section Scripts{
     <script>
-        // Initialize variables to access the chart and its context outside of the DOMContentLoaded event
         var myChart = null;
         var ctx = null;
 
         document.addEventListener('DOMContentLoaded', function () {
             ctx = document.getElementById('myChart');
-            loadChart('week'); // Load today's data by default
-
-            // Event listeners for buttons
-            document.getElementById('today').addEventListener('click', function () { loadChart('today'); });
+            loadChart('week');
             document.getElementById('week').addEventListener('click', function () { loadChart('week'); });
             document.getElementById('month').addEventListener('click', function () { loadChart('month'); });
             document.getElementById('year').addEventListener('click', function () { loadChart('year'); });
         });
-
         function loadChart(timeFrame) {
-            // Placeholder for fetching or calculating data based on the time frame
-            // This will likely involve fetching data from your server based on the selected time frame
-            var data = generateChartData(timeFrame);
+            // If the chart already exists, destroy it to start fresh
+            if (myChart !== null) {
+                myChart.destroy();
+            }
+            // Setting static labels for the days of the week
+            var staticLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+            // Placeholder for initial chart data
+            var initialData = {
+                labels: staticLabels, // Initialize with empty labels
+                datasets: [{
+                    label: 'Shopping Status',
+                    backgroundColor: '#D1E7DD',
+                    borderColor: '#198754',
+                    data: [], // Initialize with empty data
+                }]
+            };
+
+            // Chart configuration
             const config = {
                 type: 'line',
-                data: data,
+                data: initialData,
                 options: {
                     responsive: true,
                     plugins: {
+                        subtitle: {
+                            display: true,
+                            text: 'Shopping Status',
+                            font: {
+                                size: 16,
+                            },
+                            padding: {
+                                bottom: 5,
+                            }
+                        },
                         legend: {
-                            position: 'top',
+                            position: 'bottom',
                         },
                     }
                 },
             };
 
-            // Destroy the existing chart instance if it exists
-            if (myChart !== null) {
-                myChart.destroy();
-            }
-
-            // Create a new chart instance
+            // Create a new chart instance with the initial data
+            ctx = document.getElementById('myChart');
             myChart = new Chart(ctx, config);
+
+            // Load new data for the chart
+            generateChartData(timeFrame);
         }
 
         function generateChartData(timeFrame) {
-            // Generate or fetch data based on the time frame
-            // Placeholder switch case
-            switch (timeFrame) {
-                case 'today':
-                    // Data for today
-                    return {
-                        labels: ['Today'],
-                        datasets: [
-                            {
-                                label: 'Products',
-                                backgroundColor: '#D1E7DD',
-                                borderColor: '#198754',
-                                data: [20], // Example data
-                            },
-                        ]
-                    };
-                case 'week':
-                    // Data for the week
-                    return {
-                        labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-                        datasets: [
-                            {
-                                label: 'Products',
-                                backgroundColor: '#D1E7DD',
-                                borderColor: '#198754',
-                                data: [0, 10, 5, 2, 20, 30, 45], // Example data
-                            },
-                        ]
-                    };
-                case 'month':
-                    // Data for the month
-                    return {
-                        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                        datasets: [
-                            {
-                                label: 'Products',
-                                backgroundColor: '#D1E7DD',
-                                borderColor: '#198754',
-                                data: [50, 60, 70, 80], // Example data
-                            },
-                        ]
-                    };
-                case 'year':
-                    // Data for the year
-                    return {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                        datasets: [
-                            {
-                                label: 'Products',
-                                backgroundColor: '#D1E7DD',
-                                borderColor: '#198754',
-                                data: [120, 150, 180, 200, 250, 300, 350, 400, 450, 500, 550, 600], // Example data
-                            },
-                        ]
-                    };
-                default:
-                    return {
-                        labels: [],
-                        datasets: []
-                    };
+            if (timeFrame === 'week') {
+                fetch('/Admin/Home/GetWeeklyShoppingStatus')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Initialize an array to hold sales data for each day, defaulting to 0
+                        const salesDataForWeek = []; // Sunday to Saturday
+
+                        // Map each dayOfWeek to an index (assuming your dayOfWeek is a string like "Sunday")
+                        const dayOfWeekToIndex = {
+                            "Sunday": 0,
+                            "Monday": 1,
+                            "Tuesday": 2,
+                            "Wednesday": 3,
+                            "Thursday": 4,
+                            "Friday": 5,
+                            "Saturday": 6
+                        };
+
+                        // Populate salesDataForWeek based on fetched data
+                        data.forEach(item => {
+                            const dayIndex = dayOfWeekToIndex[item.dayOfWeek];
+                            if (dayIndex !== undefined) { // Check if the dayOfWeek from data is valid
+                                salesDataForWeek[dayIndex] = item.totalSales;
+                            }
+                        });
+
+                        if (myChart) {
+                            // Since labels are static and already set, just update the data
+                            myChart.data.datasets[0].data = salesDataForWeek;
+                            myChart.data.datasets[0].label = 'Total Sales';
+                            myChart.update();
+                        }
+                    })
+                    .catch(error => console.error('Error fetching weekly data:', error));
             }
         }
+
     </script>
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ProductDetailViewModel>
+﻿@* @model IEnumerable<ProductDetailViewModel> *@
 
 <section class="p-2 ml-[12rem]">
     <div class="relative overflow-hidden bg-white border sm:rounded-lg">
@@ -10,7 +10,7 @@
                 </h5>
                 <h5>
                     <span class="text-black">Total sales:</span>
-                    <span class="text-gray-500">$88.4k</span>
+                    <span class="text-gray-500">Rs. @ViewBag.totalSales</span>
                 </h5>
             </div>
             <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
@@ -29,92 +29,105 @@
 
             </div>
         </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left text-gray-500 ">
-                <thead class="text-xs text-black uppercase border rounded ">
+        <div class="overflow-x-auto ">
+            <table id="tblData" class="w-full text-sm text-left rounded-md " style="width:100%; background-color: #ffffff; border: 1px solid #ccc; margin-top:2px;">
+                <thead class="text-xs text-black uppercase mt-2 ">
                     <tr class="">
-                        <th scope="col" class="p-4">
-                            <p class="flex justify-center items-center">ID</p>
-                        </th>
-                        <th scope="col" class="px-4 py-3 "><p class="flex justify-center items-center">Product</p></th>
-                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Category</p></th>
-                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Size</p></th>
-
-                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Price</p></th>
 
 
-                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Units Sold</p></th>
-                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Total Sales</p></th>
-
-
-                        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Operations</p></th>
+                        <th><p class="flex justify-center">Id</p></th>
+                        <th><p class="flex justify-center">Product Name</p></th>
+                        <th><p class="flex justify-center">Category</p></th>
+                        <th><p class="flex justify-center">Orginal Price</p></th>
+                        <th><p class="flex justify-center">Discounted Price</p></th>
+                        <th><p class="flex justify-center">Operation</p></th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
 
-                        <tr class="border-b border-gray-600 cursor-pointer hover:bg-gray-100 ">
-                            <td class="px-2 py-2  ">
-                                <span class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
-                                    @Html.DisplayFor(modelItem => item.Product.Id)
-                                </span>
-                            </td>
-                            <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                                <div class="flex justify-center">
-                                    <!-- Wrap image and name in a flex container -->
-                                    @* <img src="@Html.DisplayFor(modelItem => item.Product.)" class="w-7 h-auto mr-2 rounded-full border"> <!-- Adjust the width (e.g., w-16) as needed --> *@
-                                    @Html.DisplayFor(modelItem => item.Product.Name)
-                                </div>
-                            </td>
-                            <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                                <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Category.CategoryName)</p>
-                            </td>
-                            <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                                <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Sizes)</p>
-                            </td>
-                            <td class="px-4 py-2 font-medium whitespace-nowrap">
-                                @{
-                                    // Assuming today's date for comparison
-                                    var today = DateTime.Today;
-
-                                    // Check if the discount period is valid and if today's date falls within this period
-                                    var isDiscountActive = item.DiscountStartDate <= today && today <= item.DiscountEndDate;
-
-                                    // Display discounted price if the discount is active, otherwise display the original price
-                                    var priceToDisplay = isDiscountActive ? item.Product.DiscountedPrice : item.Product.Price;
-                                }
-                                <p class="flex justify-center">Rs. @priceToDisplay</p>
-                            </td>
-
-                            <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
-                                <p class="flex justify-center">132 units@* @Html.DisplayFor(modelItem => item.Product.S) *@</p>
-                            </td>
-                            <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
-                                <p class="flex justify-center">Rs. 0@* @Html.DisplayFor(modelItem => item.Product.S) *@</p>
-                            </td>
-
-
-
-                            @*       <td class="px-4 py-2 font-medium whitespace-nowrap  ">
-                        <p>@Html.DisplayFor(modelItem => item.Employee.RegistrationDate)</p>
-                        </td> *@
-                            <td class="px-4 py-2 font-medium whitespace-nowrap flex justify-center mt-2.5">
-                                <div class="flex gap-x-2">
-                                    <a asp-action="Details" asp-route-id="@item.Product.Id" class="flex items-center">Details</a>
-                                    &nbsp;
-                                    <a asp-action="Edit" asp-route-id="@item.Product.Id">
-                                        Edit
-                                    </a>
-                                    &nbsp;
-                                    <a asp-action="Delete" asp-route-id="@item.Product.Id" class="flex items-center">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-
-                </tbody>
             </table>
         </div>
+        @*  <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-500 ">
+        <thead class="text-xs text-black uppercase border rounded ">
+        <tr class="">
+        <th scope="col" class="p-4">
+        <p class="flex justify-center items-center">ID</p>
+        </th>
+        <th scope="col" class="px-4 py-3 "><p class="flex justify-center items-center">Product</p></th>
+        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Category</p></th>
+        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Size</p></th>
+
+        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Price</p></th>
+
+
+        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Units Sold</p></th>
+        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Total Sales</p></th>
+
+
+        <th scope="col" class="px-4 py-3"><p class="flex justify-center items-center">Operations</p></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+
+        <tr class="border-b border-gray-600 cursor-pointer hover:bg-gray-100 ">
+        <td class="px-2 py-2  ">
+        <span class="flex items-center justify-center bg-primary-100 text-primary-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-primary-900 dark:text-primary-300">
+        @Html.DisplayFor(modelItem => item.Product.Id)
+        </span>
+        </td>
+        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
+        <div class="flex justify-center">
+
+        @Html.DisplayFor(modelItem => item.Product.Name)
+        </div>
+        </td>
+        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
+        <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Category.CategoryName)</p>
+        </td>
+        <td class="px-4 py-2 font-medium whitespace-nowrap  ">
+        <p class="flex justify-center">@Html.DisplayFor(modelItem => item.Product.Sizes)</p>
+        </td>
+        <td class="px-4 py-2 font-medium whitespace-nowrap">
+        @{
+        var today = DateTime.Today;
+
+        var isDiscountActive = item.DiscountStartDate <= today && today <= item.DiscountEndDate;
+
+
+        var priceToDisplay = isDiscountActive ? item.Product.DiscountedPrice : item.Product.Price;
+        }
+        <p class="flex justify-center">Rs. @priceToDisplay</p>
+        </td>
+
+        <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
+        <p class="flex justify-center">132 units</p>
+        </td>
+        <td class="px-4 py-2 font-medium  whitespace-nowrap  ">
+        <p class="flex justify-center">Rs. 0</p>
+        </td>
+
+        <td class="px-4 py-2 font-medium whitespace-nowrap flex justify-center mt-2.5">
+        <div class="flex gap-x-2">
+        <a asp-action="Details" asp-route-id="@item.Product.Id" class="flex items-center">Details</a>
+        &nbsp;
+        <a asp-action="Edit" asp-route-id="@item.Product.Id">
+        Edit
+        </a>
+        &nbsp;
+        <a asp-action="Delete" asp-route-id="@item.Product.Id" class="flex items-center">Delete</a>
+        </div>
+        </td>
+        </tr>
+        }
+
+        </tbody>
+        </table>
+        </div>
+        *@
     </div>
 </section>
+@section Scripts {
+    <script src="~/js/productsList.js"></script>
+}

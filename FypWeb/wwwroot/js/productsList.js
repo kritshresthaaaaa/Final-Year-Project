@@ -5,28 +5,51 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": { url: '/admin/product/getall' }, // Make sure this URL matches the updated action method that includes product counts.
+        // DataTable column definition
         "columns": [
-            { "data": "brandID", "width": "15%" },
-            { "data": "brandName", "width": "25%" },
-            { "data": "productCount", "width": "25%" },
-
+            { "data": "id", "width": "15%" },
+            { "data": "name", "width": "25%" },
+            { "data": "category", "width": "25%" },
             {
-                "data": "brandID",
+                "data": null,
+                "render": function (data, type, row) {
+                    // Conditionally display discounted price if there's an active discount
+                    if (row.isActiveDiscount) {
+                        return `<del>Rs. ${row.price}</del> <strong>${row.discountedPrice}</strong>`;
+                    } else {
+                        return `Rs. ${row.price}`;
+                    }
+                },
+                "width": "25%"
+            },
+            // If you still want a separate column for discountedPrice, you can hide it or remove this column definition
+            {
+                "data": "discountedPrice",
+                "visible": false, // Hides the discountedPrice column, remove this line if you want to keep the column
+                "width": "25%"
+            },
+            {
+                "data": "id",
                 "render": function (data) {
                     return `
-                        <div class="flex gap-x-2 justify-center">
-                            <a href="/Admin/Brand/Edit/${data}" class="  w-[100px] focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-900">
-                                Edit
-                            </a>
-                            &nbsp;
-                            <a onclick=Delete('/admin/brand/delete/${data}')  class=" w-[100px] focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
-                                Delete
-                            </a>
-                        </div>
-                    `;
-                }, "width": "25%"
+                <div class="flex gap-x-2 justify-center">
+                    <a href="/Admin/Product/Edit/${data}" class="w-[100px] text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                        Edit
+                    </a>
+                    &nbsp;
+                    <a onclick=Delete('/admin/Product/delete/${data}') class="w-[100px] text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                        Delete
+                    </a>
+                    <a href="/Admin/Product/Details/${data}" class="w-[100px] text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                        Details
+                    </a>
+                </div>
+            `;
+                },
+                "width": "25%"
             }
         ]
+
     });
 }
 

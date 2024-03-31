@@ -108,6 +108,14 @@ namespace FypWeb.Areas.Admin.Controllers
 
             return Json(inventoryList);
         }
+        public async Task<IActionResult> Index()
+        {
+            var count = _context.Product.Count();
+            ViewBag.productCount = count;
+            var totalSales = _context.OrderHeaders.Sum(o => o.OrderTotal);
+            ViewBag.totalSales = totalSales;
+            return View();
+        }
         // GET: Product
         /*    public async Task<IActionResult> Index()
             {
@@ -126,7 +134,7 @@ namespace FypWeb.Areas.Admin.Controllers
 
                 return View(productViewModels);
             }*/
-        public async Task<IActionResult> Index()
+/*        public async Task<IActionResult> Index()
         {
             var today = DateTime.Today;
             var productsWithDiscounts = await _context.Product
@@ -154,7 +162,7 @@ namespace FypWeb.Areas.Admin.Controllers
 
             return View(productViewModels);
         }
-
+*/
         private double CalculateDiscountedPrice(double originalPrice, decimal discountPercentage)
         {
             return originalPrice * (1 - (double)discountPercentage / 100);
@@ -304,7 +312,19 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(productDetail);
+
+            var viewModel = new ProductDetailViewModel
+            {
+                Product = productDetail,
+                // Initialize other properties of your ViewModel as needed
+                // For example, you might need to populate lists for brands and categories here
+            };
+            // Populate ViewBag or ViewModel properties for dropdowns
+            ViewBag.Brands = new SelectList(_context.Brand, "Id", "Name", productDetail.BrandID);
+            ViewBag.Categories = new SelectList(_context.Category, "Id", "Name", productDetail.CategoryID);
+            ViewBag.Sizes = new SelectList(new List<string> { "S", "M", "L", "XL" }, productDetail.Sizes); // Adjust based on your model
+
+            return View(viewModel);
         }
    
         [HttpPost]
@@ -386,23 +406,36 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var totalProducts = await _context.Product
-                .Select(product => new
+            var today = DateTime.Today;
+            var productsWithDiscounts = await _context.Product
+                .Include(p => p.Category)
+                .Select(p => new
                 {
-                    product.Id,
-                    product.Name,
-                    product.Category.CategoryName,
-                    product.CategoryID,
-                    product.Brand.BrandName,
-                    product.BrandID,
-                    product.Price,
-                    ProductCount = _context.Product.Count(p => p.Id == product.Id),
-                   
+                    Product = p,
+                    Discount = _context.Discount
+                        .Where(d => d.IsActive && d.StartDate <= today && today <= d.EndDate &&
+                                    (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
+                                    (d.BrandID == null || d.BrandID == p.BrandID))
+                        .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply
+                        .FirstOrDefault()
                 })
                 .ToListAsync();
 
-            return Json(new { data = totalProducts });
+            var productViewModels = productsWithDiscounts.Select(pd => new
+            {
+                Id = pd.Product.Id,
+                Name = pd.Product.Name,
+                Category = pd.Product.Category.CategoryName,
+                Price = pd.Product.Price,
+                DiscountedPrice = pd.Discount != null ? CalculateDiscountedPrice(pd.Product.Price, pd.Discount.Percentage) : pd.Product.Price,
+                IsActiveDiscount = pd.Discount != null,
+                DiscountStartDate = pd.Discount?.StartDate,
+                DiscountEndDate = pd.Discount?.EndDate
+            }).ToList();
+
+            return Json(new { data = productViewModels });
         }
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
