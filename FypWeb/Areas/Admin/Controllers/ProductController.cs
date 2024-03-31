@@ -382,5 +382,40 @@ namespace FypWeb.Areas.Admin.Controllers
         {
             return (_context.Product?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        #region API CALLS
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var totalProducts = await _context.Product
+                .Select(product => new
+                {
+                    product.Id,
+                    product.Name,
+                    product.Category.CategoryName,
+                    product.CategoryID,
+                    product.Brand.BrandName,
+                    product.BrandID,
+                    product.Price,
+                    ProductCount = _context.Product.Count(p => p.Id == product.Id),
+                   
+                })
+                .ToListAsync();
+
+            return Json(new { data = totalProducts });
+        }
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var categoryDetail = await _context.Category.FindAsync(id);
+            if (categoryDetail != null)
+            {
+                _context.Category.Remove(categoryDetail);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Delete successful" });
+            }
+            return Json(new { success = false, message = "Error while deleting" });
+        }
+        #endregion
+
     }
 }

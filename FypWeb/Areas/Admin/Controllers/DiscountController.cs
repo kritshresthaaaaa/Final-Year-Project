@@ -231,23 +231,56 @@ namespace FypWeb.Areas.Admin.Controllers
             }
         }
         #region API CALLS
+        [HttpPost]
+        public async Task<IActionResult> UpdateExpiredDiscounts()
+        {
+            var today = DateTime.Today;
+
+            // Query to find discounts that have expired but are still marked as active.
+            var expiredDiscounts = await _db.Discount
+                .Where(d => d.EndDate < today && d.IsActive)
+                .ToListAsync();
+
+            foreach (var discount in expiredDiscounts)
+            {
+                discount.IsActive = false;
+            }
+
+            if (expiredDiscounts.Any())
+            {
+                _db.Discount.UpdateRange(expiredDiscounts);
+                await _db.SaveChangesAsync();
+            }
+
+            return Ok(new { message = "Expired discounts updated successfully." });
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetAllDiscounts()
         {
-            var discounts = await _db.Discount.Select(d => new
-            {
-                d.Id,
-                d.Name,
-                d.Percentage,
-                d.StartDate,
-                d.EndDate,
-                d.IsActive,
-                CategoryName = d.CategoryID.HasValue ? d.Category.CategoryName : null,
-                BrandName = d.BrandID.HasValue ? d.Brand.BrandName : null,
-                SKUCode = d.SKUID.HasValue ? d.SKU.Code : null
-            }).ToListAsync();
+            await UpdateExpiredDiscounts();
+            var today = DateTime.Today;
+
+            var discounts = await _db.Discount
+                .Select(d => new
+                {
+                    d.Id,
+                    d.Name,
+                    d.Percentage,
+                    StartDate = d.StartDate.ToString("yyyy-MM-dd"), // Assuming StartDate is not nullable
+                    EndDate = d.EndDate != null ? d.EndDate.ToString("yyyy-MM-dd") : null, // Handling nullable EndDate
+                    d.IsActive,
+                    CategoryName = d.CategoryID != null ? d.Category.CategoryName : null,
+                    BrandName = d.BrandID != null ? d.Brand.BrandName : null,
+                    SKUCode = d.SKUID != null ? d.SKU.Code : null
+                })
+                .ToListAsync();
+
             return Json(new { data = discounts });
         }
+
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
@@ -269,6 +302,10 @@ namespace FypWeb.Areas.Admin.Controllers
             if (discount == null)
             {
                 return Json(new { success = false, message = "Discount not found." });
+            }
+            if(model.IsActive && discount.EndDate < DateTime.Now)
+            {
+                return Json(new { success = false, message = "Cannot activate an expired discount." });
             }
 
             // Toggle the active status
