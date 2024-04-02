@@ -1,12 +1,4 @@
-﻿
-<div class="p-4 ml-[12rem]">
-    @*     <div class="flex justify-center space-x-4 mb-4">
-    <button id="today" class="px-4 py-2 bg-blue-500 text-white rounded-md">Today</button>
-    <button id="week" class="px-4 py-2 bg-blue-500 text-white rounded-md">Week</button>
-    <button id="month" class="px-4 py-2 bg-blue-500 text-white rounded-md">Month</button>
-    <button id="year" class="px-4 py-2 bg-blue-500 text-white rounded-md">Year</button>
-    </div> *@
-
+﻿<div class="p-4 ml-[12rem]">
     <div class=" outerlayer flex-col">
         <div class=" grid grid-cols-3 gap-4 h-[3.5rem] flex items-center ">
             <div class="border border-green-500 bg-[#D1E7DD] h-full flex items-center justify-between px-4 rounded-md ">
@@ -38,11 +30,19 @@
             </div>
         </div>
         <div class="flex flex-wrap justify-center bg-white p-1  border rounded-md mt-2 ">
-            <button id="week" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Week</button>
-            <button id="month" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Month</button>
-            <button id="year" class="text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Year</button>
+            <button id="week" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Week</button>
+            <button id="month" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Month</button>
+            <button id="year" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Year</button>
+
+        </div>
+        <div class="flex justify-center mt-2 float-right hidden" id="monthPickerContainer">
+            <input type="month" id="monthPicker" class="border rounded-lg p-1" value="">
+        </div>
+        <div class="flex justify-center mt-2 float-right hidden" id="yearPickerContainer">
+            <input type="year" id="yearPicker" class="border rounded-lg p-1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="4">
         </div>
         <div class="px-2 mt-2">
+
             <canvas id="myChart" width="250" height="100"></canvas>
         </div>
 
@@ -58,11 +58,68 @@
         document.addEventListener('DOMContentLoaded', function () {
             ctx = document.getElementById('myChart');
             loadChart('week');
-            document.getElementById('week').addEventListener('click', function () { loadChart('week'); });
-            document.getElementById('month').addEventListener('click', function () { loadChart('month'); });
-            document.getElementById('year').addEventListener('click', function () { loadChart('year'); });
+            document.getElementById('week').addEventListener('click', function () {
+                loadChart('week');
+                document.getElementById('monthPickerContainer').classList.add('hidden');
+                document.getElementById('yearPickerContainer').classList.add('hidden');
+            });
+            document.getElementById('month').addEventListener('click', function () {
+                document.getElementById('monthPickerContainer').classList.remove('hidden');
+                document.getElementById('yearPickerContainer').classList.add('hidden');
+                // Set the default value to the current month and year
+                var currentDate = new Date();
+                var currentYear = currentDate.getFullYear();
+                var currentMonth = currentDate.getMonth() + 1; // getMonth() is zero-based
+                var formattedMonth = currentMonth < 10 ? '0' + currentMonth : currentMonth;
+                var formattedDate = currentYear + '-' + formattedMonth;
+
+                var monthPicker = document.getElementById('monthPicker');
+                monthPicker.value = formattedDate;
+
+                // Trigger the change event manually if you want to load the chart right away
+                loadChart('month', { year: currentYear, month: currentMonth });
+            });
+            document.getElementById('year').addEventListener('click', function () {
+                document.getElementById('monthPickerContainer').classList.add('hidden');
+                document.getElementById('yearPickerContainer').classList.remove('hidden');
+
+                // Set the default value to the current year
+                var currentYear = new Date().getFullYear();
+
+                var yearPicker = document.getElementById('yearPicker');
+                yearPicker.value = currentYear; // Set the year picker to the current year
+
+                // Optionally, load the chart for the current year immediately
+                loadChart('year', currentYear);
+            });
+
+            // Added 'change' event listener for monthPicker
+            document.getElementById('monthPicker').addEventListener('change', function () {
+                var selectedMonthYear = this.value; // YYYY-MM
+                if (selectedMonthYear) {
+                    var [year, month] = selectedMonthYear.split('-');
+                    loadChart('month', { year: parseInt(year), month: parseInt(month) });
+                }
+            });
+
         });
-        function loadChart(timeFrame) {
+        function highlightActiveTimeframe(timeframe) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.timeframe-btn').forEach(button => {
+                button.classList.remove('active-timeframe');
+            });
+
+            // Add active class to the selected timeframe button
+            document.getElementById(timeframe).classList.add('active-timeframe');
+        }
+
+        document.getElementById('yearPicker').addEventListener('change', function () {
+            var selectedYear = this.value;
+            console.log(selectedYear);
+            loadChart('year', selectedYear);
+        });
+
+        function loadChart(timeFrame, timeValue) {
             // If the chart already exists, destroy it to start fresh
             if (myChart !== null) {
                 myChart.destroy();
@@ -80,10 +137,10 @@
                     data: [], // Initialize with empty data
                 }]
             };
-
+            let chartType = 'line';
             // Chart configuration
             const config = {
-                type: 'line',
+                type: chartType,
                 data: initialData,
                 options: {
                     responsive: true,
@@ -110,10 +167,10 @@
             myChart = new Chart(ctx, config);
 
             // Load new data for the chart
-            generateChartData(timeFrame);
+           generateChartData(timeFrame, timeValue);
         }
 
-        function generateChartData(timeFrame) {
+        function generateChartData(timeFrame, timeValue) {
             if (timeFrame === 'week') {
                 fetch('/Admin/Home/GetWeeklyShoppingStatus')
                     .then(response => response.json())
@@ -149,6 +206,41 @@
                     })
                     .catch(error => console.error('Error fetching weekly data:', error));
             }
+            if (timeFrame == 'month') {
+                fetch('/Admin/Home/GetMonthlyShoppingStatus?month=' + timeValue.month + '&year=' + timeValue.year)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Initialize an array to hold sales data for each day, defaulting to 0
+                        var salesDataForMonth = data.map(item => item.totalSales);
+                        var daysOfMonth = data.map(item => item.day); // Or however you
+
+                        if (myChart) {
+                            myChart.data.labels = daysOfMonth;
+                            myChart.data.datasets[0].data = salesDataForMonth;
+                            myChart.data.datasets[0].label = 'Total Sales ';
+                            myChart.update();
+                        }
+                    })
+                    .catch(error => console.error('Error fetching monthly data:', error));
+            }
+            if (timeFrame === 'year') {
+                fetch(`/Admin/Home/GetYearlyShoppingStatus?year=${timeValue}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Initialize an array to hold sales data for each month, defaulting to 0
+                        var salesDataForYear = data.map(item => item.totalSales);
+                        var monthsOfYear = data.map(item => item.month); // Or however you
+
+                        if (myChart) {
+                            myChart.data.labels = monthsOfYear;
+                            myChart.data.datasets[0].data = salesDataForYear;
+                            myChart.data.datasets[0].label = 'Total Sales for ' +timeValue;
+                            myChart.update();
+                        }
+                    })
+                    .catch(error => console.error('Error fetching yearly data:', error));
+            }
+
         }
 
     </script>

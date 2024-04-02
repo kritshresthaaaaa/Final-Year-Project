@@ -8,6 +8,7 @@ using Fyp.Models;
 using Fyp.Utility;
 using Fyp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace FypWeb.Areas.Admin.Controllers
 {
@@ -62,6 +63,76 @@ namespace FypWeb.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetYearlyShoppingStatus(int year)
+        {
+            try
+            {
+                var orders = await _db.OrderHeaders
+                    .Where(o => o.OrderDate.Year == year)
+                    .ToListAsync();
+
+                var yearlyStatus = orders
+                    .GroupBy(o => o.OrderDate.Month)
+                    .Select(group => new
+                    {
+                        Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(group.Key), // Convert month number to name
+                        TotalSales = group.Sum(o => o.OrderTotal),
+                        TotalQuantity = group.Sum(o => o.TotalQuantity)
+                    })
+                    .OrderBy(result => DateTime.ParseExact(result.Month, "MMMM", CultureInfo.CurrentCulture)) // Order by month name properly
+                    .ToList();
+
+                // Optionally, ensure all months are represented, even if there are no sales
+                var allMonths = Enumerable.Range(1, 12).Select(month => new
+                {
+                    Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month),
+                    TotalSales = yearlyStatus.FirstOrDefault(m => m.Month == CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month))?.TotalSales ?? 0,
+                    TotalQuantity = yearlyStatus.FirstOrDefault(m => m.Month == CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month))?.TotalQuantity ?? 0
+                });
+
+                return Ok(allMonths);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetMonthlyShoppingStatus(int year, int month)
+        {
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            var allDays = Enumerable.Range(1, daysInMonth).Select(day => new DateTime(year, month, day));
+
+            try
+            {
+                var salesData = await _db.OrderHeaders
+                    .Where(o => o.OrderDate.Year == year && o.OrderDate.Month == month)
+                    .GroupBy(o => o.OrderDate.Day)
+                    .Select(group => new
+                    {
+                        Day = group.Key,
+                        TotalSales = group.Sum(o => o.OrderTotal)
+                    })
+                    .ToListAsync();
+
+                var dailySales = from day in allDays
+                                 join sale in salesData on day.Day equals sale.Day into salesFromDay
+                                 from sale in salesFromDay.DefaultIfEmpty()
+                                 select new
+                                 {
+                                     Day = day.Day,
+                                     TotalSales = sale != null ? sale.TotalSales : 0
+                                 };
+
+                return Ok(dailySales);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 

@@ -40,14 +40,24 @@
                                 <input asp-for="Input.FullName" class="mt-1 block w-full rounded-md border p-1 focus:border-blue-300 focus:ring-blue-300 focus:ring-1 focus:outline-none" placeholder="Your fullname" />
                                 <span asp-validation-for="Input.FullName" class="text-red-500"></span>
                             </div>
+                            @if (User.IsInRole(SD.Role_Admin))
+                            {
+                                <div class="mt-2">
+                                    <label asp-for="@Model.Input.StockAlerter" class="block text-sm font-medium text-gray-900">Stock Setting</label>
+                                    <input asp-for="@Model.Input.StockAlerter" type="number" class="mt-1 block w-full rounded-md border p-1 focus:border-blue-300 focus:ring-blue-300 focus:ring-1 focus:outline-none" placeholder="Stock Alerter" min="0" />
+                                    <span asp-validation-for="@Model.Input.StockAlerter" class="text-red-500"></span>
+                                </div>
+                            }
+
+
                             <button type="submit" class="inline-flex mt-2 justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                                 Save
                             </button>
                         </div>
-                       
-                        
-                   
-                        
+
+
+
+
                     </form>
                 </div>
             </div>

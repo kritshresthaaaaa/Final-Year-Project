@@ -67,6 +67,7 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
             public string FullName { get; set; }
 
             public string? ImageUrl { get; set; }
+            public int? StockAlerter { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -81,7 +82,8 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
             {
                 PhoneNumber = phoneNumber,
                 FullName = user.FullName,
-                ImageUrl = user.ImageUrl
+                ImageUrl = user.ImageUrl,
+                StockAlerter = user.StockAlerter
             };
         }
 
@@ -130,6 +132,17 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
                 if (!setFullNameResult.Succeeded)
                 {
                     StatusMessage = "Unexpected error when trying to set full name.";
+                    return RedirectToPage();
+                }
+            }
+            var stockAlerter = user.StockAlerter;
+            if (Input.StockAlerter != stockAlerter)
+            {
+                user.StockAlerter = Input.StockAlerter;
+                var setStockAlerterResult = await _userManager.UpdateAsync(user);
+                if (!setStockAlerterResult.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set stock alerter.";
                     return RedirectToPage();
                 }
             }

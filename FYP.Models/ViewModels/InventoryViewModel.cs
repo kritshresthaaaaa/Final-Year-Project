@@ -15,5 +15,6 @@ namespace Fyp.Models.ViewModels
         public double Price { get; set; }
         public string CategoryName { get; set; }
         public string BrandName { get; set; }
+        public string StockStatus { get; set; }
     }
 }

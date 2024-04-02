@@ -1,17 +1,33 @@
 ﻿@page
 @model FypWeb.Areas.Identity.Pages.Account.Enter2FACodeModel
-@{
-}
 
-<h2>Enter 2FA Code</h2>
-<p>You should have received a 2FA code via email. Please enter it below to verify your identity and continue.</p>
-
-<form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Input.TwoFactorCode"></label>
-        <input asp-for="Input.TwoFactorCode" class="form-control" />
-        <span asp-validation-for="Input.TwoFactorCode" class="text-danger"></span>
+<div class="flex items-center justify-center min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-4">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Enter 2FA Code
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            You should have received a 2FA code via email. Please enter it below to verify your identity and continue.
+        </p>
+        <form class="mt-8 space-y-6" method="post">
+            <div>
+                <div asp-validation-summary="ModelOnly" class="text-red-600"></div>
+                <div class="rounded-md shadow-sm">
+                    <div>
+                        <input asp-for="Input.TwoFactorCode" class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="2FA Code">
+                    </div>
+                </div>
+                <span asp-validation-for="Input.TwoFactorCode" class="text-red-600 block mt-2"></span>
+            </div>
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Verify Code
+                </button>
+            </div>
+        </form>
     </div>
-    <button type="submit" class="btn btn-primary">Verify Code</button>
-</form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

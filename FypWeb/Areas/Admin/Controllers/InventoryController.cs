@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace FypWeb.Areas.Admin.Controllers
 {
@@ -37,97 +38,39 @@ namespace FypWeb.Areas.Admin.Controllers
             return View(inventoryList);
         }
 
-        // GET: HomeController1/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
-        // GET: HomeController1/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: HomeController1/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: HomeController1/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: HomeController1/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: HomeController1/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
         #region API CALLS
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            int stockThreshold = await GetUserStockThreshold();
+
             var inventoryList = await _context.Product
-               .GroupBy(p => new { p.Name, p.Sizes, p.Price, p.Category.CategoryName })
-               .Select(group => new InventoryViewModel
-               {
-                   Id = group.Select(p => p.Id).FirstOrDefault(),
-                   ProductName = group.Key.Name,
-                   Size = group.Key.Sizes,
-                   Price = group.Key.Price,
-                   Stock = group.Count(),
-                   CategoryName = group.Key.CategoryName,
-                   BrandName = group.Select(p => p.Brand.BrandName).FirstOrDefault(),
-                
-                   
-               })
-               .ToListAsync(); // Corrected to use await with ToListAsync
+                .GroupBy(p => new { p.Name, p.Sizes, p.Price, p.Category.CategoryName, p.Brand.BrandName })
+                .Select(group => new InventoryViewModel
+                {
+                    Id = group.Select(p => p.Id).FirstOrDefault(),
+                    ProductName = group.Key.Name,
+                    Size = group.Key.Sizes,
+                    Price = group.Key.Price,
+                    Stock = group.Count(),
+                    CategoryName = group.Key.CategoryName,
+                    BrandName = group.Key.BrandName,
+                    // Determine stock status based on threshold
+                    StockStatus = group.Count() <= stockThreshold ? "Low" : "In Stock"
+                })
+                .ToListAsync();
 
             return Json(new { data = inventoryList });
         }
+
         #endregion
-
-
-
-        // POST: HomeController1/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        private async Task<int> GetUserStockThreshold()
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get user ID from claims
+            var applicationUser = await _context.ApplicationUser.FirstOrDefaultAsync(u => u.Id == userId);
+            return applicationUser?.StockAlerter ?? 0; // Assuming 'StockAlerter' is an int property in your User model
         }
+      
     }
 }

@@ -204,51 +204,7 @@ namespace FypWeb.Areas.Admin.Controllers
         {
             return !_context.Product.Any(p => p.RFIDTag == epc);
         }
-        // POST: Product/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        /*   [HttpPost]
-           [ValidateAntiForgeryToken]
-           public IActionResult Create(ProductDetailViewModel productViewModel, IFormFile? file)
-           {
-
-               productViewModel.Product.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(productViewModel.Product.Name.ToLower());
-               string wwwRootPath = hostEnvironment.WebRootPath;
-               if (IsEpcUnique(productViewModel.Product.RFIDTag))
-               {
-                   if (file != null)
-                   {
-                       string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                       string productPath = Path.Combine(wwwRootPath, "images", "product");
-                       Directory.CreateDirectory(productPath);
-                       string filePath = Path.Combine(productPath, fileName);
-                       using (var fileStream = new FileStream(filePath, FileMode.Create))
-                       {
-                           file.CopyTo(fileStream);
-                       }
-                       productViewModel.Product.ImageUrl = "/images/product/" + fileName;
-
-                   }
-
-                   _context.Add(productViewModel.Product);
-                   _context.SaveChanges();
-                   TempData["success"] = "Product has been added successfully.";
-                   return RedirectToAction(nameof(Index));
-
-               }
-               else
-               {
-
-                   ViewBag.EpcError = "This EPC is already assigned to another product.";
-               }
-
-               // Populate ViewBag for Category and Brand if ModelState is not valid
-               ViewBag.getCategory = _context.Category.ToList();
-               ViewBag.getBrand = _context.Brand.ToList();
-               return View(productViewModel);
-           }
-
-   */
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(ProductDetailViewModel productViewModel, IFormFile? file)
@@ -316,17 +272,17 @@ namespace FypWeb.Areas.Admin.Controllers
             var viewModel = new ProductDetailViewModel
             {
                 Product = productDetail,
-                // Initialize other properties of your ViewModel as needed
-                // For example, you might need to populate lists for brands and categories here
             };
-            // Populate ViewBag or ViewModel properties for dropdowns
-            ViewBag.Brands = new SelectList(_context.Brand, "Id", "Name", productDetail.BrandID);
-            ViewBag.Categories = new SelectList(_context.Category, "Id", "Name", productDetail.CategoryID);
-            ViewBag.Sizes = new SelectList(new List<string> { "S", "M", "L", "XL" }, productDetail.Sizes); // Adjust based on your model
 
-            return View(viewModel);
+            // Ensure ViewBag items are populated for the dropdowns
+            ViewBag.getCategory = _context.Category.ToList();
+            ViewBag.getBrand = _context.Brand.ToList();
+
+
+            return View(viewModel); // Use the same view for Create and Edit
         }
-   
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] ProductDetail productDetail)

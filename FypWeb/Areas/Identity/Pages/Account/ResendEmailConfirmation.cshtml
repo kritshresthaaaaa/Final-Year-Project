@@ -4,19 +4,18 @@
     ViewData["Title"] = "Resend email confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h2>Enter your email.</h2>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="max-w-lg mx-auto p-10">
+    <h1 class="text-3xl font-bold mb-2">@ViewData["Title"]</h1>
+    <h2 class="text-xl mb-4">Enter your email.</h2>
+    <div class="border-t border-gray-300 pt-4">
         <form method="post">
-            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email" class="form-label"></label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            <div asp-validation-summary="All" class="text-red-500" role="alert"></div>
+            <div class="mb-4">
+                <label asp-for="Input.Email" class="block text-sm font-medium text-gray-700 mt-2"></label>
+                <input asp-for="Input.Email" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:outline-blue-200 block w-full p-2.5 placeholder-gray-400 " aria-required="true" placeholder="name@example.com" />
+          @*       <span asp-validation-for="Input.Email" class="text-red-500 text-sm"></span> *@
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Resend</button>
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Resend</button>
         </form>
     </div>
 </div>

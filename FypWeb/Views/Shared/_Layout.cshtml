@@ -38,7 +38,7 @@
                     <p class="text-3xl text-green-400">Sync</p>
                 </div>
                 <div class="flex items-center">
-                    @if (User.IsInRole(SD.Role_Admin) || (User.IsInRole(SD.Role_Employee)))
+                    @if ((User.IsInRole(SD.Role_Employee)))
                     {
                         <div id="noti_Container"></div>
                     }
@@ -65,12 +65,12 @@
                                 <span class="text-sm font-medium">Dashboard</span>
                             </a>
                         </li>
-                        <li id="noti_Container">
+                  
                             @*   <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
                         <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white"><i class="bx bx-home"></i></span>
                         <span class="text-sm font-medium">Notifications</span>
                         </a> *@
-                        </li>
+               
                         <li class="relative" data-te-dropdown-ref>
                             <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
                                data-te-dropdown-toggle-ref

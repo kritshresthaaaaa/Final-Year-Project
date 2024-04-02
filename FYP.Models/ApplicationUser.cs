@@ -37,5 +37,6 @@ namespace Fyp.Models
         [NotMapped]
         public string Role { get; set; }
         public Guid? EmployeeRelationId { get; set; }
+        public int? StockAlerter { get; set; }
     }
 }
