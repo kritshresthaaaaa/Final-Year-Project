@@ -8,9 +8,12 @@ using Fyp.Utility;
 using Fyp.Models;
 using FypWeb.IService;
 using FypWeb.Services;
+using FypWeb;
+using FypWeb.Areas.Admin;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 /*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
@@ -18,7 +21,7 @@ builder.Services.AddControllersWithViews();
     options.LoginPath = "/Identity/Account/Login";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
 });*/
-
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FypConnectionString")));
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -59,23 +62,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-// Redirect to the login page if not authenticated for any route
-/*app.Use(async (context, next) =>
-{
-    // Check if the user is not authenticated and not already requesting the login page
-    if (!context.User.Identity.IsAuthenticated && 
-        !context.Request.Path.StartsWithSegments("/Identity/Account/Login") &&
-        !context.Request.Path.StartsWithSegments("/Identity/Account/Register")) // Exclude register or any other paths as needed
-    {
-        // Redirect to the login page
-        context.Response.Redirect("/Identity/Account/Login");
-    }
-    else
-    {
-        // Proceed with the request
-        await next.Invoke();
-    }
-});*/
 
 app.UseSession();
 app.MapRazorPages();
@@ -84,5 +70,4 @@ app.MapControllerRoute(
 /*    pattern: "/{controller=Access}/{action=Login}/{id?}");
 */
 pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
-
 app.Run();
