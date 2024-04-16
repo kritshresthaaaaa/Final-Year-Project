@@ -98,6 +98,7 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
             return View(brandDetail);
         }
 
@@ -113,6 +114,15 @@ namespace FypWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            // Check if the brand is associated with any products
+            var associatedProductsCount = await _context.Product.CountAsync(p => p.BrandID == id);
+            if (associatedProductsCount > 0)
+            {
+                // If the brand is associated with products, prevent editing
+                ModelState.AddModelError("", "Cannot edit the brand because it is associated with products.");
+         
+                return View(brandDetail);
+            }
 
             if (ModelState.IsValid)
             {
@@ -120,6 +130,7 @@ namespace FypWeb.Areas.Admin.Controllers
                 {
                     _context.Update(brandDetail);
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Brand Detail Updated";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -191,15 +202,28 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var brandDetail = await _context.Brand.FindAsync(id);
-            if (brandDetail != null)
+            // Check if any products are associated with the brand being deleted
+            var productsWithBrand = await _context.Product
+                .AnyAsync(p => p.BrandID == id);
+
+            if (productsWithBrand)
             {
-                _context.Brand.Remove(brandDetail);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Delete successful" });
+                // Prevent deletion if there are associated products
+                return Json(new { success = false, message = "Cannot delete the brand because it has associated products." });
             }
-            return Json(new { success = false, message = "Delete failed" });
+
+            // Proceed with deletion if no products are associated
+            var brandDetail = await _context.Brand.FindAsync(id);
+            if (brandDetail == null)
+            {
+                return Json(new { success = false, message = "Brand not found." });
+            }
+
+            _context.Brand.Remove(brandDetail);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Delete successful" });
         }
+
         #endregion
         private bool BrandDetailExists(int id)
         {

@@ -94,6 +94,7 @@ namespace FypWeb.Areas.Admin.Controllers
                 p.Category.CategoryName,
                 p.Brand.BrandName,
                 p.ImageUrl,
+                p.SKU.Code,
                 // Include other properties as needed, e.g., ImageUrl, Price
             }).ToListAsync();
 
@@ -160,19 +161,22 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpGet]
         public async Task<JsonResult> GetProductsByCategory(int categoryId, string sku)
         {
+            // Fetch IDs of recommended products based on the provided SKU
             var recommendedProductIds = await _context.ProductRecommendations
                                                        .Where(pr => pr.Product.SKU.Code == sku)
                                                        .Select(pr => pr.RecommendedProductId)
                                                        .ToListAsync();
 
+            // Fetch all products that belong to the specified category but exclude those with the provided SKU
             var products = await _context.Product
-                                          .Where(p => p.CategoryID == categoryId)
+                                          .Where(p => p.CategoryID == categoryId && p.SKU.Code != sku)
                                           .Select(p => new
                                           {
                                               p.Id,
                                               p.Name,
                                               p.ImageUrl,
                                               p.Price,
+                                              p.SKU.Code,
                                               IsRecommended = recommendedProductIds.Contains(p.Id)
                                           })
                                           .ToListAsync();
@@ -188,8 +192,9 @@ namespace FypWeb.Areas.Admin.Controllers
                                                        .Select(pr => pr.RecommendedProductId)
                                                        .ToListAsync();
 
+            // Fetch all products that belong to the specified brand but exclude those with the provided SKU
             var products = await _context.Product
-                                          .Where(p => p.BrandID == brandId)
+                                          .Where(p => p.BrandID == brandId && p.SKU.Code != sku)
                                           .Select(p => new
                                           {
                                               p.Id,
@@ -201,7 +206,6 @@ namespace FypWeb.Areas.Admin.Controllers
                                           .ToListAsync();
             return Json(products);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

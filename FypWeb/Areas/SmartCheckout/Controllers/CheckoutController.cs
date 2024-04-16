@@ -1,4 +1,4 @@
-﻿using Fyp.DataAccess.Data;
+﻿ using Fyp.DataAccess.Data;
 using Fyp.Models;
 using Fyp.Models.ViewModels;
 using Fyp.Utility;
@@ -12,10 +12,10 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Fyp.DataAccess.Migrations;
 using FypWeb.Areas.Admin;
 using System.Reflection.PortableExecutable;
 using System.Threading;
+using FypWeb.Services;
 
 namespace FypWeb.Areas.SmartCheckout.Controllers
 {
@@ -27,25 +27,29 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
         private readonly ApplicationDbContext _context;
         private CancellationTokenSource _cancellationTokenSource;
         private Reader _reader;
+        private readonly TagReaderService _tagReaderService;
     
-        public Checkout(ApplicationDbContext context)
+        public Checkout(ApplicationDbContext context, TagReaderService tagReaderService)
         {
             _context = context;
-            _reader = new Reader("192.168.1.1", false); 
-        }
-        public async Task<IActionResult> StartReadingTags()
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-            var rfids = await _reader.ReadContinuousTags(_cancellationTokenSource.Token);
-            // Now you have the continuously scanned RFIDs, you can process them as needed
-            return RedirectToAction("GetProductDetailsByRFID", new { rfids });
+            _reader = new Reader("192.168.1.1", false);
+            _tagReaderService=tagReaderService;
         }
         public async Task<IActionResult> Index()
         {
         /*    await StartReadingTags();*/
             return View("Index", "_Customers");
         }
-      
+        public async Task<IActionResult> StartReading()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+            // Assuming _tagReaderService is an instance of your service class
+            // that contains the adapted run method
+            await _tagReaderService.RunContinuousRead(300000, cancellationTokenSource.Token); // Example for 5 minutes
+            return View("Test");
+        }
+
+
 
         public IActionResult StopReadingTags()
         {

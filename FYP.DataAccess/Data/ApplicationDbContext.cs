@@ -82,7 +82,8 @@ namespace Fyp.DataAccess.Data
                     RFIDTag = "123456",
                     Sizes = "S",
                     ImageUrl = "",
-                    SKUID = 1 // Reference to the seeded SKUDetail,
+                    SKUID = 1,// Reference to the seeded SKUDetail,
+                    ColorCode = "#FF5733" // Add this line for color
 
                 },
                 new ProductDetail
@@ -96,7 +97,8 @@ namespace Fyp.DataAccess.Data
                     RFIDTag = "123457",
                     Sizes = "M",
                     ImageUrl = "",
-                    SKUID = 2 // Reference to the seeded SKUDetail
+                    SKUID = 2,// Reference to the seeded SKUDetail,
+                    ColorCode = "#C70039" // Add this line for color
                 },
                     new ProductDetail
                     {
@@ -109,7 +111,9 @@ namespace Fyp.DataAccess.Data
                         RFIDTag = "123450",
                         Sizes = "M",
                         ImageUrl = "",
-                        SKUID = 2 // Reference to the seeded SKUDetail
+                        SKUID = 2,
+                        ColorCode = "#C70039"
+                        // Reference to the seeded SKUDetail
                     },
                         new ProductDetail
                         {
@@ -122,7 +126,8 @@ namespace Fyp.DataAccess.Data
                             RFIDTag = "123488",
                             Sizes = "XL",
                             ImageUrl = "",
-                            SKUID = 2 // Reference to the seeded SKUDetail
+                            SKUID = 2,
+                            ColorCode = "#C70039"
                         },
                           new ProductDetail
                           {
@@ -135,7 +140,9 @@ namespace Fyp.DataAccess.Data
                               RFIDTag = "123498",
                               Sizes = "XL",
                               ImageUrl = "",
-                              SKUID = 2 // Reference to the seeded SKUDetail
+                              SKUID = 2,
+                              ColorCode = "#C70039"
+                              // Reference to the seeded SKUDetail
                           },
                             new ProductDetail
                             {
@@ -148,7 +155,9 @@ namespace Fyp.DataAccess.Data
                                 RFIDTag = "123490",
                                 Sizes = "XL",
                                 ImageUrl = "",
-                                SKUID = 2 // Reference to the seeded SKUDetail
+                                SKUID = 2,
+                                ColorCode = "#C70039"
+                                // Reference to the seeded SKUDetail
                             },
                                 new ProductDetail
                                 {
@@ -161,7 +170,9 @@ namespace Fyp.DataAccess.Data
                                     RFIDTag = "123496",
                                     Sizes = "XL",
                                     ImageUrl = "",
-                                    SKUID = 2 // Reference to the seeded SKUDetail
+                                    SKUID = 2,
+                                    ColorCode = "#C70039"
+                                    // Reference to the seeded SKUDetail
                                 },
                                         new ProductDetail
                                         {
@@ -174,7 +185,9 @@ namespace Fyp.DataAccess.Data
                                             RFIDTag = "12312312",
                                             Sizes = "S",
                                             ImageUrl = "",
-                                            SKUID = 1 // Reference to the seeded SKUDetail,
+                                            SKUID = 1,
+                                            ColorCode = "#C70039"
+                                            // Reference to the seeded SKUDetail,
 
                                         }, new ProductDetail
                                         {
@@ -187,7 +200,9 @@ namespace Fyp.DataAccess.Data
                                             RFIDTag = "12312412",
                                             Sizes = "S",
                                             ImageUrl = "",
-                                            SKUID = 1 // Reference to the seeded SKUDetail,
+                                            SKUID = 1,
+                                            ColorCode = "#C70039"
+                                            // Reference to the seeded SKUDetail,
 
                                         },
                                          new ProductDetail
@@ -201,7 +216,8 @@ namespace Fyp.DataAccess.Data
                                              RFIDTag = "1231241723",
                                              Sizes = "M",
                                              ImageUrl = "",
-                                             SKUID = 5 // Reference to the seeded SKUDetail,
+                                             SKUID = 5,
+                                             ColorCode = "#C70039"
 
                                          },
                                          new ProductDetail
@@ -215,9 +231,10 @@ namespace Fyp.DataAccess.Data
                                                 RFIDTag = "1231999",
                                                 Sizes = "L",
                                                 ImageUrl = "",
-                                                SKUID = 6 // Reference to the seeded SKUDetail,
-    
-                                            }
+                                                SKUID = 6 ,
+                                             ColorCode = "#C70039"
+
+                                         }
 
 
             );

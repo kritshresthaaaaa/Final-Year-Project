@@ -16,6 +16,7 @@ namespace Fyp.Models
         [StringLength(30, ErrorMessage = "SKU cannot be longer than 30 characters.")]
         [RegularExpression("^[A-Z0-9-]+$", ErrorMessage = "SKU must consist of uppercase letters, numbers, and dashes only.")]
         public string Code { get; set; }
+        public virtual ICollection<ProductDetail> Products { get; set; }
 
     }
 }

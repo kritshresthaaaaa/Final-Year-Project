@@ -37,7 +37,7 @@ function loadDataTable() {
                         Edit
                     </a>
                     &nbsp;
-                    <a onclick=Delete('/admin/Product/delete/${data}') class="w-[100px] text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
+                    <a onclick=Delete('/Admin/Product/Delete/${data}') class="w-[100px] text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
                         Delete
                     </a>
                     <a href="/Admin/Product/Details/${data}" class="w-[100px] text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
@@ -69,8 +69,11 @@ function Delete(url) {
                 url: url,
                 success: function (data) {
                     dataTable.ajax.reload();
-
-                    toastr.success(data.message);
+                    if (data.success) {
+                        toastr.success(data.message);
+                    } else {
+                        toastr.error(data.message);
+                    }
                 }
             });
         }

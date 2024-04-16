@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -18,7 +19,9 @@ namespace Fyp.Models
         [StringLength(255)]
         public string Name { get; set; }
 
-        [StringLength(1000)]
+        [Required]
+        [StringLength(1000, ErrorMessage = "Description cannot exceed 1000 characters.")]
+        [MinWords(20, ErrorMessage = "Description must contain at least 20 words.")]
         public string Description { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero")]
@@ -50,6 +53,13 @@ namespace Fyp.Models
       
 
         public string? ImageUrl { get; set; }
+
+        [Required]
+        [DisplayName("Color")]
+        [StringLength(7, ErrorMessage = "Color must be in #RRGGBB format", MinimumLength = 7)]
+        [RegularExpression("^#([A-Fa-f0-9]{6})$", ErrorMessage = "Color must be in #RRGGBB format")]
+        public string ColorCode { get; set; } 
+
         [ValidateNever]
         [JsonIgnore]
         public List<ProductRecommendation> RecommendedProducts { get; set; } // Changed to List<T>

@@ -45,9 +45,21 @@ function Delete(url) {
                 type: "DELETE",
                 url: url,
                 success: function (data) {
-                    dataTable.ajax.reload();
-                   
-                    toastr.success(data.message);
+                    if (data.success) {
+                        // Reload the data table upon successful deletion
+                        dataTable.ajax.reload();
+                        console.log(data.message);
+                        // Show a success message using toastr
+                        toastr.success(data.message);
+                    } else {
+                        // Show an error message if deletion failed
+                        console.log(data.message);
+                        toastr.error(data.message);
+                    }
+                },
+                error: function () {
+                    // Show an error message if the AJAX request fails
+                    toastr.error("An error occurred while processing the request.");
                 }
             });
         }

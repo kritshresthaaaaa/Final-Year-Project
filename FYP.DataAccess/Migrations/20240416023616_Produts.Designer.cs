@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240320160355_changedInNotificationModel")]
-    partial class changedInNotificationModel
+    [Migration("20240416023616_Produts")]
+    partial class Produts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,6 +293,11 @@ namespace Fyp.DataAccess.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
+                    b.Property<string>("ColorCode")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -339,6 +344,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 1,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#FF5733",
                             Description = "Product 1 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -353,6 +359,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 2,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 2 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -367,6 +374,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 3,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 3 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -381,6 +389,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 4,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 4 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -395,6 +404,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 5,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 5 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -409,6 +419,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 6,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 6 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -423,6 +434,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 7,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 7 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -437,6 +449,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 8,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#C70039",
                             Description = "black t prodyc 1 ",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -451,6 +464,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 9,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#C70039",
                             Description = "black t prodyc 1 ",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -459,6 +473,36 @@ namespace Fyp.DataAccess.Migrations
                             RFIDTag = "12312412",
                             SKUID = 1,
                             Sizes = "S"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            BrandID = 1,
+                            CategoryID = 1,
+                            ColorCode = "#C70039",
+                            Description = "black t prodyc 1 ",
+                            DiscountedPrice = 0.0,
+                            ImageUrl = "",
+                            Name = "Black Tshirt",
+                            Price = 100.0,
+                            RFIDTag = "1231241723",
+                            SKUID = 5,
+                            Sizes = "M"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            BrandID = 1,
+                            CategoryID = 1,
+                            ColorCode = "#C70039",
+                            Description = "black t prodyc 1 ",
+                            DiscountedPrice = 0.0,
+                            ImageUrl = "",
+                            Name = "Black Tshirt",
+                            Price = 100.0,
+                            RFIDTag = "1231999",
+                            SKUID = 6,
+                            Sizes = "L"
                         });
                 });
 
@@ -534,6 +578,16 @@ namespace Fyp.DataAccess.Migrations
                         {
                             SKUID = 4,
                             Code = "NIK-WC-PRO-XL"
+                        },
+                        new
+                        {
+                            SKUID = 5,
+                            Code = "GUC-MC-BLA-M"
+                        },
+                        new
+                        {
+                            SKUID = 6,
+                            Code = "GUC-MC-BLA-L"
                         });
                 });
 
@@ -756,6 +810,9 @@ namespace Fyp.DataAccess.Migrations
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("EmployeeRelationId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -772,6 +829,9 @@ namespace Fyp.DataAccess.Migrations
 
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("StockAlerter")
+                        .HasColumnType("int");
 
                     b.Property<string>("StreetAddress")
                         .HasColumnType("nvarchar(max)");

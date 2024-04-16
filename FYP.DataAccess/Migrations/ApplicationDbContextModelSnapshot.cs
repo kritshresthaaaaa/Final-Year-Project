@@ -290,6 +290,11 @@ namespace Fyp.DataAccess.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
+                    b.Property<string>("ColorCode")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1000)
@@ -336,6 +341,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 1,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#FF5733",
                             Description = "Product 1 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -350,6 +356,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 2,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 2 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -364,6 +371,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 3,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 3 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -378,6 +386,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 4,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 4 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -392,6 +401,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 5,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 5 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -406,6 +416,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 6,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 6 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -420,6 +431,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 7,
                             BrandID = 2,
                             CategoryID = 2,
+                            ColorCode = "#C70039",
                             Description = "Product 7 Description",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -434,6 +446,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 8,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#C70039",
                             Description = "black t prodyc 1 ",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -448,6 +461,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 9,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#C70039",
                             Description = "black t prodyc 1 ",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -462,6 +476,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 10,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#C70039",
                             Description = "black t prodyc 1 ",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",
@@ -476,6 +491,7 @@ namespace Fyp.DataAccess.Migrations
                             Id = 11,
                             BrandID = 1,
                             CategoryID = 1,
+                            ColorCode = "#C70039",
                             Description = "black t prodyc 1 ",
                             DiscountedPrice = 0.0,
                             ImageUrl = "",

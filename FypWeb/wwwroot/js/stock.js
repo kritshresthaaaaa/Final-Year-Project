@@ -7,7 +7,7 @@ function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
             url: '/admin/inventory/getall',
-            dataSrc: '' // Assuming the API response directly contains the data array
+            // Assuming the API response directly contains the data array
         },
         "columns": [
             { "data": "id", "width": "5%" },
@@ -23,12 +23,13 @@ function loadDataTable() {
                 "width": "15%",
                 "render": function (data, type, row) {
                     // Customize display based on stockStatus value
-                    var statusHtml = '<span style="padding: 5px 10px; border-radius: 5px; color: white;">';
+                    var statusHtml = '<span class="py-1 px-2 rounded-md text-white">';
                     if (data === "Low") {
-                        statusHtml += '<span style="background-color: red;">Low Stock</span>';
+                        statusHtml += '<span class="bg-red-500 rounded-md p-1">Low Stock</span>';
                     } else {
-                        statusHtml += '<span style="background-color: green;">In Stock</span>';
+                        statusHtml += '<span class="bg-green-500 p-1 rounded-md">In Stock</span>';
                     }
+
                     statusHtml += '</span>';
                     return statusHtml;
                 }

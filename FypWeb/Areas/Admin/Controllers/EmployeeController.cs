@@ -67,12 +67,13 @@ namespace FypWeb.Areas.Admin.Controllers
             string RoleID = _context.UserRoles.FirstOrDefault(u => u.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
             string oldRole = _context.Roles.FirstOrDefault(u => u.Id == RoleID).Name;
             string check = roleManagementVM.ApplicationUser.Role;
+            string newRole= _context.Roles.FirstOrDefault(u => u.Id == check).Name;
             if (!(roleManagementVM.ApplicationUser.Role == oldRole))
             {
                 ApplicationUser applicationUser = _context.ApplicationUser.FirstOrDefault(u => u.Id == roleManagementVM.ApplicationUser.Id);
                 _context.SaveChanges();
                 _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
-                 _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
+                 _userManager.AddToRoleAsync(applicationUser, newRole).GetAwaiter().GetResult();
             }
 
 
@@ -270,12 +271,13 @@ namespace FypWeb.Areas.Admin.Controllers
 
             // Filter out users with the admin role
             var adminRoleId = roles.FirstOrDefault(r => r.Name == "Admin")?.Id;
+            var customerHandlerEmployeeId = roles.FirstOrDefault(r => r.Name == "Customer-Handler")?.Id;
             var nonAdminUsers = new List<ApplicationUser>();
 
             foreach (var user in usersList)
             {
                 var userRoleIds = userRoles.Where(ur => ur.UserId == user.Id).Select(ur => ur.RoleId).ToList();
-                if (!userRoleIds.Contains(adminRoleId))
+                if (!userRoleIds.Contains(adminRoleId) && !userRoleIds.Contains(customerHandlerEmployeeId))
                 {
                     // Assuming you want to set the Role property of non-admin users,
                     // you need to handle users with multiple roles or no roles.

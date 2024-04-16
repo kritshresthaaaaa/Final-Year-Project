@@ -28,7 +28,7 @@ namespace FypWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.CategoryCount = _context.Category.Count();
-         
+
 
             return View();
         }
@@ -101,18 +101,24 @@ namespace FypWeb.Areas.Admin.Controllers
         // POST: Category/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Category/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CategoryID,CategoryName")] CategoryDetail categoryDetail)
         {
-            var isCategoryExist = _context.Category.Any(c => c.CategoryName == categoryDetail.CategoryName);
-            if (isCategoryExist)
-            {
-                ModelState.AddModelError("CategoryName", "Category already exist");
-            }
             if (id != categoryDetail.CategoryID)
             {
                 return NotFound();
+            }
+
+            // Check if the brand is associated with any products
+            var associatedProductsCount = await _context.Product.CountAsync(p => p.CategoryID == id);
+            if (associatedProductsCount > 0)
+            {
+                // If the brand is associated with products, prevent editing
+                ModelState.AddModelError("", "Cannot edit the category because it is associated with products.");
+
+                return View(categoryDetail);
             }
 
             if (ModelState.IsValid)
@@ -120,8 +126,8 @@ namespace FypWeb.Areas.Admin.Controllers
                 try
                 {
                     _context.Update(categoryDetail);
-                    TempData["success"] = "Category Edited";
                     await _context.SaveChangesAsync();
+                    TempData["success"] = "Category Detail Updated";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -138,6 +144,7 @@ namespace FypWeb.Areas.Admin.Controllers
             }
             return View(categoryDetail);
         }
+
 
         // GET: Category/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -158,7 +165,7 @@ namespace FypWeb.Areas.Admin.Controllers
         }
 
         // POST: Category/Delete/5
-      
+
 
         #region API CALLS
         [HttpGet]
@@ -178,14 +185,26 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var categoryDetail = await _context.Category.FindAsync(id);
-            if (categoryDetail != null)
+            // Check if any products are associated with the brand being deleted
+            var productsWithCategory = await _context.Product
+                .AnyAsync(p => p.CategoryID == id);
+
+            if (productsWithCategory)
             {
-                _context.Category.Remove(categoryDetail);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Delete successful" });
+                // Prevent deletion if there are associated products
+                return Json(new { success = false, message = "Cannot delete the category because it has associated products." });
             }
-            return Json(new { success = false, message = "Error while deleting" });
+
+            // Proceed with deletion if no products are associated
+            var categoryDetail = await _context.Category.FindAsync(id);
+            if (categoryDetail == null)
+            {
+                return Json(new { success = false, message = "Category not found." });
+            }
+
+            _context.Category.Remove(categoryDetail);
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Delete successful" });
         }
 
         /*     public async Task<IActionResult> GetAll()

@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Fyp.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class updated : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,6 +42,8 @@ namespace Fyp.DataAccess.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmployeeRelationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    StockAlerter = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -106,6 +110,41 @@ namespace Fyp.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Employee", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notification",
+                columns: table => new
+                {
+                    NotiId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FromRoomId = table.Column<int>(type: "int", nullable: false),
+                    ToEmployeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NotiHeader = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NotiBody = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FromRoomName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ToEmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notification", x => x.NotiId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Room",
+                columns: table => new
+                {
+                    RoomId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoomName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Room", x => x.RoomId);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,6 +276,7 @@ namespace Fyp.DataAccess.Migrations
                     CustomerPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     OrderTotal = table.Column<double>(type: "float", nullable: false),
+                    TotalQuantity = table.Column<int>(type: "int", nullable: false),
                     PaymentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentIntentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -302,7 +342,8 @@ namespace Fyp.DataAccess.Migrations
                     SKUID = table.Column<int>(type: "int", nullable: false),
                     RFIDTag = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Sizes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ColorCode = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -377,6 +418,19 @@ namespace Fyp.DataAccess.Migrations
                         principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "SKU",
+                columns: new[] { "SKUID", "Code" },
+                values: new object[,]
+                {
+                    { 1, "GUC-MC-BLA-S" },
+                    { 2, "NIK-WC-FLO-M" },
+                    { 3, "NIK-WC-PRO-M" },
+                    { 4, "NIK-WC-PRO-XL" },
+                    { 5, "GUC-MC-BLA-M" },
+                    { 6, "GUC-MC-BLA-L" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -494,10 +548,16 @@ namespace Fyp.DataAccess.Migrations
                 name: "Employee");
 
             migrationBuilder.DropTable(
+                name: "Notification");
+
+            migrationBuilder.DropTable(
                 name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "ProductRecommendations");
+
+            migrationBuilder.DropTable(
+                name: "Room");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

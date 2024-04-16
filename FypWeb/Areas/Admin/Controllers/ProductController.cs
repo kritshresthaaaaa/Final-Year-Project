@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,17 +23,17 @@ namespace FypWeb.Areas.Admin.Controllers
     {
         IWebHostEnvironment hostEnvironment;
         private readonly ApplicationDbContext _context;
-    
-      
+
+
         private readonly ILogger<ProductController> _logger;
         private readonly Reader _reader;
         public ProductController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
-       
+
             this.hostEnvironment = hostEnvironment;
         }
-    
+
 
 
         public class EpcScanResult
@@ -59,10 +60,10 @@ namespace FypWeb.Areas.Admin.Controllers
                 await Task.Delay(2000);
                 reader.StopDevice();
                 var result = new List<EpcScanResult>();
-             
+
                 foreach (string epc in detectedEPCs)
                 {
-                   
+
                     result.Add(new EpcScanResult { OriginalEPC = epc, NewEPC = epc });
                 }
 
@@ -72,7 +73,7 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 return new JsonResult(new ScanResponse { ErrorMessage = ex.Message });
             }
-            
+
         }
 
         public async Task<JsonResult> ReadTagFromDatabase()
@@ -134,39 +135,36 @@ namespace FypWeb.Areas.Admin.Controllers
 
                 return View(productViewModels);
             }*/
-/*        public async Task<IActionResult> Index()
-        {
-            var today = DateTime.Today;
-            var productsWithDiscounts = await _context.Product
-                .Include(p => p.Category)
-                .Select(p => new
+        /*        public async Task<IActionResult> Index()
                 {
-                    Product = p,
-                    Discount = _context.Discount
-                        .Where(d => d.IsActive && d.StartDate<=today && today <= d.EndDate &&
-                                    (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
-                                    (d.BrandID == null || d.BrandID == p.BrandID))
-                        .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply
-                        .FirstOrDefault()
-                })
-                .ToListAsync();
+                    var today = DateTime.Today;
+                    var productsWithDiscounts = await _context.Product
+                        .Include(p => p.Category)
+                        .Select(p => new
+                        {
+                            Product = p,
+                            Discount = _context.Discount
+                                .Where(d => d.IsActive && d.StartDate<=today && today <= d.EndDate &&
+                                            (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
+                                            (d.BrandID == null || d.BrandID == p.BrandID))
+                                .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply
+                                .FirstOrDefault()
+                        })
+                        .ToListAsync();
 
-            var productViewModels = productsWithDiscounts.Select(pd => new ProductDetailViewModel
-            {
-                Product = pd.Product,
-                DiscountStartDate = pd.Discount?.StartDate,
-                DiscountEndDate = pd.Discount?.EndDate,               
-            }).ToList();
+                    var productViewModels = productsWithDiscounts.Select(pd => new ProductDetailViewModel
+                    {
+                        Product = pd.Product,
+                        DiscountStartDate = pd.Discount?.StartDate,
+                        DiscountEndDate = pd.Discount?.EndDate,               
+                    }).ToList();
 
-            ViewBag.productCount = productViewModels.Count;
+                    ViewBag.productCount = productViewModels.Count;
 
-            return View(productViewModels);
-        }
-*/
-        private double CalculateDiscountedPrice(double originalPrice, decimal discountPercentage)
-        {
-            return originalPrice * (1 - (double)discountPercentage / 100);
-        }
+                    return View(productViewModels);
+                }
+        */
+
 
 
         public IActionResult Scan()
@@ -182,14 +180,46 @@ namespace FypWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            var today = DateTime.Today;
             var productDetail = await _context.Product
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (productDetail == null)
+                .Include(p => p.SKU)
+                .ThenInclude(sku => sku.Products)
+                .Include(p => p.Brand) // Include the Brand
+                .Include(p => p.Category) // Include the Category
+                .Select(p => new
+                {
+                    Product = p,
+                    Discount = _context.Discount
+                        .Where(d => d.IsActive && d.StartDate <= today && today <= d.EndDate &&
+                                    (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
+                                    (d.BrandID == null || d.BrandID == p.BrandID))
+                        .OrderByDescending(d => d.Percentage)
+                        .FirstOrDefault()
+                })
+                .FirstOrDefaultAsync(m => m.Product.Id == id);
+
+            if (productDetail == null || productDetail.Product == null)
             {
                 return NotFound();
             }
 
-            return View(productDetail);
+            // Map to ViewBag to pass additional data to the view
+            ViewBag.TotalProductsInSKU = productDetail.Product.SKU?.Products?.Count() ?? 0;
+            ViewBag.ProductColor = productDetail.Product.ColorCode;
+            ViewBag.DiscountedPrice = productDetail.Discount != null ?
+                CalculateDiscountedPrice(productDetail.Product.Price, productDetail.Discount.Percentage) :
+                productDetail.Product.Price;
+            ViewBag.IsActiveDiscount = productDetail.Discount != null;
+            ViewBag.DiscountPercentage = productDetail.Discount?.Percentage;
+            ViewBag.BrandName = productDetail.Product.Brand?.BrandName; // Assuming Brand has a Name property
+            ViewBag.CategoryName = productDetail.Product.Category?.CategoryName; // Assuming Category has a Name property
+
+            return View(productDetail.Product);
+        }
+
+        private double CalculateDiscountedPrice(double originalPrice, decimal discountPercentage)
+        {
+            return originalPrice * (1 - (double)discountPercentage / 100);
         }
 
         // GET: Product/Create
@@ -204,11 +234,13 @@ namespace FypWeb.Areas.Admin.Controllers
         {
             return !_context.Product.Any(p => p.RFIDTag == epc);
         }
-      
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(ProductDetailViewModel productViewModel, IFormFile? file)
         {
+            const int requiredWidth = 1000;
+            const int requiredHeight = 1000;
             productViewModel.Product.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(productViewModel.Product.Name.ToLower());
             string wwwRootPath = hostEnvironment.WebRootPath;
 
@@ -216,33 +248,76 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 if (file != null)
                 {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string productPath = Path.Combine(wwwRootPath, "images", "product");
-                    Directory.CreateDirectory(productPath);
-                    string filePath = Path.Combine(productPath, fileName);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    using (var image = Image.FromStream(file.OpenReadStream()))
                     {
-                        file.CopyTo(fileStream);
+                        if (image.Width != requiredWidth || image.Height != requiredHeight)
+                        {
+                            ModelState.AddModelError("ImageFile", $"The image must be {requiredWidth} x {requiredHeight} pixels in size.");
+                        }
                     }
-                    productViewModel.Product.ImageUrl = "/images/product/" + fileName;
+                    if (!ModelState.IsValid)
+                    {
+                        // If the ModelState is invalid, print out the errors to the console
+                        foreach (var modelStateKey in ModelState.Keys)
+                        {
+                            var value = ModelState[modelStateKey];
+                            foreach (var error in value.Errors)
+                            {
+                                // Use the Console to print the error messages
+                                Console.WriteLine("Error in {0}: {1}", modelStateKey, error.ErrorMessage);
+                            }
+                        }
+                    }
+                    if (ModelState.IsValid)
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        string productPath = Path.Combine(wwwRootPath, "images", "product");
+                        Directory.CreateDirectory(productPath);
+                        string filePath = Path.Combine(productPath, fileName);
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+                        productViewModel.Product.ImageUrl = "/images/product/" + fileName;
+                    }
                 }
-
-                // Check if an SKU exists with the provided SKU code
-                var existingSku = _context.SKU.FirstOrDefault(sku => sku.Code == productViewModel.SKU);
-                if (existingSku == null)
+                if (!ModelState.IsValid)
                 {
-                    // If not, create a new SKUDetail entry
-                    existingSku = new SKUDetail { Code = productViewModel.SKU };
-                    _context.SKU.Add(existingSku);
-                    _context.SaveChanges(); // Save changes to obtain the SKUID
-                }
-                // Assign the SKUID to the ProductDetail
-                productViewModel.Product.SKUID = existingSku.SKUID;
+                    var allErrors = ModelState.Values.SelectMany(v => v.Errors.Select(b => b.ErrorMessage));
 
-                _context.Add(productViewModel.Product);
-                _context.SaveChanges();
-                TempData["success"] = "Product has been added successfully.";
-                return RedirectToAction(nameof(Index));
+                    // Print errors to the console
+                    foreach (var error in allErrors)
+                    {
+                        Console.WriteLine("Validation error: {0}", error);
+                    }
+
+                    // Populate ViewBag for Category and Brand again if ModelState is not valid
+                    ViewBag.getCategory = _context.Category.ToList();
+                    ViewBag.getBrand = _context.Brand.ToList();
+
+                    // Return to the view to display the errors
+                    return View(productViewModel);
+                }
+
+
+                if (ModelState.IsValid)
+                {
+                    var existingSku = _context.SKU.FirstOrDefault(sku => sku.Code == productViewModel.SKU);
+                    if (existingSku == null)
+                    {
+                        // If not, create a new SKUDetail entry
+                        existingSku = new SKUDetail { Code = productViewModel.SKU };
+                        _context.SKU.Add(existingSku);
+                        _context.SaveChanges(); // Save changes to obtain the SKUID
+                    }
+                    // Assign the SKUID to the ProductDetail
+                    productViewModel.Product.SKUID = existingSku.SKUID;
+
+                    _context.Add(productViewModel.Product);
+                    _context.SaveChanges();
+                    TempData["success"] = "Product has been added successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
             }
             else
             {
@@ -316,44 +391,6 @@ namespace FypWeb.Areas.Admin.Controllers
             return View(productDetail);
         }
 
-        // GET: Product/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Product == null)
-            {
-                return NotFound();
-            }
-
-            var productDetail = await _context.Product
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (productDetail == null)
-            {
-                return NotFound();
-            }
-
-            return View(productDetail);
-        }
-
-        // POST: Product/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Product == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.Product'  is null.");
-            }
-            var productDetail = await _context.Product.FindAsync(id);
-            if (productDetail != null)
-            {
-                _context.Product.Remove(productDetail);
-            }
-
-            await _context.SaveChangesAsync();
-            TempData["success"] = "Product has been deleted successfully.";
-            return RedirectToAction(nameof(Index));
-        }
-
         private bool ProductDetailExists(int id)
         {
             return (_context.Product?.Any(e => e.Id == id)).GetValueOrDefault();
@@ -395,15 +432,30 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var categoryDetail = await _context.Category.FindAsync(id);
-            if (categoryDetail != null)
+            var productDetail = await _context.Product.FindAsync(id);
+            if (productDetail != null)
             {
-                _context.Category.Remove(categoryDetail);
+                // If there's an image URL, delete the image file from the server
+                if (!string.IsNullOrEmpty(productDetail.ImageUrl))
+                {
+                    // Build the path to the file
+                    string filePath = Path.Combine(hostEnvironment.WebRootPath, productDetail.ImageUrl.TrimStart('/'));
+
+                    // Check if the file exists before trying to delete
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        // Delete the file
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
+                _context.Product.Remove(productDetail);
                 await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Delete successful" });
+                return Json(new { success = true, message = "Product deleted successfully." });
             }
-            return Json(new { success = false, message = "Error while deleting" });
+            return Json(new { success = false, message = "Error while deleting. Product not found." });
         }
+
         #endregion
 
     }

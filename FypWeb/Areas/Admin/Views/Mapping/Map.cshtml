@@ -114,17 +114,22 @@
                         data.forEach(product => {
                             const checkedAttribute = product.isRecommended ? 'checked' : '';
                             productsList.innerHTML += `
-                                <div class="max-w-sm rounded overflow-hidden border m-2 bg-white">
-                                    <label class="block p-2 cursor-pointer">
-                                        <input type="checkbox" class="product-checkbox mr-2" name="selectedProducts" value="${product.id}" ${checkedAttribute}>
-                                        <img class="w-full" src="${product.imageUrl}" alt="${product.name}">
-                                        <div class="px-4 py-2">
-                                            <div class="font-bold text-xl mb-2">${product.name}</div>
-                                            <p class="text-gray-700 text-base">Price: ${product.price}</p>
-                                        </div>
-                                    </label>
-                                </div>
-                            `;
+                  <div class="max-w-sm rounded overflow-hidden border m-2 bg-white">
+                    <label class="block p-2 cursor-pointer">
+                        <input type="checkbox" class="product-checkbox mr-2" name="selectedProducts" value="${product.id}" ${checkedAttribute}>
+                        <div class="flex">
+                            <!-- Image aligned to the left -->
+                            <img class="w-32 h-32 object-cover rounded-md" src="${product.imageUrl}" alt="${product.name}">
+                            <div class="flex flex-col justify-center ml-4">
+                                <div class="font-bold text-xl mb-2">${product.name}</div>
+                                <p class="text-gray-700 text-base">Price: Rs. ${product.price}</p>
+                                <p class="text-gray-700 text-base">Code: ${product.code}</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                                                    `;
                         });
                     },
                     error: function (error) {

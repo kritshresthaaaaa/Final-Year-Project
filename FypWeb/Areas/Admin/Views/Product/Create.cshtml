@@ -1,6 +1,7 @@
 ﻿@model ProductDetailViewModel
 @{
-    ViewData["Title"] = "Create";
+    // Check if there's any error for "ImageFile"
+    var imageFileError = ViewData.ModelState["ImageFile"]?.Errors.FirstOrDefault()?.ErrorMessage;
 }
 
 
@@ -9,7 +10,7 @@
         <h1 class="text-2xl font-bold">Product Add</h1>
     </div>
     <hr class="mt-2 bg-gray-400 border" />
-    <form asp-action="Create">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div class="content-holder flex-col space-y-4 mt-4">
             <!-- EPC -->
             <div class="border rounded-md p-2 bg-white">
@@ -28,11 +29,11 @@
                                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"></path>
                                 <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"></path>
                             </svg>
-                           
-                        </button>
-                     
 
-                  
+                        </button>
+
+
+
 
                         <div class="relative inline-block w-full">
                             <select asp-for="Product.RFIDTag" id="tagSelect" class="block appearance-none w-full border border-gray-300 px-2 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
@@ -170,21 +171,41 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group">
+                <label asp-for="Product.ColorCode" class="block text-sm font-medium text-gray-700"></label>
+
+                <div class="mt-2 relative ">
+                    <input asp-for="Product.ColorCode" class="color-picker block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" type="color" onchange="displaySelectedColor()" />
+                    <span id="colorValue" class="ml-2 text-sm text-gray-600"></span>
+                    <span asp-validation-for="Product.ColorCode" class="text-red-500 text-xs italic mt-2"></span>
+                </div>
+            </div>
+
             <!-- File Upload -->
-           @*  <div class="border rounded-md p-2 bg-white">
+            <div class="border rounded-md p-2 bg-white">
                 <div class="box w-full">
                     <h3 class="text-xl font-bold">Image</h3>
                     <div class="mt-2">
                         <div>
-
-                            <input asp-for="photo" class="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal  transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit  file:px-3 file:py-[0.32rem] file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem]  focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none  dark:text-black dark:file:bg-[#624CBD] dark:file:text-white dark:focus:border-primary"
-                                   type="file"
+                            <input asp-for="Product.ImageUrl" class="relative m-0 block w-full min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal  transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit  file:px-3 file:py-[0.32rem] file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem]  focus:border-primary focus:text-neutral-700 focus:shadow-te-primary focus:outline-none  dark:text-black dark:file:bg-[#624CBD] dark:file:text-white dark:focus:border-primary"
+                                   type="file" name="file"
                                    id="formFileMultiple"
-                                   multiple />
+                                   onchange="displaySelectedImage(event)" />
+                            @if (!string.IsNullOrEmpty(imageFileError))
+                            {
+                                <div class="text-red-600">
+                                    @imageFileError
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
-            </div> *@
+            </div>
+
+            <!-- Selected Image Display -->
+            <div class="mt-4" id="selectedImageContainer">
+                <img id="selectedImage" class="border rounded-md p-2 bg-white" style="max-width: 300px; max-height: 300px;" />
+            </div>
             <div class="border rounded-md p-2 bg-white">
                 <div class="box w-full">
                     <h3 class="text-xl font-bold">SKU</h3>
@@ -192,8 +213,8 @@
 
                         <div class="relative inline-block w-full">
                             <div class="titleHolder w-full mb-2">
-                                <input id="Product_SKU" asp-for=SKU  class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
-                                       type="text" placeholder="For eg: Brand-Category-Product-Size"  />
+                                <input id="Product_SKU" asp-for=SKU class="w-full border rounded-md h-8 px-2 py-4 focus:outline-blue-200"
+                                       type="text" placeholder="For eg: Brand-Category-Product-Size" />
                                 <span class="text-red-600"></span>
                             </div>
                             <!-- Removing the dropdown icon if it's not functional -->
@@ -211,6 +232,36 @@
 
 @section Scripts {
     <script>
+        function displaySelectedColor() {
+            var colorPicker = document.querySelector('.color-picker');
+            var colorDisplay = document.getElementById('colorValue');
+            colorDisplay.textContent = colorPicker.value.toUpperCase(); // Display the color in uppercase
+        }
+
+        function displaySelectedImage(event) {
+            const selectedFile = event.target.files[0];
+            const selectedImage = document.getElementById('selectedImage');
+            const selectedImageContainer = document.getElementById('selectedImageContainer');
+
+            // Check if a file is selected
+            if (selectedFile) {
+                // Create a FileReader object
+                const reader = new FileReader();
+
+                // Set up the onload event to display the selected image
+                reader.onload = function (e) {
+                    selectedImage.src = e.target.result; // Set the src attribute of the <img> tag to the data URL
+                    selectedImageContainer.style.display = 'block'; // Show the selected image container
+                };
+
+                // Read the selected file as a Data URL
+                reader.readAsDataURL(selectedFile);
+            } else {
+                // If no file is selected, hide the selected image container
+                selectedImageContainer.style.display = 'none';
+            }
+        }
+
         function generateSKU() {
             var brand = $('#Product_BrandID option:selected').text().trim();
             var category = $('#Product_CategoryID option:selected').text().trim();
