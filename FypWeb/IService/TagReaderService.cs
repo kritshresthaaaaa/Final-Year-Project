@@ -1,25 +1,27 @@
-﻿using FypWeb.Areas.Admin;
-using FypWeb.IService;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Net;
 using Util;
 
-namespace FypWeb.Services
+namespace FypWeb.IService
 {
-    public class TagReaderService: ITagReaderService
+    public class TagReaderService : ITagReaderService
     {
         private bool debug;
         private Device device;
         private RESTUtil util;
         private String address;
         private readonly IHubContext<TagHub> _tagHubContext;
+        private CancellationTokenSource _cancellationTokenSource;
         public TagReaderService(IHubContext<TagHub> tagHubContext)
         {
+            this.address = "192.168.1.1";
+            this.debug = false;
             this._tagHubContext = tagHubContext;
             this.util = new RESTUtil(address, debug);
             this.device = this.util.parseDevice(false);
+            this._cancellationTokenSource = new CancellationTokenSource();
+       
 
         }
         public async Task RunContinuousRead(long inventoryTime, CancellationToken cancellationToken)
@@ -46,7 +48,7 @@ namespace FypWeb.Services
 
             Stopwatch stopwatch2 = new Stopwatch();
             stopwatch2.Start();
-            while (stopwatch2.ElapsedMilliseconds < inventoryTime)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 while (queue.IsEmpty)
                 {
@@ -84,9 +86,7 @@ namespace FypWeb.Services
                         }
                         tagDataList.Clear();
                     }
-                }
-                // Logic to dequeue and process tags...
-
+                }  
 
             }
             tcpReader.Shutdown();
@@ -100,6 +100,10 @@ namespace FypWeb.Services
             }
 
 
+        }
+        public void StopContinuousRead()
+        {
+            _cancellationTokenSource.Cancel();
         }
     }
 }

@@ -239,8 +239,8 @@ namespace FypWeb.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(ProductDetailViewModel productViewModel, IFormFile? file)
         {
-            const int requiredWidth = 1000;
-            const int requiredHeight = 1000;
+            const int minWidth = 1000;
+            const int minHeight = 1000;
             productViewModel.Product.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(productViewModel.Product.Name.ToLower());
             string wwwRootPath = hostEnvironment.WebRootPath;
 
@@ -250,9 +250,9 @@ namespace FypWeb.Areas.Admin.Controllers
                 {
                     using (var image = Image.FromStream(file.OpenReadStream()))
                     {
-                        if (image.Width != requiredWidth || image.Height != requiredHeight)
+                        if (image.Width < minWidth || image.Height < minHeight)
                         {
-                            ModelState.AddModelError("ImageFile", $"The image must be {requiredWidth} x {requiredHeight} pixels in size.");
+                            ModelState.AddModelError("ImageFile", $"The image must be at least {minWidth} x {minHeight} pixels in size.");
                         }
                     }
                     if (!ModelState.IsValid)

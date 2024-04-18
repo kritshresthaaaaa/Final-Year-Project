@@ -73,9 +73,9 @@
                             var detailsHtml = ''; // Initialize HTML string for product details
                             response.products.forEach(function (product) {
                                 // Construct HTML content for each product
-                                detailsHtml += '<div class="rounded overflow-hidden border bg-white h-56 " data-rfid="' + product.productRFID + '">' +
-                                    '<img class="w-full h-[11rem] object-cover" src="https://via.placeholder.com/150" alt="Product Image">' +
-                                    '<div class="flex justify-center">' +
+                                detailsHtml += '<div class="rounded overflow-hidden border bg-white h-[22rem] " data-rfid="' + product.productRFID + '">' +
+                                    '<img class="w-full h-[18rem] object-cover" src="' + product.imageUrl + '" alt="Product Image">' +
+                                    '<div class="flex mt-2 justify-center">' +
                                     '<div class="p-2 text-center">' +
                                     '<span class="inline-block bg-green-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">Rs.' + product.orderTotal + '</span>' +
                                     '<span class="ml-2 inline-block bg-blue-300 rounded-full px-2 py-1 text-sm font-semibold text-gray-800">x' + product.productCount + '</span>' +

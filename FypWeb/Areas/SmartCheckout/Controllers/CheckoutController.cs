@@ -1,4 +1,4 @@
-﻿ using Fyp.DataAccess.Data;
+﻿using Fyp.DataAccess.Data;
 using Fyp.Models;
 using Fyp.Models.ViewModels;
 using Fyp.Utility;
@@ -27,28 +27,18 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
         private readonly ApplicationDbContext _context;
         private CancellationTokenSource _cancellationTokenSource;
         private Reader _reader;
-        private readonly TagReaderService _tagReaderService;
-    
-        public Checkout(ApplicationDbContext context, TagReaderService tagReaderService)
+
+
+        public Checkout(ApplicationDbContext context)
         {
             _context = context;
             _reader = new Reader("192.168.1.1", false);
-            _tagReaderService=tagReaderService;
         }
         public async Task<IActionResult> Index()
         {
-        /*    await StartReadingTags();*/
+            /*    await StartReadingTags();*/
             return View("Index", "_Customers");
         }
-        public async Task<IActionResult> StartReading()
-        {
-            var cancellationTokenSource = new CancellationTokenSource();
-            // Assuming _tagReaderService is an instance of your service class
-            // that contains the adapted run method
-            await _tagReaderService.RunContinuousRead(300000, cancellationTokenSource.Token); // Example for 5 minutes
-            return View("Test");
-        }
-
 
 
         public IActionResult StopReadingTags()
@@ -123,6 +113,9 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                     DiscountAmount = product.Price - priceToUse,
                     OrderTotal = 1 * priceToUse, // Use the determined price
                     ProductBrand = product.Brand?.BrandName,
+                    ImageUrl = product.ImageUrl,
+                    DiscountedPrice = priceToUse,
+                    ProductColor = product.ColorCode,
                     // Add more product details as needed
                 };
             }).ToList();
@@ -150,16 +143,16 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                 {
                     // Query for an applicable discount
                     var discount = await _context.Discount
-                        .Where(d => d.IsActive && today >= d.StartDate && today <= d.EndDate &&
-                                    (d.CategoryID == null || d.CategoryID == product.CategoryID) &&
-                                    (d.BrandID == null || d.BrandID == product.BrandID))
-                        .OrderByDescending(d => d.Percentage)
-                        .FirstOrDefaultAsync();
+                             .Where(d => d.IsActive && today >= d.StartDate && today <= d.EndDate &&
+                                         (d.CategoryID == null || d.CategoryID == product.CategoryID) &&
+                                         (d.BrandID == null || d.BrandID == product.BrandID))
+                             .OrderByDescending(d => d.Percentage)
+                             .FirstOrDefaultAsync();
 
                     // Determine the price to use
                     double priceToUse = discount != null ? product.Price * (1 - (double)discount.Percentage / 100.0) : product.Price;
-
-                    // Add product confirmation
+                    double discountAmount = discount != null ? product.Price - priceToUse : 0; // This is the discount amount
+                                                                                               // Add product confirmation
                     products.Add(new CartConfimation
                     {
                         ProductId = product.Id,
@@ -168,10 +161,14 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                         ProductBrand = product.Brand?.BrandName,
                         ProductSize = product.Sizes,
                         ProductRFID = rfid,
-                        DiscountAmount = product.Price - priceToUse,
-                        OrderTotal = 1 * priceToUse, // Use the determined price
+                        DiscountAmount = discountAmount, // Pass the calculated discount amount
+                        OrderTotal = priceToUse, // Use the determined price
                         ProductPrice = product.Price,
-                    }); ;
+                        ImageUrl = product.ImageUrl,
+                        DiscountedPrice = priceToUse,
+                        ProductColor = product.ColorCode,
+
+                    });
                 }
             }
 

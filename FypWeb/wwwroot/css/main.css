@@ -15,6 +15,16 @@
         color: white;
         border-color: #007bff; /* Change to your preferred color */
     }
+.tooltip .tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
 
 /* Add this to your site's stylesheet */
 .loading-btn::after {

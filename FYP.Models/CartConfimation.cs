@@ -18,10 +18,12 @@ namespace Fyp.Models
         public string ProductColor { get; set; }
 
         public int ProductQuantity { get; set; }
+        public string ImageUrl { get; set; }
    
         public string ProductRFID { get; set; }
         public double OrderTotal { get; set; }
         public double DiscountAmount { get; set; }
+        public double DiscountedPrice { get; set; }
         public DateTime? DiscountStartDate { get; set; }
         public DateTime? DiscountEndDate { get; set; }
         public DiscountDetail? Discount { get; set; }

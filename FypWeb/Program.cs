@@ -21,8 +21,9 @@ builder.Services.AddControllersWithViews();
     options.LoginPath = "/Identity/Account/Login";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
 });*/
+builder.Services.Configure<ReaderConfig>(builder.Configuration.GetSection("ReaderConfig"));
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<ITagReaderService, TagReaderService>();
+builder.Services.AddSingleton<ITagReaderService, test>();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FypConnectionString")));
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
@@ -70,11 +71,6 @@ app.UseSession();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
-/*    pattern: "/{controller=Access}/{action=Login}/{id?}");
-*/
-pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<TagHub>("/tagHub");
-});
+    pattern: "{area=Admin}/{controller=Home}/{action=Index}/{id?}");
+app.MapHub<TagHub>("/tagHub");
 app.Run();
