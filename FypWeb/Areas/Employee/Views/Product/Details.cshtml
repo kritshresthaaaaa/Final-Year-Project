@@ -1,0 +1,73 @@
+﻿@model ProductDetail
+
+<section class="text-gray-700 body-font overflow-hidden bg-white border h-screen ml-[12rem]">
+    <div class="container px-5 py-8 mx-auto ">
+        <div class="lg:w-4/5 mx-auto flex flex-wrap">
+            <img alt="ecommerce" class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200" src="@Html.DisplayFor(model => model.ImageUrl)">
+            <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+                <h2 class="text-sm title-font text-gray-500 tracking-widest">#@Html.DisplayFor(model => model.RFIDTag)</h2>
+                <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">@Html.DisplayFor(model => model.Name)</h1>
+                <div class="flex mb-4">
+                    <span class="flex items-center">
+                        <p class="text-green-600 ">@ViewBag.TotalProductsInSKU in stock</p>
+                        <span class="text-red-600 ml-3">5 Sold</span>
+                    </span>
+                </div>
+                <p class="leading-relaxed">@Html.DisplayFor(model => model.Description)</p>
+                <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
+                    <div class="flex">
+                        <span class="mr-3">Color</span>
+                        <button class="border-2 border-gray-300 rounded-full w-6 h-6 focus:outline-none" style="background-color: @Model.ColorCode;"></button>
+                    </div>
+                    <div class="flex ml-6 items-center">
+                        <span class="mr-3">Size</span>
+                        <button class="rounded border appearance-none border-gray-400 py-2 focus:outline-none focus:border-red-500 text-base pl-3 pr-4">
+                            @Html.DisplayFor(model => model.Sizes)
+                        </button>
+                    </div>
+                </div>
+                <div class="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
+                    <!-- Brand Information Display -->
+                    <div class="flex items-center">
+                        <span class="mr-3 font-semibold text-gray-600">Brand:</span>
+                        <span class="text-gray-900 font-medium">@ViewBag.BrandName</span>
+                    </div>
+
+                    <!-- Space between Brand and Category -->
+                    <div class="mx-6"></div>  <!-- This adds horizontal space between the brand and category -->
+                    <!-- Category Information Display -->
+                    <div class="flex items-center">
+                        <span class="mr-3 font-semibold text-gray-600">Category:</span>
+                        <span class="text-gray-900 font-medium">@ViewBag.CategoryName</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center">
+                    @if (ViewBag.IsActiveDiscount)
+                    {
+                        <!-- Display the original price with a strikethrough if a discount is active -->
+                        <span class="title-font font-medium text-2xl text-gray-500 line-through">Rs. @Html.DisplayFor(model => model.Price)</span>
+                        <!-- Display the discounted price in red to highlight it -->
+                        <span class="title-font font-medium text-2xl text-red-500 ml-4">Rs. @ViewBag.DiscountedPrice</span>
+                    }
+                    else
+                    {
+                        <!-- Display the original price without a strikethrough if no discount is active -->
+                        <span class="title-font font-medium text-2xl text-gray-900">Rs. @Html.DisplayFor(model => model.Price)</span>
+                    }
+                    <!-- This old price appears to always be shown; consider dynamically displaying it or adjusting as needed -->
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@* <h1>Details</h1>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div> *@

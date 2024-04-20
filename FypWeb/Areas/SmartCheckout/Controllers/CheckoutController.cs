@@ -419,25 +419,42 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                             var productEntity = await _context.Product.FirstOrDefaultAsync(p => p.Id == product.ProductId);
                             if (productEntity != null)
                             {
-                                // Remove product entity since the purchase is complete
-                                /* _context.Product.Remove(productEntity);*/
+
+                                // Save sold RFID tag for each product
+                                var soldTag = new SoldRFIDTags
+                                {
+                                    TagID = productEntity.RFIDTag,
+                                    SaleDate = DateTime.Now
+                                };
+                                _context.SoldRFIDTags.Add(soldTag);
+
                                 var orderDetail = new OrderDetail
                                 {
                                     Id = Guid.NewGuid(),
                                     OrderHeaderId = orderHeader.Id,
                                     ProductId = product.ProductId,
                                     Quantity = product.ProductQuantity,
-                                    Price = product.OrderTotal
+                                    Price = product.OrderTotal,
+                                    RFIDTag=product.ProductRFID
                                 };
                                 orderDetailsList.Add(orderDetail);
+                                /*   // Save sold RFID tag for each product
+                                   var soldTag = new SoldRFIDTags
+                                   {
+                                       TagID = productEntity.RFIDTag,
+                                       SaleDate = DateTime.Now
+                                   };
+                                   _context.SoldRFIDTags.Add(soldTag);*/
 
                             }
-
                         }
+
+                      
                         try
                         {
 
                             _context.OrderDetails.AddRange(orderDetailsList);
+
                             var email = customerDetails.CustomerEmail;
                             if (email != null)
                             {
@@ -458,6 +475,19 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
 
                                 // Send the email with the constructed subject
                                 await SendEmailAsync(email, subject, body);
+                            }
+                          
+                            
+
+                         
+                            // Remove the products from the inventory after successful order processing and saving
+                            foreach (var product in products)
+                            {
+                                var productEntity = await _context.Product.FirstOrDefaultAsync(p => p.Id == product.ProductId);
+                                if (productEntity != null)
+                                {
+                                    _context.Product.Remove(productEntity);
+                                }
                             }
                             await _context.SaveChangesAsync();
 
@@ -504,7 +534,6 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                 return RedirectToAction("ConfirmOrder");
             }
         }
-
 
         private async Task<bool> SendEmailAsync(string email, string subject, string body)
         {

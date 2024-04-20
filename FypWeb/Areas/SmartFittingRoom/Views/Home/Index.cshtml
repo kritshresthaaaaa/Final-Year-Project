@@ -17,10 +17,10 @@
 
         <div id="bucketItemsSection" class="hidden">
             <div class="bottom mb-1">
-                <h3 class="text-2xl text-center font-semibold">Items in your Bucket :)</h3>
+                <h3 class="text-2xl text-center font-semibold">Items in your Bucket <i class='bx bx-cart-alt'></i></h3>
             </div>
             <div class="mx-auto max-w-md px-4 py-2 lg:max-w-7xl lg:px-4 flex-grow">
-                <div id="productList" class="grid grid-cols-1 gap-x-4 gap-y-8 lg:grid-cols-3">
+                <div id="productList" class="grid grid-cols-1 gap-x-4 gap-y-8 lg:grid-cols-2">
                     <!-- Products will be displayed here -->
                 </div>
             </div>
@@ -29,10 +29,10 @@
 
     <div class="w-[55%] border-l">
         <div class="top">
-            <div class="max-w-7xl px-4 flex-grow mt-10">
+            <div class="max-w-7xl px-4 flex-grow mt-5">
                 <div class="px-4 ">
 
-                    <div class="flex flex-row border rounded-md -mx-4" id="productDetail">
+                    <div class="flex flex-row rounded-md -mx-4" id="productDetail">
 
                         <div class="mx-auto">
                             <div id="placeholderMessage" class="flex flex-col items-center  min-h-[90vh] pt-[14rem]">
@@ -70,9 +70,10 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (result) {
-                    // Assuming a function to display these products exists
+                    console.log('Response from server:', result);
                     displayRFIDProducts(result);
                 },
+
                 error: function (xhr, status, error) {
                     console.error('Error fetching RFID products:', error);
                 }
@@ -90,8 +91,6 @@
 
             const productsWithRFID = result.data;
             console.log(productsWithRFID);
-
-            // Adjusting to process the expected data structure
             Object.entries(productsWithRFID).forEach(([rfidTag, productInfo]) => {
                 if (productInfo && productInfo.product && Array.isArray(productInfo.sizes)) {
                     const productDetail = productInfo.product;
@@ -103,21 +102,25 @@
                 }
             });
 
+
         }
 
 
         function createProductCard(productDetail, sizes) {
             // Creating a div element for the product card
             const card = document.createElement('div');
-            card.classList.add('productCard', 'group', 'flex', 'flex-col', 'items-center', 'border', 'rounded-md', 'cursor-pointer', 'transition-colors', 'duration-150');
-
+            card.classList.add('productCard', 'group', 'flex', 'flex-col', 'items-center', 'border', 'rounded-md', 'cursor-pointer', 'transition-colors', 'duration-150', 'w-full', 'max-w-xl');
             // Adding product image, name, and price to the card's inner HTML
             card.innerHTML = `
-                                                                                                                <img src="https://mockuptree.com/wp-content/uploads/edd/2022/07/free-loose-fit-t-shirt-mockup.jpg" alt="${productDetail.name}" class="object-cover rounded-t-md object-center h-full w-full group-hover:opacity-75">
-                                                                                                        <h3 class="mt-4 text-sm text-gray-700">${productDetail.name}</h3>
-                                                                                                        <p class="mt-1 text-lg font-medium text-gray-900">$${productDetail.price}</p>
-                                                                                                        <div class="sizes">Sizes: ${sizes.join(', ')}</div>
-                                                                                                    `;
+                                <img src="${productDetail.imageUrl}" alt="${productDetail.name}" class="object-cover rounded-t-md object-center h-52 w-full group-hover:opacity-75">
+                                <div class="p-4 w-full">
+                                    <h3 class="text-base font-semibold text-gray-900">${productDetail.name}</h3>
+                                    <p class="mt-2 text-base  text-gray-900">Price: $${productDetail.price}</p>
+                                    <p class="mt-2 text-base  text-gray-900">Color: <span class="color-box inline-block w-6 h-6 rounded-full" style="background-color: ${productDetail.colorCode};"></span></p>
+                                    <p class="mt-2 text-base  text-gray-900">Sizes: ${sizes.join(', ')}</p>
+                                </div>
+                            `;
+
 
             card.addEventListener('click', () => {
                 // Extract base SKU by removing the last '-S' part
@@ -157,44 +160,46 @@
             }
             // Update the HTML content with product details and sizes
             const productDetailDiv = document.getElementById('productDetail');
-            let sizesHtml = sizes.map((size, index) => `<button id="size-${index}" class="size-btn bg-gray-300 text-gray-700 py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400" data-size="${size}">${size}</button>`).join(''); productDetailDiv.innerHTML = `
-                                                                <div class="py-8">
-                                                                    <div class="max-w-6xl mx-auto px-4">
-                                                                        <div class="flex flex-col md:flex-row -mx-4">
-                                                                            <div class="md:flex-1 px-4">
-                                                                                <div class="h-[460px] rounded-lg bg mb-4">
-                                                                                            <img class="w-full h-full object-cover" style="max-width: 500px;" src="https://mockuptree.com/wp-content/uploads/edd/2022/07/free-loose-fit-t-shirt-mockup.jpg" alt="${productDetails.name}">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="md:flex-1 px-4">
-                                                                                <h2 class="text-2xl font-bold text-gray-800 mb-2">${productDetails.name}</h2>
-                                                                                <p class="text-gray-600 text-sm mb-4">${productDetails.description}</p>
-                                                                                <div class="flex mb-4">
-                                                                                    <div class="mr-4">
-                                                                                        <span class="font-bold text-gray-700">Price:</span>
-                                                                                        <span class="text-gray-600">$${productDetails.price}</span>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <span class="font-bold text-gray-700">Availability:</span>
-                                                                                        <span class="text-gray-600">${sizes ? 'In Stock' : 'Out of Stock'}</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                                        <div class="mb-4">
-                                            <span class="font-bold text-gray-700">Select Size:</span>
-                                            <div class="flex items-center mt-2">${sizesHtml}</div>
-                                        </div>
-                                                                                                     <div class="w-full">
-                                            <button id="sendRequestBtn" class="w-full bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">Send Request</button>
-                                        </div>
-                                                                                 <p class="text-gray-600 text-sm mt-2">
-                                                                                    <span class="font-bold">Note:</span> If the sizes are not available, you can request them by clicking the button below.
-                                                                                </p>
-                                                                                 </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>`;
+            let sizesHtml = sizes.map((size, index) => `<button id="size-${index}" class="size-btn bg-gray-300 text-gray-700 py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400" data-size="${size}">${size}</button>`).join('');
+
+            productDetailDiv.innerHTML = `
+            <div class="py-2">
+                <div class="max-w-6xl mx-auto px-4">
+                    <div class="flex flex-col md:flex-row -mx-4">
+                        <div class="md:flex-1 px-4">
+                            <div class="h-[460px] rounded-lg bg mb-4">
+                                <img class="w-full h-full object-cover rounded-md" style="max-width: 500px;" src="${productDetails.imageUrl}" alt="${productDetails.name}">
+                            </div>
+                        </div>
+                        <div class="md:flex-1 px-4">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">${productDetails.name}</h2>
+                            <p class="text-gray-600 text-sm mb-4">${productDetails.description}</p>
+                            <div class="flex mb-2">
+                                <div class="mr-4">
+                                    <span class="font-bold text-gray-700">Price:</span>
+                                    <span class="text-gray-600">Rs. ${productDetails.price}</span>
+                                </div>
+                                <div>
+                                    <span class="font-bold text-gray-700">Availability:</span>
+                                    <span class="text-gray-600">${sizes ? 'In Stock' : 'Out of Stock'}</span>
+                                </div>
+                            </div>
+                       
+                            <div class="mb-2">
+                                <span class="font-bold text-gray-700">Select Size:</span>
+                                <div class="flex items-center mt-2">${sizesHtml}</div>
+                            </div>
+                            <div class="w-full">
+                                <button id="sendRequestBtn" class="w-full bg-gray-900 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800">Send Request</button>
+                            </div>
+                            <p class="text-gray-600 text-sm mt-2">
+                                <span class="font-bold">Note:</span> If the sizes are not available, you can request them by clicking the button below.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
             attachSizeSelectionListeners();
             attachSendRequestListener(productDetails);
 

@@ -15,7 +15,10 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+        .AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 /*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
@@ -23,7 +26,7 @@ builder.Services.AddControllersWithViews();
 });*/
 builder.Services.Configure<ReaderConfig>(builder.Configuration.GetSection("ReaderConfig"));
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<ITagReaderService, test>();
+builder.Services.AddSingleton<ITagReaderService, TagReaderService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FypConnectionString")));
 builder.Services.AddRazorPages();
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();

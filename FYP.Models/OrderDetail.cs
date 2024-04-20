@@ -25,5 +25,6 @@ namespace Fyp.Models
         public ProductDetail Product { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; } 
+        public string RFIDTag { get; set; }
     }
 }

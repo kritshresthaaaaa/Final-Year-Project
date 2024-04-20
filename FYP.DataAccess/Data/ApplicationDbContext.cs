@@ -25,6 +25,7 @@ namespace Fyp.DataAccess.Data
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Noti> Notification { get; set; }
         public DbSet<RoomDetail> Room { get; set; }
+        public DbSet<SoldRFIDTags> SoldRFIDTags { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -60,17 +61,17 @@ namespace Fyp.DataAccess.Data
 
 
 
-            modelBuilder.Entity<SKUDetail>().HasData(
+     /*       modelBuilder.Entity<SKUDetail>().HasData(
                 new SKUDetail { SKUID = 1, Code = "GUC-MC-BLA-S" },
                 new SKUDetail { SKUID = 2, Code = "NIK-WC-FLO-M" },
                 new SKUDetail { SKUID = 3, Code = "NIK-WC-PRO-M" },
                 new SKUDetail { SKUID = 4, Code = "NIK-WC-PRO-XL" },
                 new SKUDetail { SKUID = 5, Code = "GUC-MC-BLA-M" },
                 new SKUDetail { SKUID = 6, Code = "GUC-MC-BLA-L" }
-            );
+            );*/
 
 
-            modelBuilder.Entity<ProductDetail>().HasData(
+            /*modelBuilder.Entity<ProductDetail>().HasData(
                 new ProductDetail
                 {
                     Id = 1,
@@ -237,7 +238,7 @@ namespace Fyp.DataAccess.Data
                                          }
 
 
-            );
+            );*/
         }
 
 

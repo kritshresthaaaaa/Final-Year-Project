@@ -12,8 +12,10 @@ using Util;
 using CommandLine;
 using CommandLine.Text;
 using System.Xml;
+using Microsoft.EntityFrameworkCore;
+using Fyp.DataAccess.Data;
 
-namespace ADRDAsynch
+namespace Fyp.LossPrevention
 {
     public class LossPrevention
     {
@@ -21,13 +23,14 @@ namespace ADRDAsynch
         private Device device;
         private RESTUtil util;
         private String address;
-
-        public LossPrevention(String address, bool debug)
+        private readonly ApplicationDbContext _context;
+        public LossPrevention(String address, bool debug, ApplicationDbContext context)
         {
             this.address = address;
             this.debug = debug;
             this.util = new RESTUtil(address, debug);
             this.device = this.util.parseDevice(false);
+            this._context = context;
         }
 
         class Options
@@ -74,33 +77,33 @@ namespace ADRDAsynch
 
         static void Main(string[] args)
         {
-
-            var options = new Options();
-            String address = null;
-            bool debug = false;
-            long inventoryTime = 1000;
-            if (CommandLine.Parser.Default.ParseArguments(args, options))
+            string connectionString = "Server=DESKTOP-K8TPSKD;Database=FypDB;Trusted_Connection=True;TrustServerCertificate=Yes";
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseSqlServer(connectionString)
+                .Options;
+            using (var context = new ApplicationDbContext(options))
             {
-                address = "192.168.1.1";
-                inventoryTime = options.inventoryTime;
-                debug = options.Debug;
+                string address = "192.168.1.1";
+                bool debug = false;
+                long inventoryTime = 1000;
+
                 Console.WriteLine("Parsed Arguments:");
                 Console.WriteLine("\tAddress:\t" + address);
                 Console.WriteLine("\tInventory Time:\t" + inventoryTime);
                 Console.WriteLine("\tDebug:\t" + debug);
 
-                LossPrevention app = new LossPrevention(address, false);
+                LossPrevention app = new LossPrevention(address, debug, context);
                 app.run(inventoryTime);
-            }
-            else
-            {
-                Console.WriteLine(options.GetUsage());
-                Console.ReadLine();
             }
         }
 
+        public HashSet<string> FetchSoldTags()
+        {
+            return new HashSet<string>(_context.SoldRFIDTags.Select(t => t.TagID).ToList());
+        }
         public void run(long inventoryTime)
         {
+
             try
             {
                 this.util.setDeviceMode(device, "Autonomous", false);
@@ -111,7 +114,8 @@ namespace ADRDAsynch
                 Console.WriteLine(e.StackTrace);
             }
             ConcurrentQueue<String> queue = new ConcurrentQueue<String>();
-            List<String> tagDataList = new List<String>();
+            List<string> tagDataList = new List<string>();
+            HashSet<string> soldTags = FetchSoldTags();
             // Initialize a dictionary to keep track of tag counts
             Dictionary<String, int> tagCounts = new Dictionary<String, int>();
 
@@ -121,10 +125,10 @@ namespace ADRDAsynch
             tcpReaderThread.Start();
             Console.WriteLine("Done.");
 
-            Stopwatch stopwatch2 = new Stopwatch();
-            stopwatch2.Start();
+      /*      Stopwatch stopwatch2 = new Stopwatch();
+            stopwatch2.Start();*/
 
-            while (stopwatch2.ElapsedMilliseconds < inventoryTime)
+            while (true)
             {
                 while (queue.IsEmpty)
                 {
@@ -149,28 +153,23 @@ namespace ADRDAsynch
                         foreach (String tagData in tagDataList)
                         {
                             // Check if the current tag matches the specific tag ID you're interested in
-                            if (tagData.Equals("6200470fc1906026deb7010b"))
+                            if (!soldTags.Contains(tagData)) // Trigger buzzer if the tag is not sold
                             {
-                                Console.WriteLine($"Specific tag {tagData} found. Triggering buzzer.");
-
-                                // Attempt to trigger the buzzer
+                                Console.WriteLine($"Active tag {tagData} found. Triggering buzzer.");
                                 try
                                 {
-                                    // Assuming `util` is an instance of RESTUtil and `device` is a properly initialized Device instance
-                                    // Adjust the totalDuration, timeOn, timeOff, and displayResponse parameters as needed
                                     util.buzzer(device, 5000, 5000, 0, true);
                                 }
                                 catch (Exception ex)
                                 {
-                                    Console.WriteLine($"An error occurred while trying to trigger the buzzer: {ex.Message}");
+                                    Console.WriteLine($"Error triggering buzzer: {ex.Message}");
                                 }
                             }
                             else
                             {
-                                Console.WriteLine($"Tag {tagData} read.");
+                                Console.WriteLine($"Sold tag {tagData} detected and ignored.");
                             }
                         }
-
                         tagDataList.Clear();
                     }
                 }

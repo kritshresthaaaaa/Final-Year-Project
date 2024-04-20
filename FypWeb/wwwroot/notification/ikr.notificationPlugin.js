@@ -6,7 +6,7 @@
         }, options);
         var parentId = $(this).attr("id");
         if ($.trim(parentId) != "" && parentId.length > 0) {
-            $("#" + parentId).append("<div class='ikrNoti_Counter'></div>" +            
+            $("#" + parentId).append("<div class='ikrNoti_Counter'></div>" +
                 "<div class='ikrNoti_Button'><i class='bx bxs-bell' style='color:#ffffff'></i></div>" +
                 "<div class='ikrNotifications'>" +
                 "<h3>Notifications (<span class='notiCounterOnHead'>0</span>)</h3>" +
@@ -33,9 +33,9 @@
             });
             $(document).click(function () {
                 $('#' + parentId + ' .ikrNotifications').hide();
-               /* if ($('#' + parentId + ' .ikrNoti_Counter').is(':hidden')) {
-                    $('#' + parentId + ' .ikrNoti_Button').css('background-color', defaultSettings.AfterSeenColor);
-                }*/
+                /* if ($('#' + parentId + ' .ikrNoti_Counter').is(':hidden')) {
+                     $('#' + parentId + ' .ikrNoti_Button').css('background-color', defaultSettings.AfterSeenColor);
+                 }*/
             });
             $('#' + parentId + ' .ikrNotifications').click(function () {
                 return false;
@@ -79,10 +79,42 @@
                         "<div class='ikrNofiCreatedDate'>" + item.createdDateSt + "</div>" +
                         "</div>");
                     $("#" + parentId + " .ikrNotificationItems .ikrSingleNotiDiv[notiId=" + item.notiId + "]").click(function () {
-                        if ($.trim(item.url) != "") {
-                            window.location.href = item.url;
+                        var url = item.url; // Get the URL from the notification item
+
+                        // Verify if URL is available
+                        if (url) {
+                            var productId = url.split('/').pop(); // Extract the product ID from the URL
+                            console.log('Product ID:', productId); // Log the product ID to verify it's correct
+
+                            // Verify if productId is available
+                            if (productId) {
+                                var redirectUrl = '/Employee/Product/Details/' + productId;
+                                console.log('Navigating to:', redirectUrl); // Log the URL to verify it's correct
+
+                                // Mark the notification as unread by updating the isRead property
+                                item.isRead = false;
+
+                                // Update the notification counter
+                                var totalUnReadNoti = defaultSettings.NotificationList.filter(x => x.isRead == false).length;
+                                $('#' + parentId + ' .ikrNoti_Counter').text(totalUnReadNoti);
+                                $('#' + parentId + ' .notiCounterOnHead').text(totalUnReadNoti);
+
+                                // Navigate to the product details page
+                                window.location.href = redirectUrl;
+                            } else {
+                                console.error('Product ID is not available in the URL:', url);
+                                // You can display an error message or perform any other action here
+                            }
+                        } else {
+                            console.error('URL is not available in the notification item:', item);
+                            // You can display an error message or perform any other action here
                         }
                     });
+
+
+
+
+
                 });
             }
         }
@@ -92,4 +124,3 @@
 function ikrLowerFirstLetter(value) {
     return value.charAt(0).toLowerCase() + value.slice(1);
 }
-

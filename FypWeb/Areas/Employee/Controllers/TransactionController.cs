@@ -57,6 +57,7 @@ namespace FypWeb.Areas.Employee.Controllers
 
 
         #region API CALLS
+
         [HttpGet]
         public async Task<IActionResult> GetAllTransactions()
         {

@@ -58,7 +58,21 @@ namespace FypWeb.Areas.Admin
 
             return detectedEPCs;
         }
-       
+        public RESTUtil Util
+        {
+            get { return _util; }
+        }
+        public Device Device
+        {
+            get { return _device; }
+        }
+        public string changeFirstBit(string epc)
+        {
+            // Change the first bit of the EPC
+            string binEPC = this._utilities.HexStringToBinary(epc);
+            string newBinEPC = binEPC[0] == '0' ? '1' + binEPC.Substring(1) : '0' + binEPC.Substring(1);
+            return this._utilities.BinaryStringToHex(newBinEPC);
+        }
     }
 }
 

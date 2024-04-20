@@ -1,6 +1,7 @@
 ﻿using Fyp.DataAccess.Data;
 using Fyp.Models;
 using Fyp.Utility;
+using FypWeb.Areas.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,38 +17,117 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public Home(ApplicationDbContext context,UserManager<ApplicationUser> userManager)
+        private Reader _reader;
+        public Home(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _reader = new Reader("192.168.1.1", false);
         }
 
         public IActionResult Index()
         {
             return View("Index", "_Customers");
         }
+        public async Task<List<string>> ReadTags()
+        {
+            var reader = new Reader("192.168.1.1", false); // Configure your Reader
+            reader.ConnectToDevice();
+            reader.SetDeviceReadMode();
+            reader.StartDevice();
+            var detectedEPCs = reader.GetDetectedEPCs();
+            await Task.Delay(2000); // Consider using await Task.Delay(2000); for async operation
+
+            // Filter detected EPCs to only include those present in the database
+            var validEPCs = new List<string>();
+            foreach (var epc in detectedEPCs)
+            {
+                // Check if the EPC exists in the database
+                var product = await _context.Product.FirstOrDefaultAsync(p => p.RFIDTag == epc);
+                if (product != null)
+                {
+                    validEPCs.Add(epc);
+                }
+            }
+
+            return validEPCs;
+        }
+
         #region API CALLS
         public class ProductWithSizes
         {
             public ProductDetail Product { get; set; }
-            public List<string> Sizes { get; set; } = new List<string>();
+            public HashSet<string> Sizes { get; set; }
         }
+
         public class SizeRequest
         {
             public int ProductId { get; set; }
             public string Size { get; set; }
         }
 
+        /* [HttpGet]
+         public async Task<IActionResult> GetProductsByRfidTagsWithSizes()
+         {
+             var productsDict = new Dictionary<string, ProductWithSizes>();
+
+             try
+             {
+                 var rfids = new List<string> { "123456", "123457" };
+
+                 foreach (var rfidTag in rfids)
+                 {
+                     var products = await _context.Product
+                         .Include(p => p.SKU)
+                         .Where(p => p.RFIDTag == rfidTag)
+                         .ToListAsync();
+
+                     foreach (var product in products)
+                     {
+                         // Assuming the base SKU is the part before the last '-' character
+                         var baseSku = product.SKU.Code.Substring(0, product.SKU.Code.LastIndexOf('-'));
+
+                         if (!productsDict.ContainsKey(baseSku))
+                         {
+                             productsDict[baseSku] = new ProductWithSizes { Product = product };
+                         }
+
+                         // Assuming size is the last character after the last '-' character
+                         productsDict[baseSku].Sizes.Add(product.SKU.Code.Split('-').Last());
+                     }
+                 }
+
+                 var responseData = productsDict.Select(kvp => new
+                 {
+                     BaseSKU = kvp.Key,
+                     Product = kvp.Value.Product,
+                     Sizes = kvp.Value.Sizes // Distinct not needed due to HashSet
+                 });
+
+                 return Json(new { data = responseData });
+             }
+             catch (Exception ex)
+             {
+                 return StatusCode(500, $"An error occurred: {ex.Message}");
+             }
+         }
+ */
+
         [HttpGet]
         public async Task<IActionResult> GetProductsByRfidTagsWithSizes()
         {
+            var rfidsTags = await ReadTags();
             var productsDict = new Dictionary<string, ProductWithSizes>();
+
+            // List of RFIDs
+            if (rfidsTags == null || rfidsTags.Count == 0)
+            {
+                return Json(new { success = false, message = "No RFID tags detected." });
+            }
 
             try
             {
-                var rfids = new List<string> { "123456", "123457" };
-
-                foreach (var rfidTag in rfids)
+                foreach (var rfidTag in rfidsTags)
                 {
                     var products = await _context.Product
                         .Include(p => p.SKU)
@@ -56,33 +136,30 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
 
                     foreach (var product in products)
                     {
-                        // Assuming the base SKU is the part before the last '-' character
                         var baseSku = product.SKU.Code.Substring(0, product.SKU.Code.LastIndexOf('-'));
 
                         if (!productsDict.ContainsKey(baseSku))
                         {
-                            productsDict[baseSku] = new ProductWithSizes { Product = product };
+                            productsDict[baseSku] = new ProductWithSizes { Product = product, Sizes = new HashSet<string>() };
                         }
 
-                        // Assuming size is the last character after the last '-' character
                         productsDict[baseSku].Sizes.Add(product.SKU.Code.Split('-').Last());
                     }
                 }
-
-                var responseData = productsDict.Select(kvp => new
-                {
-                    BaseSKU = kvp.Key,
-                    Product = kvp.Value.Product,
-                    Sizes = kvp.Value.Sizes // Distinct not needed due to HashSet
-                });
-
-                return Json(new { data = responseData });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                // Handle exception
+                return Json(new { success = false, message = "An error occurred while processing RFID tags.", error = ex.Message });
             }
+
+            var responseData = productsDict.ToDictionary(
+                kvp => kvp.Key,
+                kvp => new { Product = kvp.Value.Product, Sizes = kvp.Value.Sizes });
+
+            return Json(new { success = true, data = responseData });
         }
+
 
 
         [HttpGet]
@@ -123,6 +200,7 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
                     representativeProduct.CategoryID,
                     SKUCode = representativeProduct.SKU.Code,
                     representativeProduct.ImageUrl,
+                    representativeProduct.ColorCode
                 },
                 Sizes = sizes // List of all sizes for the base SKU
             };
@@ -163,8 +241,8 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var employeeId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
                 var currentUser = await _userManager.FindByIdAsync(employeeId);
-                var employeeRelationId= currentUser.EmployeeRelationId;
-       
+                var employeeRelationId = currentUser.EmployeeRelationId;
+
                 if (currentUser == null)
                 {
                     return NotFound("Employee not found.");
@@ -186,7 +264,7 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
                     FromRoomId = 1,
                     FromRoomName = "Smart Fitting Room",
                     ToEmployeeName = relatedUser.UserName,
-                    ToEmployeeId= new Guid( relatedUser.Id),
+                    ToEmployeeId = new Guid(relatedUser.Id),
                     NotiHeader = "Size Request",
                     NotiBody = $"Size request for product {product.Name} (ID: {product.Id}) with size {request.Size} received.",
                     IsRead = false,
@@ -211,4 +289,3 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
 
     #endregion
 }
-

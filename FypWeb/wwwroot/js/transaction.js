@@ -27,7 +27,7 @@ function loadDataTable() {
                     // Format the order total to display it as Rupees
                     return `Rs. ${data.toFixed(2)}`; // Assuming 'data' is a number; adjust if needed
                 }
-            }, 
+            },
             {
                 "data": "id",
                 "width": "10%",
@@ -44,5 +44,4 @@ function loadDataTable() {
         ]
     });
 }
-
 

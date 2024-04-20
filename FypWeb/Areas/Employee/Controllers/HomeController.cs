@@ -51,8 +51,45 @@ namespace FypWeb.Areas.Employee.Controllers
 
             return View();
         }
-
+        private double CalculateDiscountedPrice(double originalPrice, decimal discountPercentage)
+        {
+            return originalPrice * (1 - (double)discountPercentage / 100);
+        }
         #region API CALLS
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var today = DateTime.Today;
+            var productsWithDiscounts = await _db.Product
+                .Include(p => p.Category)
+                .Select(p => new
+                {
+                    Product = p,
+                    Discount = _db.Discount
+                        .Where(d => d.IsActive && d.StartDate <= today && today <= d.EndDate &&
+                                    (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
+                                    (d.BrandID == null || d.BrandID == p.BrandID))
+                        .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+
+            var productViewModels = productsWithDiscounts.Select(pd => new
+            {
+                Id = pd.Product.Id,
+                Name = pd.Product.Name,
+                Category = pd.Product.Category.CategoryName,
+                Price = pd.Product.Price,
+                DiscountedPrice = pd.Discount != null ? CalculateDiscountedPrice(pd.Product.Price, pd.Discount.Percentage) : pd.Product.Price,
+                IsActiveDiscount = pd.Discount != null,
+                DiscountStartDate = pd.Discount?.StartDate,
+                DiscountEndDate = pd.Discount?.EndDate
+            }).ToList();
+
+            return Json(new { data = productViewModels });
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetWeeklyShoppingStatus()
         {

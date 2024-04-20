@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240416023455_initial")]
+    [Migration("20240420112403_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -224,6 +224,10 @@ namespace Fyp.DataAccess.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("RFIDTag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderHeaderId");
@@ -390,38 +394,19 @@ namespace Fyp.DataAccess.Migrations
                     b.HasKey("SKUID");
 
                     b.ToTable("SKU");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            SKUID = 1,
-                            Code = "GUC-MC-BLA-S"
-                        },
-                        new
-                        {
-                            SKUID = 2,
-                            Code = "NIK-WC-FLO-M"
-                        },
-                        new
-                        {
-                            SKUID = 3,
-                            Code = "NIK-WC-PRO-M"
-                        },
-                        new
-                        {
-                            SKUID = 4,
-                            Code = "NIK-WC-PRO-XL"
-                        },
-                        new
-                        {
-                            SKUID = 5,
-                            Code = "GUC-MC-BLA-M"
-                        },
-                        new
-                        {
-                            SKUID = 6,
-                            Code = "GUC-MC-BLA-L"
-                        });
+            modelBuilder.Entity("Fyp.Models.SoldRFIDTags", b =>
+                {
+                    b.Property<string>("TagID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SaleDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TagID");
+
+                    b.ToTable("SoldRFIDTags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -736,7 +721,7 @@ namespace Fyp.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("Fyp.Models.SKUDetail", "SKU")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("SKUID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -831,6 +816,11 @@ namespace Fyp.DataAccess.Migrations
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
                 {
                     b.Navigation("RecommendedProducts");
+                });
+
+            modelBuilder.Entity("Fyp.Models.SKUDetail", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

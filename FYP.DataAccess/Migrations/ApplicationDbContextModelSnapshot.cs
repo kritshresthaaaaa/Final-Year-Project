@@ -221,6 +221,10 @@ namespace Fyp.DataAccess.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("RFIDTag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OrderHeaderId");
@@ -334,173 +338,6 @@ namespace Fyp.DataAccess.Migrations
                     b.HasIndex("SKUID");
 
                     b.ToTable("Product");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            ColorCode = "#FF5733",
-                            Description = "Product 1 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "123456",
-                            SKUID = 1,
-                            Sizes = "S"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            ColorCode = "#C70039",
-                            Description = "Product 2 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Florence Tshirt",
-                            Price = 200.0,
-                            RFIDTag = "123457",
-                            SKUID = 2,
-                            Sizes = "M"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            ColorCode = "#C70039",
-                            Description = "Product 3 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 3",
-                            Price = 200.0,
-                            RFIDTag = "123450",
-                            SKUID = 2,
-                            Sizes = "M"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            ColorCode = "#C70039",
-                            Description = "Product 4 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 4",
-                            Price = 200.0,
-                            RFIDTag = "123488",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            ColorCode = "#C70039",
-                            Description = "Product 5 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 5",
-                            Price = 200.0,
-                            RFIDTag = "123498",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            ColorCode = "#C70039",
-                            Description = "Product 6 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 6",
-                            Price = 200.0,
-                            RFIDTag = "123490",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            BrandID = 2,
-                            CategoryID = 2,
-                            ColorCode = "#C70039",
-                            Description = "Product 7 Description",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Product 7",
-                            Price = 200.0,
-                            RFIDTag = "123496",
-                            SKUID = 2,
-                            Sizes = "XL"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            ColorCode = "#C70039",
-                            Description = "black t prodyc 1 ",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "12312312",
-                            SKUID = 1,
-                            Sizes = "S"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            ColorCode = "#C70039",
-                            Description = "black t prodyc 1 ",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "12312412",
-                            SKUID = 1,
-                            Sizes = "S"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            ColorCode = "#C70039",
-                            Description = "black t prodyc 1 ",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "1231241723",
-                            SKUID = 5,
-                            Sizes = "M"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            BrandID = 1,
-                            CategoryID = 1,
-                            ColorCode = "#C70039",
-                            Description = "black t prodyc 1 ",
-                            DiscountedPrice = 0.0,
-                            ImageUrl = "",
-                            Name = "Black Tshirt",
-                            Price = 100.0,
-                            RFIDTag = "1231999",
-                            SKUID = 6,
-                            Sizes = "L"
-                        });
                 });
 
             modelBuilder.Entity("Fyp.Models.ProductRecommendation", b =>
@@ -554,38 +391,19 @@ namespace Fyp.DataAccess.Migrations
                     b.HasKey("SKUID");
 
                     b.ToTable("SKU");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            SKUID = 1,
-                            Code = "GUC-MC-BLA-S"
-                        },
-                        new
-                        {
-                            SKUID = 2,
-                            Code = "NIK-WC-FLO-M"
-                        },
-                        new
-                        {
-                            SKUID = 3,
-                            Code = "NIK-WC-PRO-M"
-                        },
-                        new
-                        {
-                            SKUID = 4,
-                            Code = "NIK-WC-PRO-XL"
-                        },
-                        new
-                        {
-                            SKUID = 5,
-                            Code = "GUC-MC-BLA-M"
-                        },
-                        new
-                        {
-                            SKUID = 6,
-                            Code = "GUC-MC-BLA-L"
-                        });
+            modelBuilder.Entity("Fyp.Models.SoldRFIDTags", b =>
+                {
+                    b.Property<string>("TagID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("SaleDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TagID");
+
+                    b.ToTable("SoldRFIDTags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -900,7 +718,7 @@ namespace Fyp.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("Fyp.Models.SKUDetail", "SKU")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("SKUID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -995,6 +813,11 @@ namespace Fyp.DataAccess.Migrations
             modelBuilder.Entity("Fyp.Models.ProductDetail", b =>
                 {
                     b.Navigation("RecommendedProducts");
+                });
+
+            modelBuilder.Entity("Fyp.Models.SKUDetail", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

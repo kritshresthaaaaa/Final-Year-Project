@@ -291,23 +291,15 @@
                                 <span class="text-sm font-medium">Dashboard</span>
                             </a>
                         </li>
-                  
-
-                        <li>
-                            <a asp-area="Employee" asp-controller="Transaction" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
-                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">  <i class='bx bxs-report'></i></span>
-                                <span class="text-sm font-medium">Transactions</span>
-                            </a>
-                        </li>
 
                         <li class="relative" data-te-dropdown-ref>
                             <a class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer"
                                data-te-dropdown-toggle-ref
-                               data-dropdown-target="brandDropdown">
+                               data-dropdown-target="productDropdown">
                                 <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
-                                    <i class='bx bx-help-circle'></i><!-- You can change the icon to suit brands -->
+                                    <i class="bx bx-shopping-bag"></i>
                                 </span>
-                                <span class="text-sm font-medium">Help</span>
+                                <span class="text-sm font-medium">Products</span>
                                 <span class="ml-2 w-2">
                                     <svg xmlns="http://www.w3.org/2000/svg"
                                          viewBox="0 0 20 20"
@@ -320,14 +312,33 @@
                                 </span>
                             </a>
                         </li>
-                        <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2]" id="brandDropdown">
-                            <a asp-area="Admin" asp-controller="Brand" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                Brand List
+
+
+                        <li class="dropdown commonDropdown hidden flex-col items-center text-sm space-y-2 text-[#f2f2f2] " id="productDropdown">
+                            <a asp-area="Employee" asp-controller="Product" asp-action="Index" class="flex justify-center hover:text-amber-300 cursor-pointer">
+                                Product List
                             </a>
-                            <a asp-area="Admin" asp-controller="Brand" asp-action="Create" class="flex justify-center hover:text-amber-300 cursor-pointer">
-                                Add Brand
+
+                        </li>
+                        <li>
+                            <a asp-area="Employee" asp-controller="Transaction" asp-action="Index" class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white">
+                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">  <i class='bx bxs-report'></i></span>
+                                <span class="text-sm font-medium">Transactions</span>
                             </a>
                         </li>
+
+                        <li class="relative" >
+                            <a href="mailto:np03cs4s220079@heraldcollege.edu.np"
+                               class="flex flex-row items-center h-12 transform hover:translate-x-2 transition-transform ease-in duration-200 text-white hover:text-white cursor-pointer">
+                                <span class="inline-flex items-center justify-center h-12 w-12 text-lg text-white">
+                                    <i class='bx bx-help-circle'></i><!-- You can change the icon to suit brands -->
+                                </span>
+                                <span class="text-sm font-medium">Help</span>
+
+                            </a>
+                        </li>
+
+                
                     </ul>
                 </div>
             </div>

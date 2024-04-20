@@ -20,7 +20,7 @@ function loadDataTable() {
             { "data": "notiHeader", "width": "15%" },
             { "data": "notiBody", "width": "25%" },
             { "data": "isReadSt", "width": "10%" },
-           
+
             {
                 "data": "notiId",
                 "render": function (data, type, row) {
@@ -44,14 +44,14 @@ function loadDataTable() {
 }
 
 $(document).ready(function () {
-    loadDataTable();   
+    loadDataTable();
     $('#tblData tbody').on('click', '.mark-read', function () {
-        var id = $(this).data('id'); 
+        var id = $(this).data('id');
 
         $.ajax({
             url: '/Employee/Notification/SetNotificationRead',
             method: 'POST',
-            data: { id: id }, 
+            data: { id: id },
             success: function (response) {
                 if (response.message == "Already") {
                     dataTable.ajax.reload(null, false);

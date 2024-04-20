@@ -21,7 +21,7 @@ namespace FypWeb.IService
             this.util = new RESTUtil(address, debug);
             this.device = this.util.parseDevice(false);
             this._cancellationTokenSource = new CancellationTokenSource();
-       
+
 
         }
         public async Task RunContinuousRead(long inventoryTime, CancellationToken cancellationToken)
@@ -86,7 +86,7 @@ namespace FypWeb.IService
                         }
                         tagDataList.Clear();
                     }
-                }  
+                }
 
             }
             tcpReader.Shutdown();

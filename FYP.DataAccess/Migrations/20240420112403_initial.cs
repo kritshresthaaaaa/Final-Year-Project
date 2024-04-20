@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Fyp.DataAccess.Migrations
 {
     /// <inheritdoc />
@@ -158,6 +156,18 @@ namespace Fyp.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SKU", x => x.SKUID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SoldRFIDTags",
+                columns: table => new
+                {
+                    TagID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SoldRFIDTags", x => x.TagID);
                 });
 
             migrationBuilder.CreateTable(
@@ -376,7 +386,8 @@ namespace Fyp.DataAccess.Migrations
                     OrderHeaderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false)
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    RFIDTag = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -418,19 +429,6 @@ namespace Fyp.DataAccess.Migrations
                         principalTable: "Product",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "SKU",
-                columns: new[] { "SKUID", "Code" },
-                values: new object[,]
-                {
-                    { 1, "GUC-MC-BLA-S" },
-                    { 2, "NIK-WC-FLO-M" },
-                    { 3, "NIK-WC-PRO-M" },
-                    { 4, "NIK-WC-PRO-XL" },
-                    { 5, "GUC-MC-BLA-M" },
-                    { 6, "GUC-MC-BLA-L" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -558,6 +556,9 @@ namespace Fyp.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Room");
+
+            migrationBuilder.DropTable(
+                name: "SoldRFIDTags");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

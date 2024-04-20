@@ -229,5 +229,6 @@ namespace FypWeb.Areas.Admin.Controllers
         {
             return _context.Brand.Any(e => e.BrandID == id);
         }
+        
     }
 }
