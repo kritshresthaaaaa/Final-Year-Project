@@ -312,6 +312,25 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 objFromDb.LockoutEnd = DateTime.Now.AddYears(100);
             }
+            if (objFromDb.EmployeeRelationId != Guid.Empty)
+            {
+                var customerHandler = await _context.ApplicationUser.FirstOrDefaultAsync(u =>
+      u.EmployeeRelationId == objFromDb.EmployeeRelationId &&
+      u.Email.EndsWith("@customerhandler.com")
+  );
+                if (customerHandler != null)
+                {
+                    if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
+                    {
+                        // User is being locked, we lock the associated Customer-Handler account as well
+                        customerHandler.LockoutEnd = DateTime.Now.AddYears(100);
+                    }
+                    else
+                    {
+                        customerHandler.LockoutEnd = DateTime.Now;
+                    }
+                }
+            }
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Operation Successful" });
         }

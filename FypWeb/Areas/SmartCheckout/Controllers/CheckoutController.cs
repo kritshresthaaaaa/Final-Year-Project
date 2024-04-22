@@ -205,7 +205,12 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                 }
             }
 
-            // Pass subtotal to the view
+            // Floor the values
+            subTotal = Math.Floor(subTotal * 100) / 100;
+            total = Math.Floor(total * 100) / 100;
+            discountedAmt = Math.Floor(discountedAmt * 100) / 100;
+
+            // Pass floored values to the view
             ViewBag.Total = total;
             ViewBag.DiscountedAmt = discountedAmt;
             ViewBag.SubTotal = subTotal;
@@ -431,11 +436,12 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                                 var orderDetail = new OrderDetail
                                 {
                                     Id = Guid.NewGuid(),
-                                    OrderHeaderId = orderHeader.Id,
+                                    OrderHeaderId = orderHeader.Id,                              
+                                    Price = product.OrderTotal,
+                                    RFIDTag=product.ProductRFID,
                                     ProductId = product.ProductId,
                                     Quantity = product.ProductQuantity,
-                                    Price = product.OrderTotal,
-                                    RFIDTag=product.ProductRFID
+                                    ProductName=product.ProductName
                                 };
                                 orderDetailsList.Add(orderDetail);
                                 /*   // Save sold RFID tag for each product
@@ -454,6 +460,7 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                         {
 
                             _context.OrderDetails.AddRange(orderDetailsList);
+
 
                             var email = customerDetails.CustomerEmail;
                             if (email != null)

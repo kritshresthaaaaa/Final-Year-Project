@@ -17,7 +17,7 @@
 
         <div id="bucketItemsSection" class="hidden">
             <div class="bottom mb-1">
-                <h3 class="text-2xl text-center font-semibold">Items in your Bucket <i class='bx bx-cart-alt'></i></h3>
+                <h3 class="text-2xl text-center font-semibold">Items in your Bucket <i class='bx bx-cart-alt bx-tada'></i></h3>
             </div>
             <div class="mx-auto max-w-md px-4 py-2 lg:max-w-7xl lg:px-4 flex-grow">
                 <div id="productList" class="grid grid-cols-1 gap-x-4 gap-y-8 lg:grid-cols-2">
@@ -115,7 +115,7 @@
                                 <img src="${productDetail.imageUrl}" alt="${productDetail.name}" class="object-cover rounded-t-md object-center h-52 w-full group-hover:opacity-75">
                                 <div class="p-4 w-full">
                                     <h3 class="text-base font-semibold text-gray-900">${productDetail.name}</h3>
-                                    <p class="mt-2 text-base  text-gray-900">Price: $${productDetail.price}</p>
+                                    <p class="mt-2 text-base  text-gray-900">Price: Rs.${productDetail.price}</p>
                                     <p class="mt-2 text-base  text-gray-900">Color: <span class="color-box inline-block w-6 h-6 rounded-full" style="background-color: ${productDetail.colorCode};"></span></p>
                                     <p class="mt-2 text-base  text-gray-900">Sizes: ${sizes.join(', ')}</p>
                                 </div>
@@ -175,10 +175,13 @@
                             <h2 class="text-2xl font-bold text-gray-800 mb-2">${productDetails.name}</h2>
                             <p class="text-gray-600 text-sm mb-4">${productDetails.description}</p>
                             <div class="flex mb-2">
-                                <div class="mr-4">
-                                    <span class="font-bold text-gray-700">Price:</span>
-                                    <span class="text-gray-600">Rs. ${productDetails.price}</span>
-                                </div>
+                                      <div class="mr-4">
+                                <span class="font-bold text-gray-700">Price:</span>
+                                ${productDetails.discountedPrice ?
+                    `<span class="text-gray-600 line-through">Rs. ${productDetails.price}</span>
+                                     <span class="text-gray-600 font-bold">Rs. ${productDetails.discountedPrice}</span>` :
+                    `<span class="text-gray-600">Rs. ${productDetails.price}</span>`}
+                            </div>
                                 <div>
                                     <span class="font-bold text-gray-700">Availability:</span>
                                     <span class="text-gray-600">${sizes ? 'In Stock' : 'Out of Stock'}</span>

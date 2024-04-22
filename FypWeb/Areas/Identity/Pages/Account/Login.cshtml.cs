@@ -121,10 +121,12 @@ namespace FypWeb.Areas.Identity.Pages.Account
                     // Redirect based on roles
                     if (roles.Contains("Admin"))
                     {
+                     
                         return LocalRedirect(Url.Content("~/"));
                     }
                     else if (roles.Contains("Employee"))
                     {
+                     
                         return LocalRedirect(Url.Content("~/"));
                     }
                     else if (roles.Contains("Customer-Handler") && !string.IsNullOrEmpty(selectedService))
@@ -132,18 +134,22 @@ namespace FypWeb.Areas.Identity.Pages.Account
                         switch (selectedService)
                         {
                             case "SmartFittingRoom":
+                         
                                 returnUrl = "/";
                                 break;
                             case "SmartCheckout":
+                          
                                 returnUrl = "/";
                                 break;
                             case "Recommendation":
+                            
                                 returnUrl = "/";
                                 break;
                             default:
                                 // Keep the default returnUrl if no service selected or for other roles
                                 break;
                         }
+
                         return LocalRedirect(returnUrl);
                   
                     }
@@ -196,10 +202,12 @@ namespace FypWeb.Areas.Identity.Pages.Account
 
                         if (roles.Contains("Admin"))
                         {
+                            TempData["Alert"]="Login Successful";
                             returnUrl = "/Admin/Home/Index";
                         }
                         else if (roles.Contains("Employee"))
                         {
+                            TempData["Alert"] = "Login Successful";
                             returnUrl = "/Employee/Home/Index"; // Update this as needed
                         }
                         else if (roles.Contains("Customer-Handler") && !string.IsNullOrEmpty(selectedService) )
@@ -207,12 +215,15 @@ namespace FypWeb.Areas.Identity.Pages.Account
                             switch (selectedService)
                             {
                                 case "SmartFittingRoom":
+                                    TempData["Alert"] = "Login Successful";
                                     returnUrl = "/SmartFittingRoom/Home/Index";
                                     break;
                                 case "SmartCheckout":
+                                    TempData["Alert"] = "Login Successful";
                                     returnUrl = "/SmartCheckout/Checkout/Index";
                                     break;
                                 case "Recommendation":
+                                    TempData["Alert"] = "Login Successful";
                                     returnUrl = "/Recommendation/Home/Index";
                                     break;
                                 default:
@@ -223,6 +234,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                         }
                         else if (roles.Contains("Fitting Room Employee"))
                         {
+                            TempData["Alert"] = "Login Successful";
                             returnUrl = "/FittingRoomEmployee/Home/AllNotifications"; // Update this as needed
                         }
                     }

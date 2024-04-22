@@ -177,6 +177,7 @@ namespace FypWeb.Areas.Admin.Controllers
                                               p.ImageUrl,
                                               p.Price,
                                               p.SKU.Code,
+                                              p.ColorCode,
                                               IsRecommended = recommendedProductIds.Contains(p.Id)
                                           })
                                           .ToListAsync();
@@ -201,6 +202,7 @@ namespace FypWeb.Areas.Admin.Controllers
                                               p.Name,
                                               p.ImageUrl,
                                               p.Price,
+                                              p.ColorCode,
                                               IsRecommended = recommendedProductIds.Contains(p.Id) // Determine if the product is recommended
                                           })
                                           .ToListAsync();
@@ -221,6 +223,7 @@ namespace FypWeb.Areas.Admin.Controllers
                         p.Name,
                         p.Category.CategoryName,
                         p.Brand.BrandName,
+                        p.ColorCode,
 
                     }).ToList()
 

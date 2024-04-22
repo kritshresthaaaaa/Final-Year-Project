@@ -161,8 +161,53 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
         }
 
 
+        /*
+                [HttpGet]
+                public async Task<IActionResult> GetProductDetailsWithAllSizes(string baseSku)
+                {
+                    // Fetch all products that have SKUs starting with the provided base SKU.
+                    var productsWithBaseSku = await _context.Product
+                        .Include(p => p.SKU)
+                        .Where(p => p.SKU.Code.StartsWith(baseSku))
+                        .ToListAsync();
 
-        [HttpGet]
+                    // Assuming the size is the last segment after the last '-' in the SKU code
+                    // and that the rest of the SKU code before the last '-' is the base SKU.
+                    var sizes = productsWithBaseSku
+                        .Select(p => p.SKU.Code.Split('-').Last())
+                        .Distinct()
+                        .ToList();
+
+                    // Assuming we want to return the first product's details as a representative for the base SKU
+                    var representativeProduct = productsWithBaseSku.FirstOrDefault();
+
+                    if (representativeProduct == null)
+                    {
+                        return NotFound("Product not found.");
+                    }
+
+                    var responseData = new
+                    {
+                        BaseSKU = baseSku,
+                        Product = new
+                        {
+                            representativeProduct.Id,
+                            representativeProduct.Name,
+                            representativeProduct.Description,
+                            representativeProduct.Price,
+                            representativeProduct.DiscountedPrice,
+                            representativeProduct.BrandID,
+                            representativeProduct.CategoryID,
+                            SKUCode = representativeProduct.SKU.Code,
+                            representativeProduct.ImageUrl,
+                            representativeProduct.ColorCode
+                        },
+                        Sizes = sizes // List of all sizes for the base SKU
+                    };
+
+                    return Json(new { data = responseData });
+                }*/
+
         public async Task<IActionResult> GetProductDetailsWithAllSizes(string baseSku)
         {
             // Fetch all products that have SKUs starting with the provided base SKU.
@@ -171,14 +216,18 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
                 .Where(p => p.SKU.Code.StartsWith(baseSku))
                 .ToListAsync();
 
-            // Assuming the size is the last segment after the last '-' in the SKU code
-            // and that the rest of the SKU code before the last '-' is the base SKU.
+            if (!productsWithBaseSku.Any())
+            {
+                return NotFound("No products found for the provided base SKU.");
+            }
+
+            // Assuming the size is the last segment after the last '-' in the SKU code.
             var sizes = productsWithBaseSku
                 .Select(p => p.SKU.Code.Split('-').Last())
                 .Distinct()
                 .ToList();
 
-            // Assuming we want to return the first product's details as a representative for the base SKU
+            // Assuming we want to return the first product's details as a representative for the base SKU.
             var representativeProduct = productsWithBaseSku.FirstOrDefault();
 
             if (representativeProduct == null)
@@ -186,27 +235,47 @@ namespace FypWeb.Areas.SmartFittingRoom.Controllers
                 return NotFound("Product not found.");
             }
 
+            // Fetch today's date for discount validation
+            var today = DateTime.Today;
+
+            // Query for applicable discount for the representative product
+            var discount = _context.Discount
+                .Where(d => d.IsActive && today >= d.StartDate && today <= d.EndDate &&
+                            (d.CategoryID == null || d.CategoryID == representativeProduct.CategoryID) &&
+                            (d.BrandID == null || d.BrandID == representativeProduct.BrandID))
+                .OrderByDescending(d => d.Percentage)
+                .FirstOrDefault();
+
+            // Calculate the discounted price for the representative product
+            var discountedPrice = representativeProduct.DiscountedPrice;
+            if (discount != null)
+            {
+                discountedPrice = representativeProduct.Price * (1 - (double)discount.Percentage / 100.0);
+            }
+
             var responseData = new
             {
                 BaseSKU = baseSku,
                 Product = new
                 {
-                    representativeProduct.Id,
-                    representativeProduct.Name,
-                    representativeProduct.Description,
-                    representativeProduct.Price,
-                    representativeProduct.DiscountedPrice,
-                    representativeProduct.BrandID,
-                    representativeProduct.CategoryID,
+                    Id = representativeProduct.Id,
+                    Name = representativeProduct.Name,
+                    Description = representativeProduct.Description,
+                    Price = representativeProduct.Price,
+                    DiscountedPrice = discountedPrice,
+                    BrandID = representativeProduct.BrandID,
+                    CategoryID = representativeProduct.CategoryID,
                     SKUCode = representativeProduct.SKU.Code,
-                    representativeProduct.ImageUrl,
-                    representativeProduct.ColorCode
+                    ImageUrl = representativeProduct.ImageUrl,
+                    ColorCode = representativeProduct.ColorCode
+                    // Add more product details as needed
                 },
                 Sizes = sizes // List of all sizes for the base SKU
             };
 
             return Json(new { data = responseData });
         }
+
         [HttpGet]
         public async Task<IActionResult> IsNotificationRead(int notificationId)
         {

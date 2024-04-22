@@ -10,7 +10,15 @@
         var isCustomerHandler = roles.Contains("Customer-Handler");
 
         <li class="flex justify-center items-center gap-2">
-            <i class='bx bx-user text-xl text-white'></i>
+            @if (!string.IsNullOrEmpty(user.ImageUrl))
+            {
+                <img src="@user.ImageUrl" alt="Profile Image" class="w-8 h-8 rounded-full border-2 border-white">
+            }
+            else
+            {
+                      <i class='bx bx-user text-xl text-white'></i>
+            }
+      
             @if (!isCustomerHandler)
             {
                 <a id="manage" class="text-white cursor-pointer" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>

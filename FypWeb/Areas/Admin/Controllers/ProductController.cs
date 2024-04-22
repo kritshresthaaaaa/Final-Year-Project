@@ -175,7 +175,7 @@ namespace FypWeb.Areas.Admin.Controllers
         // GET: Product/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Product == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -184,16 +184,18 @@ namespace FypWeb.Areas.Admin.Controllers
             var productDetail = await _context.Product
                 .Include(p => p.SKU)
                 .ThenInclude(sku => sku.Products)
-                .Include(p => p.Brand) // Include the Brand
-                .Include(p => p.Category) // Include the Category
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
                 .Select(p => new
                 {
                     Product = p,
                     Discount = _context.Discount
                         .Where(d => d.IsActive && d.StartDate <= today && today <= d.EndDate &&
+                                    ((d.CategoryID == null && d.BrandID == null && d.SKUID == null) || // Discount applies to all products
                                     (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
-                                    (d.BrandID == null || d.BrandID == p.BrandID))
-                        .OrderByDescending(d => d.Percentage)
+                                    (d.BrandID == null || d.BrandID == p.BrandID) &&
+                                    (d.SKUID == null || d.SKUID == p.SKUID)))
+                        .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply
                         .FirstOrDefault()
                 })
                 .FirstOrDefaultAsync(m => m.Product.Id == id);
@@ -211,11 +213,12 @@ namespace FypWeb.Areas.Admin.Controllers
                 productDetail.Product.Price;
             ViewBag.IsActiveDiscount = productDetail.Discount != null;
             ViewBag.DiscountPercentage = productDetail.Discount?.Percentage;
-            ViewBag.BrandName = productDetail.Product.Brand?.BrandName; // Assuming Brand has a Name property
-            ViewBag.CategoryName = productDetail.Product.Category?.CategoryName; // Assuming Category has a Name property
+            ViewBag.BrandName = productDetail.Product.Brand?.BrandName;
+            ViewBag.CategoryName = productDetail.Product.Category?.CategoryName;
 
             return View(productDetail.Product);
         }
+
 
         private double CalculateDiscountedPrice(double originalPrice, decimal discountPercentage)
         {
@@ -402,13 +405,16 @@ namespace FypWeb.Areas.Admin.Controllers
             var today = DateTime.Today;
             var productsWithDiscounts = await _context.Product
                 .Include(p => p.Category)
+                .Include(p => p.SKU) // Include SKU information
                 .Select(p => new
                 {
                     Product = p,
                     Discount = _context.Discount
                         .Where(d => d.IsActive && d.StartDate <= today && today <= d.EndDate &&
+                                    ((d.CategoryID == null && d.BrandID == null && d.SKUID == null) || // Discount applies to all products
                                     (d.CategoryID == null || d.CategoryID == p.CategoryID) &&
-                                    (d.BrandID == null || d.BrandID == p.BrandID))
+                                    (d.BrandID == null || d.BrandID == p.BrandID) &&
+                                    (d.SKUID == null || d.SKUID == p.SKUID)))
                         .OrderByDescending(d => d.Percentage) // Assuming you want the highest discount if multiple apply
                         .FirstOrDefault()
                 })
@@ -419,6 +425,7 @@ namespace FypWeb.Areas.Admin.Controllers
                 Id = pd.Product.Id,
                 Name = pd.Product.Name,
                 Category = pd.Product.Category.CategoryName,
+                SKU = pd.Product.SKU != null ? pd.Product.SKU.Code : "", // SKU code
                 Price = pd.Product.Price,
                 DiscountedPrice = pd.Discount != null ? CalculateDiscountedPrice(pd.Product.Price, pd.Discount.Percentage) : pd.Product.Price,
                 IsActiveDiscount = pd.Discount != null,
@@ -428,6 +435,7 @@ namespace FypWeb.Areas.Admin.Controllers
 
             return Json(new { data = productViewModels });
         }
+
 
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)

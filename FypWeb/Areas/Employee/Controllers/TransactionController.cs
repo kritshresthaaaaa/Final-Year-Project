@@ -23,13 +23,13 @@ namespace FypWeb.Areas.Employee.Controllers
         {
             return View();
         }
-  
+
         public async Task<IActionResult> Details(Guid id)
         {
             // Fetch OrderDetails related to the given OrderHeaderId
             var orderDetailsList = await _context.OrderDetails
                 .Where(od => od.OrderHeaderId == id)
-                .Include(od => od.Product) // Assuming you still want to include Product details
+    
                 .ToListAsync();
 
             if (!orderDetailsList.Any())
@@ -44,8 +44,7 @@ namespace FypWeb.Areas.Employee.Controllers
                 return NotFound("Order not found.");
             }
 
-            // Assuming you want to display both OrderHeader and its related OrderDetails
-            // You might need a ViewModel to combine these if they're going to be displayed together
+            // Create an instance of the OrderViewModel and populate it with the fetched data
             var viewModel = new OrderViewModel
             {
                 OrderHeader = orderHeader,
@@ -54,6 +53,7 @@ namespace FypWeb.Areas.Employee.Controllers
 
             return View(viewModel);
         }
+
 
 
         #region API CALLS
@@ -66,7 +66,7 @@ namespace FypWeb.Areas.Employee.Controllers
             var query = from orderHeader in _context.OrderHeaders
                         where orderHeader.ApplicationUserId == currentUserId
                         join orderDetail in _context.OrderDetails on orderHeader.Id equals orderDetail.OrderHeaderId
-                        join product in _context.Product on orderDetail.ProductId equals product.Id
+                    
                         select new
                         {
                             orderHeader.Id,
@@ -75,7 +75,7 @@ namespace FypWeb.Areas.Employee.Controllers
                             orderHeader.CustomerPhone,
                             orderHeader.OrderDate,
                             orderHeader.OrderTotal,
-                            Detail = new { orderDetail.ProductId, ProductName = product.Name, orderDetail.Quantity, orderDetail.Price }
+                            Detail = new { orderDetail.ProductId, orderDetail.ProductName, orderDetail.Quantity, orderDetail.Price }
                         };
 
             var rawData = await query.ToListAsync();

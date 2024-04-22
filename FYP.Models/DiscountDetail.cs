@@ -16,6 +16,7 @@ namespace Fyp.Models
 
         [Required]
         [Range(0.01, 100.00, ErrorMessage = "Discount percentage must be between 0.01 and 100.00")]
+        [Display(Name = "Discount Percentage")]
         public decimal Percentage { get; set; }
 
  
@@ -25,6 +26,7 @@ namespace Fyp.Models
         public DateTime StartDate { get; set; }
 
         [Required]
+        [Display(Name = "Discount End Date")]
         public DateTime EndDate { get; set; }
 
         [Required]

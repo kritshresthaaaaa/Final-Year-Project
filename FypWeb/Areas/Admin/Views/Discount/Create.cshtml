@@ -43,7 +43,7 @@
         </div>
         <div class="flex flex-col gap-2">
             <label for="DiscountPercentage">Discount Percentage</label>
-            <input asp-for="Discount.Percentage" type="number"  id="DiscountPercentage" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
+            <input asp-for="Discount.Percentage" type="number" placeholder="Enter the discount percentage" id="DiscountPercentage" class="border  h-8 px-2 py-4 rounded-md focus:outline-blue-200  rounded-md" />
             <span class="text-red-600" asp-validation-for="Discount.Percentage"></span>
         </div>
  
@@ -73,6 +73,12 @@
       
 
         }
+        @if (ViewBag.Error != null)
+        {
+            <div class="flex justify-center">
+                <span class="text-red-600">@ViewBag.Error</span>
+            </div>
+        }
         <div class="flex justify-center">
             <button type="submit" class="bg-[#7258DB] text-white px-4 py-2 rounded-md">Create Discount</button>
         </div>
@@ -85,6 +91,8 @@
         window.onload = function () {
             var today = new Date().toISOString().split('T')[0];
             document.getElementById('discountStartDate').value = today;
+            // Set default end date value to today
+            document.getElementById('DiscountEndDate').value = today;
         };
         document.addEventListener('DOMContentLoaded', function () {
             var discountForSelect = document.getElementById('DiscountFor');

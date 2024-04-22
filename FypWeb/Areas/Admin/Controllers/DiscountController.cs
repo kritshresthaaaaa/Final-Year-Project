@@ -2,6 +2,7 @@
 using Fyp.Models;
 using Fyp.Models.ViewModels;
 using Fyp.Utility;
+using FypWeb.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,10 +15,12 @@ namespace FypWeb.Areas.Admin.Controllers
     public class DiscountController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public DiscountController(ApplicationDbContext context)
+        private readonly IDiscountService _discountService;
+        public DiscountController(ApplicationDbContext context, IDiscountService discountService)
         {
 
             _db = context;
+            _discountService = discountService;
         }
         public IActionResult Index()
         {
@@ -146,7 +149,7 @@ namespace FypWeb.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(DiscountVM model)
         {
-
+            var today = DateTime.Today;
             model.CategoryList = _db.Category.Select(i => new SelectListItem
             {
                 Text = i.CategoryName,
@@ -168,13 +171,19 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 return View(model);
             }
+            // Check if the start date is equal to the end date
+            if (today == model.Discount.EndDate.Date)
+            {
+                ViewBag.Error = "The start date and end date cannot be the same.";
 
+                return View(model);
+            }
             bool existsOverlap = await _db.Discount.AnyAsync(d =>
          d.IsActive &&
          ((model.SelectedCategoryId.HasValue && d.CategoryID == model.SelectedCategoryId) ||
           (model.SelectedBrandId.HasValue && d.BrandID == model.SelectedBrandId) ||
           (model.SelectedSKUID.HasValue && d.SKUID == model.SelectedSKUID)) && // Check for SKU overlap
-         (d.StartDate <= model.Discount.EndDate && d.EndDate >= model.Discount.StartDate));
+         (d.StartDate < model.Discount.EndDate && d.EndDate > model.Discount.StartDate));
             if (existsOverlap)
             {
                 ViewBag.ErrorMessage = "An overlapping discount for the selected category/brand and date range already exists.";
@@ -186,7 +195,7 @@ namespace FypWeb.Areas.Admin.Controllers
             {
                 Name = model.Discount.Name,
                 Percentage = model.Discount.Percentage,
-                StartDate = DateTime.Today,
+                StartDate = today,
                 EndDate = model.Discount.EndDate,
                 IsActive = model.Discount.IsActive,
                 CategoryID = model.SelectedCategoryId,
@@ -209,13 +218,17 @@ namespace FypWeb.Areas.Admin.Controllers
             }
             else if (model.SelectedSKUID.HasValue)
             {
+                // Only update products with the specific SKUID
                 productsToUpdate = await _db.Product.Where(p => p.SKUID == model.SelectedSKUID).ToListAsync();
             }
-            
-            // Calculate and set the discounted price
+
             foreach (var product in productsToUpdate)
-            {          
-                product.DiscountedPrice = product.Price * (1 - (double)model.Discount.Percentage / 100);
+            {
+                if (product.SKUID == model.SelectedSKUID) // Ensure only products with the specific SKUID are affected
+                {
+                    double discountedPrice = product.Price * (1 - (double)model.Discount.Percentage / 100);
+                    product.DiscountedPrice = Math.Floor(discountedPrice * 100) / 100; // Floor the number to two decimal places without rounding up
+                }
             }
 
 
@@ -231,35 +244,46 @@ namespace FypWeb.Areas.Admin.Controllers
             }
         }
         #region API CALLS
+        /*   [HttpPost]
+           public async Task<IActionResult> UpdateExpiredDiscounts()
+           {
+               var today = DateTime.Today;
+
+               // Query to find discounts that have expired but are still marked as active.
+               var expiredDiscounts = await _db.Discount
+                   .Where(d => d.EndDate < today && d.IsActive)
+                   .ToListAsync();
+
+               foreach (var discount in expiredDiscounts)
+               {
+                   discount.IsActive = false;
+               }
+
+               if (expiredDiscounts.Any())
+               {
+                   _db.Discount.UpdateRange(expiredDiscounts);
+                   await _db.SaveChangesAsync();
+               }
+
+               return Ok(new { message = "Expired discounts updated successfully." });
+           }*/
         [HttpPost]
         public async Task<IActionResult> UpdateExpiredDiscounts()
         {
-            var today = DateTime.Today;
-
-            // Query to find discounts that have expired but are still marked as active.
-            var expiredDiscounts = await _db.Discount
-                .Where(d => d.EndDate < today && d.IsActive)
-                .ToListAsync();
-
-            foreach (var discount in expiredDiscounts)
+            try
             {
-                discount.IsActive = false;
+                await _discountService.UpdateExpiredDiscountsAsync();
+                return Ok(new { message = "Expired discounts updated successfully." });
             }
-
-            if (expiredDiscounts.Any())
+            catch (Exception ex)
             {
-                _db.Discount.UpdateRange(expiredDiscounts);
-                await _db.SaveChangesAsync();
+                // Log the exception
+                return StatusCode(500, "An error occurred while updating expired discounts.");
             }
-
-            return Ok(new { message = "Expired discounts updated successfully." });
         }
-
-
         [HttpGet]
         public async Task<IActionResult> GetAllDiscounts()
         {
-            await UpdateExpiredDiscounts();
             var today = DateTime.Today;
 
             var discounts = await _db.Discount

@@ -18,6 +18,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
         /// </summary>
         public void OnGet()
         {
+            TempData["Loginfo"]= "You do not have permission to access this page.";
         }
     }
 }

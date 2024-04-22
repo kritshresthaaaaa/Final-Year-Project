@@ -15,7 +15,13 @@ function loadDataTable() {
             { "data": "categoryName", "width": "15%" },
             { "data": "brandName", "width": "10%" },
             { "data": "size", "width": "10%" },
-            { "data": "price", "width": "15%" },
+            {
+                "data": "price",
+                "width": "15%",
+                "render": function (data, type, row) {
+                    return 'Rs. ' + data; // Concatenate "Rs. " with the price data
+                }
+            },
             { "data": "stock", "width": "10%" },
             {
                 "data": "stockStatus", // Use the stockStatus field from your API

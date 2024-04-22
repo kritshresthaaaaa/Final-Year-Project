@@ -20,9 +20,7 @@ namespace Fyp.Models
         public OrderHeader OrderHeader { get; set; }
         [Required]
         public int ProductId { get; set; }
-        [ForeignKey("ProductId")]
-        [ValidateNever]
-        public ProductDetail Product { get; set; }
+        public string ProductName { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; } 
         public string RFIDTag { get; set; }

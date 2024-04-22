@@ -1,46 +1,49 @@
 ﻿@model OrderViewModel
+<section class="ml-[12rem]">
 
-<div class="max-w-4xl mx-auto mt-10">
-    <h2 class="text-3xl font-semibold text-gray-800 mb-6">Order Details</h2>
-    <button onclick="printOrderDetails()" class="bg-blue-500 mb-2 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Print Details
-    </button>
-    <div class="bg-white rounded-md border mb-8 p-6 divide-y divide-gray-200 print-container">
-        <div class="pb-6">
-            <h4 class="text-2xl font-semibold text-gray-700 mb-4">Customer Information</h4>
-            <p class="text-gray-600"><span class="font-medium">Name:</span> @Model.OrderHeader.CustomerName</p>
-            <p class="text-gray-600"><span class="font-medium">Email:</span> @Model.OrderHeader.CustomerEmail</p>
-            <p class="text-gray-600"><span class="font-medium">Phone:</span> @Model.OrderHeader.CustomerPhone</p>
-            <p class="text-gray-600"><span class="font-medium">Order Date:</span> @Model.OrderHeader.OrderDate.ToString("MMMM dd, yyyy")</p>
-            <p class="text-gray-600"><span class="font-medium">Order Total:</span> Rs. @Model.OrderHeader.OrderTotal.ToString("N2")</p>
-        </div>
+    <div class="max-w-4xl p-2  mx-auto">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Order Details</h2>
+        <button onclick="printOrderDetails()" class="bg-blue-500 mb-2 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Print Details
+        </button>
+        <div class="bg-white rounded-md border mb-8 p-6 divide-y divide-gray-200 print-container">
+            <div class="pb-6">
+                <h4 class="text-2xl font-semibold text-gray-700 mb-4">Customer Information</h4>
+                <p class="text-gray-600"><span class="font-medium">Name:</span> @Model.OrderHeader.CustomerName</p>
+                <p class="text-gray-600"><span class="font-medium">Email:</span> @Model.OrderHeader.CustomerEmail</p>
+                <p class="text-gray-600"><span class="font-medium">Phone:</span> @Model.OrderHeader.CustomerPhone</p>
+                <p class="text-gray-600"><span class="font-medium">Order Date:</span> @Model.OrderHeader.OrderDate.ToString("MMMM dd, yyyy")</p>
+                <p class="text-gray-600"><span class="font-medium">Order Total:</span> Rs. @Model.OrderHeader.OrderTotal.ToString("N2")</p>
+            </div>
 
-        <div class="pt-6">
-            <h4 class="text-2xl font-semibold text-gray-700 mb-4">Order Items</h4>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="text-xs uppercase bg-gray-50 text-gray-700">
-                        <tr>
-                            <th scope="col" class="px-6 py-3"><p class="flex justify-center items-center">Product Name</p></th>
-                            <th scope="col" class="px-6 py-3"><p class="flex justify-center items-center">Quantity</p></th>
-                            <th scope="col" class="px-6 py-3"><p class="flex justify-center items-center">Price</p></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @foreach (var item in Model.OrderDetails)
-                        {
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-sm text-gray-600"><p class="flex justify-center items-center">@Html.DisplayFor(modelItem => item.Product.Name)</p></td>
-                                <td class="px-6 py-4 text-sm text-gray-600"><p class="flex justify-center items-center">@Html.DisplayFor(modelItem => item.Quantity)</p></td>
-                                <td class="px-6 py-4 text-sm text-gray-600"><p class="flex justify-center items-center">Rs. @Html.DisplayFor(modelItem => item.Price)</p></td>
+            <div class="pt-6">
+                <h4 class="text-2xl font-semibold text-gray-700 mb-4">Order Items</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="text-xs uppercase bg-gray-50 text-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3"><p class="flex justify-center items-center">Product Name</p></th>
+                                <th scope="col" class="px-6 py-3"><p class="flex justify-center items-center">Quantity</p></th>
+                                <th scope="col" class="px-6 py-3"><p class="flex justify-center items-center">Price</p></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm text-gray-600"><p class="flex justify-center items-center">@Html.DisplayFor(modelItem => item.ProductName)</p></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><p class="flex justify-center items-center">@Html.DisplayFor(modelItem => item.Quantity)</p></td>
+                                    <td class="px-6 py-4 text-sm text-gray-600"><p class="flex justify-center items-center">Rs. @Html.DisplayFor(modelItem => item.Price)</p></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
 @section Scripts {
     <script src="~/js/print.js"></script>
 }

@@ -19,6 +19,7 @@ builder.Services.AddControllersWithViews()
         .AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+builder.Services.AddHostedService<DiscountExpirationHostedService>();
 /*builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
@@ -50,7 +51,7 @@ builder.Services.AddSession(options =>
 /*builder.Services.AddScoped<IEmailSender, EmailSender>();*/
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<INotiService, NotiService>();
-
+builder.Services.AddScoped<IDiscountService, DiscountService>();
 
 
 var app = builder.Build();
