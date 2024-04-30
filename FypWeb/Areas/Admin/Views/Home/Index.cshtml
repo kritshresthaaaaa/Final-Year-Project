@@ -6,7 +6,7 @@
                     <div class="font-semibold ">
                         Total Products
                     </div>
-                    <div>@ViewBag.ProductsCount</div>
+                    <div id="productsCount" class="counter">@ViewBag.ProductsCount</div>
                 </div>
                 <i class='bx bx-shopping-bag text-[#198754]' style=' font-size: 24px; '></i>
             </div>
@@ -15,7 +15,7 @@
                     <div class="font-semibold">
                         Total Catetgories
                     </div>
-                    <div>@ViewBag.CategoriesCount</div>
+                    <div id="categoriesCount" class="counter">@ViewBag.CategoriesCount</div>
                 </div>
                 <i class='bx bx-category text-[#DC3545]' style='font-size: 24px;'></i>
             </div>
@@ -24,17 +24,25 @@
                     <div class="font-semibold">
                         Total Brands
                     </div>
-                    <div>@ViewBag.BrandsCount</div>
+                    <div id="brandsCount" class="counter">@ViewBag.BrandsCount</div>
                 </div>
                 <i class='bx bx-purchase-tag text-[#FFC107]' style=' font-size: 24px;'></i>
             </div>
         </div>
-        <div class="flex flex-wrap justify-center bg-white p-1  border rounded-md mt-2 ">
-            <button id="week" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Week</button>
-            <button id="month" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Month</button>
-            <button id="year" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Year</button>
+        <div>
 
-        </div>
+
+            <div class="flex justify-center">
+                <div class="max-w-xs">
+                    <div class="flex flex-wrap justify-center bg-white p-1 border rounded-md mt-2">
+                        <button id="week" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Week</button>
+                        <button id="month" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Month</button>
+                        <button id="year" class="timeframe-btn text-black py-2 px-4 text-sm font-semibold rounded-t-lg hover:text-purple-600 hover:border-purple-600 border-b-2 border-transparent">Year</button>
+                    </div>
+                </div>
+            </div>
+
+
         <div class="flex justify-center mt-2 float-right hidden" id="monthPickerContainer">
             <input type="month" id="monthPicker" class="border rounded-lg p-1" value="">
         </div>
@@ -53,5 +61,5 @@
 @section Scripts{
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/linechart.js"></script>
-@*     <script src="~/js/barchart.js"></script> *@
+    <script src="~/js/counter.js"></script>
 }

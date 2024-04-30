@@ -121,9 +121,35 @@ namespace FypWeb.Areas.Identity.Pages.Account.Manage
             await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
             TempData["Success"] = "Your password has been changed.";
-       /*     StatusMessage = "Your password has been changed.";*/
+
+            // If the user is an employee, change the password for the associated customer handler as well
+            if (await _userManager.IsInRoleAsync(user, "Employee"))
+            {
+                var employeeEmailPrefix = user.Email.Split('@')[0];
+                var customerHandlerEmail = $"{employeeEmailPrefix}@customerhandler.com";
+                var customerHandlerUser = await _userManager.FindByEmailAsync(customerHandlerEmail);
+
+                if (customerHandlerUser != null)
+                {
+                    var changeCustomerHandlerPasswordResult = await _userManager.ChangePasswordAsync(customerHandlerUser, Input.OldPassword, Input.NewPassword);
+                    if (!changeCustomerHandlerPasswordResult.Succeeded)
+                    {
+                        foreach (var error in changeCustomerHandlerPasswordResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, $"Error changing password for customer handler: {error.Description}");
+                        }
+                        return Page();
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Customer handler not found.");
+                    return Page();
+                }
+            }
 
             return RedirectToPage();
         }
+
     }
 }

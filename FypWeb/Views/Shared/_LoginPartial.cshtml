@@ -21,11 +21,12 @@
       
             @if (!isCustomerHandler)
             {
-                <a id="manage" class="text-white cursor-pointer" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <a id="manage" class="text-white cursor-pointer" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello, @user.FullName !</a>
             }
             else
             {
-                <span class="text-white">Hello @UserManager.GetUserName(User)!</span>
+                @* <span class="text-white">Hello @UserManager.GetUserName(User)!</span> *@
+                <span class="text-white">Hello @user.FullName</span> 
             }
         </li>
         <li class="flex justify-center">
