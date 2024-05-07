@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Fyp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240422150000_changesinOrderDetails")]
-    partial class changesinOrderDetails
+    [Migration("20240507125349_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -732,7 +732,7 @@ namespace Fyp.DataAccess.Migrations
                     b.HasOne("Fyp.Models.ProductDetail", "Product")
                         .WithMany("RecommendedProducts")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Fyp.Models.ProductDetail", "RecommendedProduct")

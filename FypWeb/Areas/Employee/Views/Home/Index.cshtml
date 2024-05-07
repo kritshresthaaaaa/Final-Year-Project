@@ -45,10 +45,10 @@
                 <input type="year" id="yearPicker" class="border rounded-lg p-1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="4">
             </div>
             <div>
-                <canvas id="myChart" width="250" height="100"></canvas>
+                <canvas id="myChart"  height="120"></canvas>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
         </div>
     </div>
@@ -197,6 +197,13 @@
                             const dayIndex = dayOfWeekToIndex[item.dayOfWeek];
                             if (dayIndex !== undefined) { // Check if the dayOfWeek from data is valid
                                 salesDataForWeek[dayIndex] = item.totalSales;
+                            }
+                        });
+
+                        // Fill in missing days with zero sales
+                        Object.values(dayOfWeekToIndex).forEach(index => {
+                            if (salesDataForWeek[index] === undefined) {
+                                salesDataForWeek[index] = 0;
                             }
                         });
 

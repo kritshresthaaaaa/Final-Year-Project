@@ -15,11 +15,12 @@ namespace Fyp.Models
         [Required]
         [Display(Name = "Full Name")]
         public string FullName { get; set; }
-    
+
 
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Date of Birth")]
+        [MinimumAge(18, ErrorMessage = "You must be at least 18 years old.")]
         public DateTime DOB { get; set; }
         [Required]
         [Display(Name = "Gender")]

@@ -79,11 +79,11 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
             }
             var today = DateTime.Today; // Today's date for discount validation
 
-            // Fetch products matching any of the RFIDs in the list
             var products = _context.Product
-                                   .Where(p => rfids.Contains(p.RFIDTag))
-                                   .Include(p => p.Brand) // Include brand details
-                                   .ToList();
+                .Where(p => rfids.Contains(p.RFIDTag))
+                .Include(p => p.Brand)
+                .ToList();
+
 
             if (!products.Any())
             {
@@ -102,7 +102,6 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
 
                 // Determine the price to use
                 double priceToUse = discount != null ? product.Price * (1 - (double)discount.Percentage / 100.0) : product.Price;
-
                 return new
                 {
                     ProductId = product.Id,
@@ -122,6 +121,7 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
 
             return Json(new { success = true, products = shoppingCartModels });
         }
+
         [HttpPost]
         public async Task<IActionResult> OrderConfirmation([FromBody] OrderConfirmationVM model)
         {
@@ -436,26 +436,20 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                                 var orderDetail = new OrderDetail
                                 {
                                     Id = Guid.NewGuid(),
-                                    OrderHeaderId = orderHeader.Id,                              
+                                    OrderHeaderId = orderHeader.Id,
                                     Price = product.OrderTotal,
-                                    RFIDTag=product.ProductRFID,
+                                    RFIDTag = product.ProductRFID,
                                     ProductId = product.ProductId,
                                     Quantity = product.ProductQuantity,
-                                    ProductName=product.ProductName
+                                    ProductName = product.ProductName
                                 };
                                 orderDetailsList.Add(orderDetail);
-                                /*   // Save sold RFID tag for each product
-                                   var soldTag = new SoldRFIDTags
-                                   {
-                                       TagID = productEntity.RFIDTag,
-                                       SaleDate = DateTime.Now
-                                   };
-                                   _context.SoldRFIDTags.Add(soldTag);*/
+
 
                             }
                         }
 
-                      
+
                         try
                         {
 
@@ -483,20 +477,52 @@ namespace FypWeb.Areas.SmartCheckout.Controllers
                                 // Send the email with the constructed subject
                                 await SendEmailAsync(email, subject, body);
                             }
-                          
-                            
 
-                         
+
                             // Remove the products from the inventory after successful order processing and saving
                             foreach (var product in products)
                             {
                                 var productEntity = await _context.Product.FirstOrDefaultAsync(p => p.Id == product.ProductId);
                                 if (productEntity != null)
                                 {
-                                    _context.Product.Remove(productEntity);
+                                    var recommendedProducts = _context.ProductRecommendations
+                                        .Where(pr => pr.ProductId == productEntity.Id)
+                                        .ToList();
+
+                                    // Check if the product is being recommended to other products
+                                    var isRecommendedProduct = _context.ProductRecommendations.Any(pr => pr.RecommendedProductId == productEntity.Id);
+                                    if (isRecommendedProduct)
+                                    {
+                                        var recommendingProducts = _context.ProductRecommendations
+                                                    .Where(pr => pr.RecommendedProductId == productEntity.Id)
+                                                    .ToList();
+                                        if (recommendingProducts.Any())
+                                        {
+                                            _context.ProductRecommendations.RemoveRange(recommendingProducts);
+                                            await _context.SaveChangesAsync();
+                                        }
+
+                                        // Remove the product from the inventory
+                                        _context.Product.Remove(productEntity);
+                                    }
+                                    else if (recommendedProducts.Any()) // Check if there are any recommended products for this product
+                                    {
+                                        // Remove the recommendation associations
+                                        _context.ProductRecommendations.RemoveRange(recommendedProducts);
+                                        await _context.SaveChangesAsync();
+
+                                        // Remove the product from the inventory
+                                        _context.Product.Remove(productEntity);
+                                    }
+                                    else
+                                    {
+                                        _context.Product.Remove(productEntity);
+                                    }
                                 }
                             }
                             await _context.SaveChangesAsync();
+
+
 
                         }
                         catch (Exception ex)

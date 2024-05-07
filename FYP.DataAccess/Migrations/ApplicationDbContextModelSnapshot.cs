@@ -729,13 +729,13 @@ namespace Fyp.DataAccess.Migrations
                     b.HasOne("Fyp.Models.ProductDetail", "Product")
                         .WithMany("RecommendedProducts")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Fyp.Models.ProductDetail", "RecommendedProduct")
                         .WithMany()
                         .HasForeignKey("RecommendedProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Product");

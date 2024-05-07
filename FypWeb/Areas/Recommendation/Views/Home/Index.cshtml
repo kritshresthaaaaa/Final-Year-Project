@@ -117,21 +117,23 @@
             const card = document.createElement('div');
             card.classList.add('group', 'flex', 'flex-col', 'items-center', 'border', 'rounded-md', 'cursor-pointer', 'transition-colors', 'duration-150', 'w-full', 'max-w-sm'); // Add 'w-full' and 'max-w-sm' for equal card size
             card.innerHTML = `
-                <div class="w-full">
-                    <div class="h-40 w-full rounded-t-md overflow-hidden flex justify-center items-center">
-                        <img src="${productDetail.imageUrl}" alt="${productDetail.name}" class="object-cover object-center h-full w-full group-hover:opacity-75">
-                    </div>
-                    <h3 class="mt-2 text-center text-base font-medium text-gray-900">${productDetail.name}</h3>
-                    <div class="flex-col justify-start items-start">
-                        <p class="mt-1 text-base text-gray-900">Price: Rs. ${productDetail.price}</p>
-                        <div class="flex items-center mt-1">
-                            <p class="text-base text-gray-900">Color:&nbsp; </p>
-                            <div class="w-4 h-4 rounded-full mr-2" style="background-color: ${productDetail.colorCode};"></div>
-                        </div>
-                        <p class="mt-1 text-base text-gray-900">Size: <span class="text-base  text-gray-900">${productDetail.sizes}</span></p>
-                    </div>
+            <div class="w-full shadow-xl"> <!-- Changed shadow class to shadow-xl for stronger shadow -->
+                <div class="h-40 w-full rounded-t-md overflow-hidden flex justify-center items-center">
+                    <img src="${productDetail.imageUrl}" alt="${productDetail.name}" class="object-cover object-center h-full w-full group-hover:opacity-75">
                 </div>
-            `;
+                <h3 class="mt-2 text-center text-base font-medium text-gray-900">${productDetail.name}</h3>
+                <div class="flex-col justify-start items-start">
+                    <p class="mt-1 text-base text-gray-900">Price: Rs. ${productDetail.price}</p>
+                    <div class="flex items-center mt-1">
+                        <p class="text-base text-gray-900">Color:&nbsp; </p>
+                        <div class="w-4 h-4 rounded-full mr-2" style="background-color: ${productDetail.colorCode};"></div>
+                    </div>
+                    <p class="mt-1 text-base text-gray-900">Size: <span class="text-base  text-gray-900">${productDetail.sizes}</span></p>
+                </div>
+            </div>
+        `;
+
+
 
             card.addEventListener('click', () => {
                 // Reset previously selected items
@@ -169,24 +171,25 @@
             document.getElementById('suggestion').classList.remove('hidden');
             const productDetailDiv = document.getElementById('productDetail');
             productDetailDiv.innerHTML = `
-                                                    <div class="md:flex-1">
-                                                        <img src="${productDetails.imageUrl}" alt="${productDetails.name}" class="h-[400px] rounded-md bg-white object-cover object-center">
-                                                    </div>
-                                                    <div class="md:flex-1 px-4">
-                                                        <h2 class="text-2xl font-bold text-gray-800 mb-2 mt-2">${productDetails.name}</h2>
-                                                        <p class="text-gray-600 text-sm mb-2">${productDetails.description}</p>
-                                                        <div class="flex mb-4">
-                                                            <div class="mr-4">
-                                                                <span class="font-bold text-gray-700">Price:</span>
-                                                                <span class="text-gray-600">Rs. ${productDetails.price}</span>
-                                                            </div>
-                                                            <div>
-                                                                <span class="font-bold text-gray-700">Availability:</span>
-                                                                <span class="text-gray-600">${productDetails.sizes ? 'In Stock' : 'Out of Stock'}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                `;
+            <div class="md:flex-1 shadow-lg rounded-md bg-white"> <!-- Added shadow-lg class for shadow effect -->
+                <img src="${productDetails.imageUrl}" alt="${productDetails.name}" class="h-[400px] rounded-md bg-white object-cover object-center">
+            </div>
+            <div class="md:flex-1 px-4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 mt-2">${productDetails.name}</h2>
+                <p class="text-gray-600 text-sm mb-2">${productDetails.description}</p>
+                <div class="flex mb-4">
+                    <div class="mr-4">
+                        <span class="font-bold text-gray-700">Price:</span>
+                        <span class="text-gray-600">Rs. ${productDetails.price}</span>
+                    </div>
+                    <div>
+                        <span class="font-bold text-gray-700">Availability:</span>
+                        <span class="text-gray-600">${productDetails.sizes ? 'In Stock' : 'Out of Stock'}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
         }
 
         // Function to update recommended products section

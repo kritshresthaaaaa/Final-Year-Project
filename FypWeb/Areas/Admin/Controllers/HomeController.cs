@@ -25,11 +25,17 @@ namespace FypWeb.Areas.Admin.Controllers
             _db = db;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            // Count employees with role "employee" using a more efficient approach
+            var employeeCount = await _db.UserRoles.CountAsync(ur => ur.RoleId == _db.Roles.FirstOrDefault(r => r.Name == SD.Role_Employee ).Id);
+            var totalItemsSold = await _db.OrderDetails.Where(od => _db.OrderHeaders.Any(oh => oh.Id == od.OrderHeaderId)).SumAsync(od => od.Quantity);
             ViewBag.ProductsCount = _db.Product.Count();
             ViewBag.CategoriesCount = _db.Category.Count();
             ViewBag.BrandsCount = _db.Brand.Count();
+            ViewBag.EmployeesCount = employeeCount;
+            ViewBag.RevenueCount = _db.OrderHeaders.Sum(o => o.OrderTotal);
+            ViewBag.SoldCount = totalItemsSold;
             return View();
         }
         #region API CALLS

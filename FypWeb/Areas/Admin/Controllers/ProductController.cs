@@ -443,26 +443,67 @@ namespace FypWeb.Areas.Admin.Controllers
             var productDetail = await _context.Product.FindAsync(id);
             if (productDetail != null)
             {
+                // Check if the product is recommended for other products
+                var isRecommendedProduct = _context.ProductRecommendations.Any(pr => pr.RecommendedProductId == id);
+
+                // If the product is recommended for other products, remove its associations as a recommended product
+                if (isRecommendedProduct)
+                {
+                    var recommendingProducts = _context.ProductRecommendations
+                                                   .Where(pr => pr.RecommendedProductId == id)
+                                                   .ToList();
+
+                    if (recommendingProducts.Any())
+                    {
+                        _context.ProductRecommendations.RemoveRange(recommendingProducts);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                // Check if there are any recommended products associated with the product
+                var recommendedProducts = _context.ProductRecommendations
+                                            .Where(pr => pr.ProductId == id)
+                                            .ToList();
+
+                if (recommendedProducts.Any())
+                {
+                    // Remove the associations with recommended products
+                    _context.ProductRecommendations.RemoveRange(recommendedProducts);
+                    await _context.SaveChangesAsync();
+                }
+
                 // If there's an image URL, delete the image file from the server
                 if (!string.IsNullOrEmpty(productDetail.ImageUrl))
                 {
-                    // Build the path to the file
                     string filePath = Path.Combine(hostEnvironment.WebRootPath, productDetail.ImageUrl.TrimStart('/'));
-
-                    // Check if the file exists before trying to delete
                     if (System.IO.File.Exists(filePath))
                     {
-                        // Delete the file
                         System.IO.File.Delete(filePath);
                     }
                 }
 
+                // Remove the product itself
                 _context.Product.Remove(productDetail);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Product deleted successfully." });
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Product deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    TempData["error"] = "Error while deleting. " + ex.Message;
+                    return Json(new { success = false, message = "Error while deleting. " + ex.Message });
+                }
             }
-            return Json(new { success = false, message = "Error while deleting. Product not found." });
+            else
+            {
+                TempData["error"] = "Error while deleting. Product not found.";
+                // If the product doesn't exist, return a failure response
+                return Json(new { success = false, message = "Error while deleting. Product not found." });
+            }
         }
+
+
 
         #endregion
 

@@ -143,13 +143,20 @@ function generateChartData(timeFrame, timeValue) {
                     }
                 });
 
-                // Ensure that sales data is set for all days of the week
-                for (let i = 0; i < staticLabels.length; i++) {
-                    if (salesDataForWeek[i] === undefined) {
-                        salesDataForWeek[i] = 0; // Set sales data to zero for missing days
+                // Fill in missing days with zero sales
+                Object.values(dayOfWeekToIndex).forEach(index => {
+                    if (salesDataForWeek[index] === undefined) {
+                        salesDataForWeek[index] = 0;
                     }
-                }
+                });
 
+
+                if (myChart) {
+                    // Since labels are static and already set, just update the data
+                    myChart.data.datasets[0].data = salesDataForWeek;
+                    myChart.data.datasets[0].label = 'Total Sales';
+                    myChart.update();
+                }
             })
             .catch(error => console.error('Error fetching weekly data:', error));
     }

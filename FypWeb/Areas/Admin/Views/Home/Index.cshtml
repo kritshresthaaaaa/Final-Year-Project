@@ -1,35 +1,77 @@
-﻿<div class="p-4 ml-[12rem]">
-    <div class=" outerlayer flex-col">
-        <div class=" grid grid-cols-3 gap-4 h-[3.5rem] flex items-center ">
-            <div class="border border-green-500 bg-[#D1E7DD] h-full flex items-center justify-between px-4 rounded-md ">
-                <div class="flex-col">
-                    <div class="font-semibold ">
-                        Total Products
+﻿<section class="ml-[12rem]">
+    ﻿<div class="p-4 ">
+        <div class=" outerlayer flex-col">
+            <div class="grid grid-cols-3 gap-4 h-[3.5rem] flex items-center">
+                <!-- First Section -->
+                <div class="border border-green-500 bg-[#D1E7DD] h-full flex items-center justify-between px-4 rounded-md">
+                    <div class="flex-col">
+                        <div class="font-semibold">
+                            Total Products
+                        </div>
+                        <div id="productsCount" class="counter">@ViewBag.ProductsCount</div>
                     </div>
-                    <div id="productsCount" class="counter">@ViewBag.ProductsCount</div>
+                    <i class='bx bx-shopping-bag text-[#198754]' style='font-size: 24px;'></i>
                 </div>
-                <i class='bx bx-shopping-bag text-[#198754]' style=' font-size: 24px; '></i>
-            </div>
-            <div class="border border-red-500 bg-[#F8D7DA]  h-full flex items-center justify-between px-4 rounded-md ">
-                <div class="flex-col">
-                    <div class="font-semibold">
-                        Total Catetgories
+                <!-- Second Section -->
+                <div class="border border-red-500 bg-[#F8D7DA] h-full flex items-center justify-between px-4 rounded-md">
+                    <div class="flex-col">
+                        <div class="font-semibold">
+                            Total Catetgories
+                        </div>
+                        <div id="categoriesCount" class="counter">@ViewBag.CategoriesCount</div>
                     </div>
-                    <div id="categoriesCount" class="counter">@ViewBag.CategoriesCount</div>
+                    <i class='bx bx-category text-[#DC3545]' style='font-size: 24px;'></i>
                 </div>
-                <i class='bx bx-category text-[#DC3545]' style='font-size: 24px;'></i>
-            </div>
-            <div class="border border-yellow-500 bg-[#FFF3CD] h-full flex items-center justify-between px-4 rounded-md ">
-                <div class="flex-col">
-                    <div class="font-semibold">
-                        Total Brands
+                <!-- Third Section -->
+                <div class="border border-yellow-500 bg-[#FFF3CD] h-full flex items-center justify-between px-4 rounded-md">
+                    <div class="flex-col">
+                        <div class="font-semibold">
+                            Total Brands
+                        </div>
+                        <div id="brandsCount" class="counter">@ViewBag.BrandsCount</div>
                     </div>
-                    <div id="brandsCount" class="counter">@ViewBag.BrandsCount</div>
+                    <i class='bx bx-purchase-tag text-[#FFC107]' style='font-size: 24px;'></i>
                 </div>
-                <i class='bx bx-purchase-tag text-[#FFC107]' style=' font-size: 24px;'></i>
             </div>
-        </div>
-        <div>
+
+            <!-- Second Set of Sections -->
+            <div class="grid grid-cols-3 gap-4 h-[3.5rem] flex items-center mt-4">
+                <!-- Fourth Section -->
+                <div class="border border-blue-500 bg-[#D6E4F1] h-full flex items-center justify-between px-4 rounded-md">
+                    <div class="flex-col">
+                        <div class="font-semibold">
+                            Employees
+                        </div>
+                        <div id="employeesCount" class="counter">@ViewBag.EmployeesCount</div>
+                    </div>
+
+                    <i class='bx bx-user text-[#007BFF]' style='font-size: 24px;'></i>
+                </div>
+                <!-- Fifth Section -->
+                <div class="border border-purple-500 bg-[#E2D3E5] h-full flex items-center justify-between px-4 rounded-md">
+                    <div class="flex-col">
+                        <div class="font-semibold">
+                            Total Sales Revenue
+                        </div>
+                        <span>Rs.</span>
+                        <span id="revenueCount" class="">@ViewBag.RevenueCount</span>
+                    </div>
+                    <!-- Adjust the icon as needed -->
+                    <i class='bx bx-credit-card text-[#6F42C1]' style='font-size: 24px;'></i>
+                </div>
+                <!-- Sixth Section -->
+                <div class="border border-orange-500 bg-[#FFE6D1] h-full flex items-center justify-between px-4 rounded-md">
+                    <div class="flex-col">
+                        <div class="font-semibold">
+                            Total Items Sold
+                        </div>
+                        <div id="soldCount" class="counter">@ViewBag.SoldCount</div>
+                    </div>
+                    <!-- Adjust the icon as needed -->
+                    <i class='bx bxs-shopping-bags text-[#FFA500]' style='font-size: 24px;'></i>
+                </div>
+            </div>
+
 
 
             <div class="flex justify-center">
@@ -43,23 +85,24 @@
             </div>
 
 
-        <div class="flex justify-center mt-2 float-right hidden" id="monthPickerContainer">
-            <input type="month" id="monthPicker" class="border rounded-lg p-1" value="">
-        </div>
-        <div class="flex justify-center mt-2 float-right hidden" id="yearPickerContainer">
-            <input type="year" id="yearPicker" class="border rounded-lg p-1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="4">
-        </div>
-        <div class="px-2 mt-2 flex-col">
-        @*     <canvas id="barChart" width="200" height="100" class=""></canvas> *@
-            <canvas id="myChart" width="250" height="100" class=""></canvas>
-        </div>
+            <div class="flex justify-center mt-2 float-right hidden" id="monthPickerContainer">
+                <input type="month" id="monthPicker" class="border rounded-lg p-1" value="">
+            </div>
+            <div class="flex justify-center mt-2 float-right hidden" id="yearPickerContainer">
+                <input type="year" id="yearPicker" class="border rounded-lg p-1" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" maxlength="4">
+            </div>
+            <div class="px-2 mt-2 flex-col">
+                <canvas id="myChart" height="100" class=""></canvas>
+            </div>
 
 
 
+        </div>
     </div>
-</div>
+
+
+</section>
 @section Scripts{
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="~/js/linechart.js"></script>
     <script src="~/js/counter.js"></script>
-}
+    }

@@ -1,0 +1,38 @@
+﻿﻿<section class="ml-[12rem]">
+    <div class="relative overflow-hidden bg-white border sm:rounded-lg">
+        <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
+            <div class="flex items-center flex-1 space-x-4">
+                <h5>
+                    <span class="text-black">Transaction Details</span>
+                    @*    <span class="text-gray-500">@ViewBag.BrandCount</span> *@
+                </h5>
+
+            </div>
+        </div>
+        <div class="overflow-x-auto ">
+            <table id="tblData" class="w-full text-sm text-left rounded-md " style="width:100%; background-color: #ffffff; border: 1px solid #ccc; margin-top:2px;">
+                <thead class="text-xs text-black uppercase mt-2 ">
+                    <tr class="">
+
+
+                        <th><p class="flex justify-center">Order ID</p></th>
+                        <th><p class="flex justify-center">Customer Name</p></th>
+                        <th><p class="flex justify-center">Email</p></th>
+                        <th><p class="flex justify-center">Phone</p></th>
+                        <th><p class="flex justify-center">Employee Id</p></th>
+                        <th><p class="flex justify-center">Employee Email</p></th>
+                        <th><p class="flex justify-center">Order Date</p></th>
+                        <th><p class="flex justify-center">Order Total</p></th>
+
+                        <th><p class="flex justify-center">ORder Details</p></th>
+
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    <script src="~/js/adminTransaction.js"></script>
+}

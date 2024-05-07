@@ -27,7 +27,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FypWeb.Areas.Identity.Pages.Account
 {
-    /*    [Authorize(Roles = SD.Role_Admin)]*/
+/*    [Authorize(Roles = SD.Role_Admin)]*/
     public class RegisterModel : PageModel
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -118,6 +118,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
             [Required]
             [DataType(DataType.Date)]
             [Display(Name = "Date of Birth")]
+            [MinimumAge(18, ErrorMessage = "You must be at least 18 years old.")]
             public DateTime DOB { get; set; }
             [Required]
             [Display(Name = "Gender")]
@@ -150,9 +151,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
         SD.Role_Admin,
         SD.Role_Sub_Admin,
         SD.Role_Employee,
-        SD.Role_Customer_Handler,
-        SD.Role_Sales_Employee_Panel,
-        SD.Role_Fitting_Employee,
+        SD.Role_Customer_Handler
 
     };
 
@@ -188,6 +187,17 @@ namespace FypWeb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                // Validate age
+                var today = DateTime.Today;
+                var age = today.Year - Input.DOB.Year;
+                if (Input.DOB.Date > today.AddYears(-age))
+                    age--;
+
+                if (age < 18)
+                {
+                    ModelState.AddModelError(string.Empty, "You must be at least 18 years old to register.");
+                    return Page();
+                }
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
                 var user = CreateUser();
                 // Handle the image file
@@ -217,10 +227,12 @@ namespace FypWeb.Areas.Identity.Pages.Account
                 user.StreetAddress = Input.StreetAddress;
                 user.Gender = Input.Gender;
                 user.RegistrationDate = DateTime.Now;
-                var result = await _userManager.CreateAsync(user, Input.Password);
+   
                 user.TwoFactorEnabled = true;
                 user.EmployeeRelationId = Guid.NewGuid();
                 user.StockAlerter=Input.StockAlerter;
+                
+                var result= await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
@@ -318,6 +330,7 @@ namespace FypWeb.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
+                    TempData["loginfo"]=error.Description;
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }

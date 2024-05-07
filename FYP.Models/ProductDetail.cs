@@ -58,10 +58,8 @@ namespace Fyp.Models
         [DisplayName("Color")]
         [StringLength(7, ErrorMessage = "Color must be in #RRGGBB format", MinimumLength = 7)]
         [RegularExpression("^#([A-Fa-f0-9]{6})$", ErrorMessage = "Color must be in #RRGGBB format")]
-        public string ColorCode { get; set; } 
-
-        [ValidateNever]
-        [JsonIgnore]
+        public string ColorCode { get; set; }
+        [NotMapped]
         public List<ProductRecommendation> RecommendedProducts { get; set; } // Changed to List<T>
 
 
