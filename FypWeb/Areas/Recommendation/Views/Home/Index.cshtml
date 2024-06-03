@@ -1,0 +1,254 @@
+﻿@{
+    Layout = "~/Views/Shared/_Customers.cshtml";
+}
+<div class="bg-white h-screen flex flex-row border rounded-md">
+
+    <div class="w-[50%] overflow-y-auto custom-scrollbar">
+        <div class="flex flex-col items-center justify-center min-h-[70vh] bg-white" id="welcomeMessage">
+            <i class='bx bxs-user text-6xl bx-beeping' id="userIcon"></i>
+            <p class="text-xl text-gray-600" id="instructionText">Please stand closer to the mirror...</p>
+        </div>
+
+        <div id="bucketItemsSection" class="hidden">
+            <div class="bottom mb-1 flex justify-center mt-4" id="title">
+                <h3 class="text-xl font-semibold text-center flex items-center">
+                    Personalized Clothing Recommendations
+                    <i class="bx bxs-badge-check bx-tada text-blue-500 ml-2"></i>
+                </h3>
+            </div>
+            <div class="mx-auto max-w-md px-4 py-2 lg:max-w-7xl lg:px-4 flex-grow">
+                <div id="productList" class="grid grid-cols-1 gap-x-4 gap-y-8 lg:grid-cols-3">
+                    <!-- Products will be displayed here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-[50%] border-l">
+        <div class="top">
+            <div class="max-w-7xl px-4 flex-grow mt-5">
+                <div class="px-2">
+                    <div class="flex flex-row border rounded-md -mx-4" id="productDetail">
+                        <div class="mx-auto">
+                            <div id="placeholderMessage" class="flex flex-col items-center  min-h-[90vh] pt-[14rem]">
+                                <i class='bx bx-closet bx-beeping text-6xl text-gray-500'></i>
+                                <p class="text-xl text-gray-600 px-4">Select a product first</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bottom mt-3 hidden" id="suggestion">
+            <h3 class="text-2xl text-center font-semibold">You May Also Buy <i class='bx bxs-star bx-spin' style='color:#f1d744'></i></h3>
+        </div>
+        <div class="bottom mt-3 hidden" id="noRecommendation">
+            <p class="text-xl text-gray-600 text-center my-10"> Oops, no recommendations for now <i class="bx bx-sad bx-tada bx-flip-horizontal"></i></p>
+        </div>
+        <!-- Scrollable product section -->
+        <div class="max-h-[24rem] overflow-y-auto custom-scrollbar py-2 px-4" id="recommendedListContainer">
+            <div id="recommendedList" class="grid grid-cols-1 gap-x-4 gap-y-8 grid-cols-3 rounded-md">
+                <!-- Recommended products will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts{
+    <script>
+
+        // Call fetchRFIDProducts() when the page loads
+        window.addEventListener('load', function () {
+            // Hide the welcome message, icon, and text
+            document.getElementById('welcomeMessage').style.display = 'none';
+
+            // Call the function to load and display products
+            fetchRFIDProducts();
+
+            // Show the "Items in your Bucket" section
+            document.getElementById('bucketItemsSection').classList.remove('hidden');
+        });
+
+
+        // Function to fetch RFID products
+        // Function to fetch RFID products
+        async function fetchRFIDProducts() {
+            try {
+                const response = await fetch('/Recommendation/Home/GetAllRecommendedItems');
+                const result = await response.json();
+                console.log('Response:', result); // Log the response to inspect its structure
+
+                if (result.success === false && result.message === 'No RFID tags detected.') {
+                    // No RFID tags detected, display the welcome message
+                    document.getElementById('welcomeMessage').style.display = 'flex';
+                    document.getElementById('title').style.display = 'none';
+
+                    // Clear the product list
+                    document.getElementById('productList').innerHTML = '';
+                } else if (result.success === true) {
+                    // RFID tags found, hide the welcome message and display products
+                    document.getElementById('welcomeMessage').style.display = 'none';
+                    displayRFIDProducts(result);
+                } else {
+                    console.error('Error fetching RFID products:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching RFID products:', error);
+            }
+        }
+
+
+        // Function to display RFID products
+        function displayRFIDProducts(result) {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = ''; // Clear existing content before displaying new products
+            const productsWithRFID = result.data; // Access the 'data' property
+            // Iterate through each RFID tag in the response
+            Object.entries(productsWithRFID).forEach(([rfidTag, { product, recommended }]) => {
+                // There might be multiple products per RFID in your structure, hence the forEach
+                product.forEach(productDetail => {
+                    const productCard = createProductCard(productDetail, rfidTag, productsWithRFID); // Pass productsWithRFID for full access
+                    productList.appendChild(productCard);
+                });
+            });
+        }
+
+        // Function to create product cards
+        function createProductCard(productDetail, rfidTag, productsWithRFID) {
+            const card = document.createElement('div');
+            card.classList.add('group', 'flex', 'flex-col', 'items-center', 'border', 'rounded-md', 'cursor-pointer', 'transition-colors', 'duration-150', 'w-full', 'max-w-sm'); // Add 'w-full' and 'max-w-sm' for equal card size
+            const priceHtml = productDetail.price !== productDetail.discountedPrice ?
+                `<span class="line-through text-gray-500">Rs. ${productDetail.price}</span> <span class="text-red-500">Rs. ${productDetail.discountedPrice}</span>` :
+                `<span>Rs. ${productDetail.price}</span>`;
+
+            card.innerHTML = `
+            <div class="w-full shadow-xl"> <!-- Changed shadow class to shadow-xl for stronger shadow -->
+                <div class="h-40 w-full rounded-t-md overflow-hidden flex justify-center items-center">
+                    <img src="${productDetail.imageUrl}" alt="${productDetail.name}" class="object-cover object-center h-full w-full group-hover:opacity-75">
+                </div>
+                <h3 class="mt-2 text-center text-base font-medium text-gray-900">${productDetail.name}</h3>
+                <div class="flex-col justify-start items-start px-2">
+                    <p class="mt-1 text-base text-gray-900">Price: ${priceHtml}</p>
+                    <div class="flex items-center mt-1">
+                        <p class="text-base text-gray-900">Color:&nbsp; </p>
+                        <div class="w-4 h-4 rounded-full mr-2" style="background-color: ${productDetail.colorCode};"></div>
+                    </div>
+                    <p class="mt-1 text-base text-gray-900">Size: <span class="text-base  text-gray-900">${productDetail.sizes}</span></p>
+                </div>
+            </div>
+        `;
+
+
+
+            card.addEventListener('click', () => {
+                // Reset previously selected items
+                document.querySelectorAll('.productCard').forEach(item => {
+                    item.classList.remove('bg-gray-100'); // Or 'selectedProduct' if using a custom class
+                });
+
+                // Set the current item as selected
+                card.classList.add('bg-gray-100'); // Or 'selectedProduct' if using a custom class
+
+                // Display the product details
+                displayProductDetails(rfidTag, productsWithRFID);
+            });
+
+            // Assign a common class to all cards for easy selection
+            card.classList.add('productCard');
+
+            return card;
+        }
+
+        // Function to display product details
+        function displayProductDetails(rfidTag, productsWithRFID) {
+            // Hide the placeholder message
+
+            const { product, recommended } = productsWithRFID[rfidTag];
+            const productDetails = product[0]; // Assuming always at least one product per RFID tag
+
+            // Update sections for product detail and recommendations
+            updateProductDetailSection(productDetails);
+            updateRecommendedProductsSection(recommended);
+        }
+
+        // Function to update product detail section
+        function updateProductDetailSection(productDetails) {
+            document.getElementById('suggestion').classList.remove('hidden');
+            const productDetailDiv = document.getElementById('productDetail');
+            const priceHtml = productDetails.price !== productDetails.discountedPrice ?
+                `<span class="line-through text-gray-500">Rs. ${productDetails.price}</span> <span class="text-red-500">Rs. ${productDetails.discountedPrice}</span>` :
+                `<span>Rs. ${productDetails.price}</span>`;
+
+            productDetailDiv.innerHTML = `
+            <div class="md:flex-1 shadow-lg rounded-md bg-white"> <!-- Added shadow-lg class for shadow effect -->
+                <img src="${productDetails.imageUrl}" alt="${productDetails.name}" class="h-[400px] rounded-md bg-white object-cover object-center">
+            </div>
+            <div class="md:flex-1 px-2">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 mt-2">${productDetails.name}</h2>
+                <p class="text-gray-600 text-sm mb-2">${productDetails.description}</p>
+                <div class="flex mb-4">
+                    <div class="mr-4">
+                        <span class="font-bold text-gray-700">Price:</span>
+                        <span class="text-gray-600">${priceHtml}</span>
+                    </div>
+                    <div>
+                        <span class="font-bold text-gray-700">Availability:</span>
+                        <span class="text-gray-600">${productDetails.sizes ? 'In Stock' : 'Out of Stock'}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+        }
+
+        function updateRecommendedProductsSection(recommendedItems) {
+            const recommendedListDiv = document.getElementById('recommendedList');
+            recommendedListDiv.innerHTML = '';
+            if (recommendedItems && recommendedItems.length > 0) {
+                document.getElementById('suggestion').classList.remove('hidden');
+                recommendedItems.forEach(item => {
+                    // Here, we assume that the item object might have a 'discountedPrice' and we check for it
+                    const priceHtml = item.discountedPrice ?
+                        `<span class="line-through text-gray-500">Rs. ${item.price}</span> <span class="text-red-500">Rs. ${item.discountedPrice}</span>` :
+                        `<span>Rs. ${item.price}</span>`;
+
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('group', 'flex', 'flex-col', 'items-center', 'border', 'rounded-md');
+                    itemElement.innerHTML = `
+                        <img src="${item.imageUrl}"  alt="${item.name}" class="object-cover rounded-t-md object-center h-full w-full group-hover:opacity-75">
+                        <h3 class="mt-4 text-sm text-gray-900 font-medium">${item.name}</h3>
+                        <p class="mt-1 text-base text-gray-900">Price: ${priceHtml}</p>
+                        <div class="flex items-center mt-1">
+                            <p class="text-base text-gray-900">Color:&nbsp; </p>
+                            <div class="w-4 h-4 rounded-full mr-2" style="background-color: ${item.colorCode};"></div>
+                        </div>
+                        <p class="mt-1 text-base text-gray-900">Size: <span class="text-base  text-gray-900">${item.sizes}</span></p>
+                    `;
+                    recommendedListDiv.appendChild(itemElement);
+                });
+            } else {
+                document.getElementById('suggestion').classList.add('hidden');
+                document.getElementById('noRecommendation').classList.remove('hidden'); // Ensure this element exists or adjust accordingly
+            }
+        }
+
+
+        // Function to start the RFID scanning process
+        function startRFIDScan() {
+            fetchRFIDProducts(); // Start the initial scan
+
+            // Set up intervals for scanning and pausing
+            let scanInterval = setInterval(fetchRFIDProducts, 5000); // Scan every 5 seconds
+
+            // Pause for 3 seconds after scanning
+            setTimeout(() => {
+                clearInterval(scanInterval); // Stop the scanning
+                setTimeout(startRFIDScan, 3000); // Start scanning again after 3 seconds
+            }, 5000); // Wait for 5 seconds before pausing
+        }
+
+        // Call startRFIDScan() when the page loads
+        window.addEventListener('load', startRFIDScan);
+    </script>
+}
